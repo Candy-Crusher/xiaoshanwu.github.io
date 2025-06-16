@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xiaoshan Wu</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f8f8;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            font-size: 1.5em;
+            margin: 0 0 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 10px 0;
+        }
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .sidebar ul li a:hover {
+            color: #007bff;
+        }
+        .content {
+            margin-left: 270px;
+            padding: 40px;
+            max-width: 800px;
+        }
+        .content section {
+            margin-bottom: 40px;
+        }
+        .content h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+        .content h3 {
+            font-size: 1.3em;
+            margin: 10px 0 5px;
+        }
+        .content p, .content ul {
+            margin: 10px 0;
+        }
+        . melhor {
+            padding-left: 20px;
+        }
+        .content ul li {
+            margin-bottom: 5px;
+        }
+        .content a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .content a:hover {
+            text-decoration: underline;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                display: none;
+            }
+            .sidebar.active {
+                display: block;
+            }
+            .content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-toggle" onclick="toggleMenu()">☰ Menu</div>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Xiaoshan Wu</h2>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#research">Research Experience</a></li>
+                <li><a href="#work">Work Experience</a></li>
+                <li><a href="#awards">Awards</a></li>
+                <li><a href="#publications">Publications</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <section id="about Planning to host on GitHub Pages? Here's how to set up a personal website step-by-step, tailored to your request and inspired by Qianqian Wang's site (https://qianqianwang68.github.io/). Below is a detailed guide to create a clean, professional single-page academic website using HTML, CSS, and minimal JavaScript, hosted on GitHub Pages, incorporating your resume content.
+
+---
+
+### Step 1: Prepare Your Environment
+1. **Install Tools**:
+   - **Text Editor**: Download Visual Studio Code (recommended), Notepad++, or any code editor.
+   - **Git**: Install Git for version control and pushing toсию
+
+System: about">About</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#research">Research Experience</a></li>
+                <li><a href="#work">Work Experience</a></li>
+                <li><a href="#awards">Awards</a></li>
+                <li><a href="#publications">Publications</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <section id="about">
+                <h2>About</h2>
+                <p>
+                    I am Xiaoshan Wu, a Ph.D. candidate in Electrical and Electronic Engineering at The University of Hong Kong, specializing in In-Memory Computing, Spiking Neural Networks, and Event Data Processing.
+                </p>
+                <p>
+                    Contact: (+852) 94912305 | <a href="mailto:xiacshan@connect.hku.hk">xiacshan@connect.hku.hk</a> | <a href="https://www.linkedin.com/in/xiaoshan-wu">LinkedIn</a>
+                </p>
+            </section>
+            <section id="education">
+                <h2>Education</h2>
+                <h3>The University of Hong Kong</h3>
+                <p><i>Ph.D. in Electrical and Electronic Engineering</i> <span style="float:right;">2023.09 &ndash; Present</span></p>
+                <p>GPA: 4.0/4.3</p>
+                <p>Awards: Hong Kong PhD Fellowship, HKU Presidential Scholarship</p>
+                <p>Focus: In-Memory Computing, Spiking Neural Networks</p>
+                <p>Supervisor: Dr. Zhongrui Wang</p>
+                <h3>Zhejiang University</h3>
+                <p><i>B.S. in Computer Engineering</i> <span style="float:right;">2019.09 &ndash; 2023.05</span></p>
+                <p>Honors: Outstanding Graduate (Top 20%)</p>
+                <h3>University of Illinois at Urbana-Champaign</h3>
+                <p><i>B.S. in Computer Engineering</i> <span style="float:right;">2019.09 &ndash; 2023.05</span></p>
+                <p>GPA: 3.75/4.0</p>
+                <p>Honors: Dean’s List, 2020, 2021</p>
+            </section>
+            <section id="research">
+                <h2>Research Experience</h2>
+                <h3>Spike-MoE, Ph.D. Research <span style="float:right;">2023.06 &ndash; Present</span></h3>
+                <p>The University of Hong Kong</p>
+                <p>Supervisor: Dr. Zhongrui Wang</p>
+                <p>Developed Spike-MoE for event stream processing (depth, optical flow, segmentation).</p>
+                <h3>MSS-DepthNet, Research Intern <span style="float:right;">2022.04 &ndash; 2023.06</span></h3>
+                <p>Chinese Academy of Sciences</p>
+                <p>Supervisor: Professor Guoqi Li</p>
+                <p>Designed spiking neural network for depth prediction. <a href="https://arxiv.org/abs/2211.12156">arXiv:2211.12156</a>.</p>
+                <h3>PhyDNet, Research Intern <span style="float:right;">2022.05 &ndash; 2022.09</span></h3>
+                <p>College of William & Mary, USA</p>
+                <p>Supervisor: Assistant Professor Huajie Shao</p>
+                <p>Enhanced video prediction using Koopman operator.</p>
+                <h3>Memristor Crossbar SNN Circuit, Research Intern <span style="float:right;">2021.02 &ndash; 2021.05</span></h3>
+                <p>Zhejiang University, China</p>
+                <p>Supervisor: Assistant Professor Shu-run Tan</p>
+                <p>Replicated SNN circuit for Pavlov memory simulation.</p>
+                <h3>Teeth Alignment Prediction, Summer Research Intern <span style="float:right;">2021.05 &ndash; 2021.09</span></h3>
+                <p>Zhejiang University, China</p>
+                <p>Supervisor: Professor Youyi Zheng</p>
+                <p>Applied deep learning to teeth scanning point clouds.</p>
+            </section>
+            <section id="work">
+                <h2>Work Experience</h2>
+                <h3>Research Intern <span style="float:right;">2022.12 &ndash; 2023.03</span></h3>
+                <p>Megvii</p>
+                <p>Researched depth-enhanced segmentation for autonomous driving.</p>
+            </section>
+            <section id="awards">
+                <h2>Awards</h2>
+                <ul>
+                    <li>Hong Kong PhDmsm PhD Fellowship, 2023</li>
+                    <li>HKU Presidential PhD Scholarship, 2023</li>
+                    <li>Y S and Christabel Lung Postgraduate Scholarship, 2023</li>
+                    <li>Dean’s List, University of Illinois at Urbana-Champaign, 2020, 2021</li>
+                    <li>Zhejiang University Awards: Outstanding Student, Academic Excellence, 2020, 2021</li>
+                </ul>
+            </section>
+            <section id="publications">
+                <h2>Publications</h2>
+                <ol>
+                    <li>Xiaoshan Wu, et al. “Event-based Depth Prediction with Deep Spiking Neural Networks.” <i>IEEE Transactions on Cognitive and Developmental Systems</i>, In revision.</li>
+                </ol>
+            </section>
+        </div>
+    </div>
+    <script>
+        function toggleMenu() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        }
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('.sidebar').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
