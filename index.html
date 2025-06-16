@@ -1,226 +1,277 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xiaoshan Wu</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f8f8f8;
-        }
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 250px;
-            background-color: #fff;
-            padding: 20px;
-            position: fixed;
-            height: 100%;
-            border-right: 1px solid #ddd;
-            overflow-y: auto;
-        }
-        .sidebar h2 {
-            font-size: 1.5em;
-            margin: 0 0 20px;
-        }
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar ul li {
-            margin: 10px 0;
-        }
-        .sidebar ul li a {
-            text-decoration: none;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-        .sidebar ul li a:hover {
-            color: #007bff;
-        }
-        .content {
-            margin-left: 270px;
-            padding: 40px;
-            max-width: 800px;
-        }
-        .content section {
-            margin-bottom: 40px;
-        }
-        .content h2 {
-            font-size: 1.8em;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 5px;
-            margin-bottom: 20px;
-        }
-        .content h3 {
-            font-size: 1.3em;
-            margin: 10px 0 5px;
-        }
-        .content p, .content ul {
-            margin: 10px 0;
-        }
-        . melhor {
-            padding-left: 20px;
-        }
-        .content ul li {
-            margin-bottom: 5px;
-        }
-        .content a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .content a:hover {
-            text-decoration: underline;
-        }
-        .menu-toggle {
-            display: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            padding: 10px;
-            background-color: #fff;
-            border-bottom: 1px solid #ddd;
-        }
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                display: none;
-            }
-            .sidebar.active {
-                display: block;
-            }
-            .content {
-                margin-left: 0;
-                padding: 20px;
-            }
-            .menu-toggle {
-                display: block;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Xiaoshan Wu</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body { max-width: 900px; margin: auto; padding: 20px; font-family: sans-serif; }
+    name { font-size: 2rem; font-weight: 600; }
+    heading { font-size: 1.5rem; font-weight: 600; }
+    papertitle { font-size: 1.1rem; font-weight: 500; }
+    .hidden { display: none; }
+    .preview-container { 
+      position: relative; 
+      display: inline-block;
+      width: 200px;
+      height: 200px;
+      margin: 10px 0;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .preview-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 5px;
+    }
+    .preview-overlay { 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width:100%; 
+      height:100%; 
+      opacity:0; 
+      transition:opacity .3s; 
+      overflow:hidden; 
+    }
+    .preview-overlay video { 
+      width:100%; 
+      height:100%; 
+      object-fit:cover; 
+    }
+    tr {
+      margin-bottom: 20px;
+    }
+    td {
+      padding: 15px 0;
+    }
+  </style>
 </head>
 <body>
-    <div class="menu-toggle" onclick="toggleMenu()">☰ Menu</div>
-    <div class="container">
-        <div class="sidebar">
-            <h2>Xiaoshan Wu</h2>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#research">Research Experience</a></li>
-                <li><a href="#work">Work Experience</a></li>
-                <li><a href="#awards">Awards</a></li>
-                <li><a href="#publications">Publications</a></li>
-            </ul>
-        </div>
-        <div class="content">
-            <section id="about Planning to host on GitHub Pages? Here's how to set up a personal website step-by-step, tailored to your request and inspired by Qianqian Wang's site (https://qianqianwang68.github.io/). Below is a detailed guide to create a clean, professional single-page academic website using HTML, CSS, and minimal JavaScript, hosted on GitHub Pages, incorporating your resume content.
 
----
+  <!-- Header + About Me -->
+  <table style="width:100%; margin: auto;">
+    <tr>
+      <td style="width:65%; vertical-align:top;">
+        <p style="text-align:center"><name>Xiaoshan Wu</name></p>
+        <p>
+          I am a Ph.D. student in Electrical and Electronic Engineering at <a href="https://www.hku.hk/">The University of Hong Kong</a>,
+          supervised by <a href="https://xjqi.github.io/">Dr. Xiaojuan Qi</a> and
+          <a href="https://www.sustech.edu.cn/en/faculties/zhongruiwang.html">Dr. Zhongrui Wang</a>. I received my B.Eng. degree from
+          <a href="https://www.zju.edu.cn/english/">Zhejiang University</a> and the
+          <a href="https://illinois.edu/">University of Illinois at Urbana-Champaign</a>.
+        </p>
+        <p>
+          My research focuses on high-resolution, temporally-consistent 3D/4D scene reconstruction and perception,
+          particularly under challenging conditions such as dynamic motion, low light, or extreme illumination.
+          I explore fusion of event-based and frame-based inputs, unified token representation, and video-spatial VLMs.
+        </p>
+        <p>
+          I'm looking for internship opportunities in 2025 summer.
+        </p>
+        <p>
+          <a href="mailto:xiaoshan@connect.hku.hk">Email</a> / 
+          <a href="cv_xiaoshanwu.pdf">CV</a> / 
+          <a href="https://scholar.google.com/citations?hl=en&user=9nsSKpsAAAAJ&view_op=list_works&authuser=1&gmla=AH8HC4wD8CI_TUBGoHminLcy1m_6GeICzO104ozDilAriMcFtuyII3OVZspUhmrhknVcawHHkVr4EjrH29dqLkX4">Google Scholar</a> / 
+          <a href="https://github.com/Candy-Crusher">GitHub</a>
+        </p>
+      </td>
+      <td style="width:30%; vertical-align:top; text-align:center;">
+        <img src="images/xiaoshanwu.jpg" alt="Xiaoshan Wu" style="width:100%; border-radius:8px;">
+      </td>
+    </tr>
+  </table>
 
-### Step 1: Prepare Your Environment
-1. **Install Tools**:
-   - **Text Editor**: Download Visual Studio Code (recommended), Notepad++, or any code editor.
-   - **Git**: Install Git for version control and pushing toсию
+  <!-- Publication section header -->
+  <div style="margin-top:40px;">
+    <heading>Publications</heading>
+  </div>
 
-System: about">About</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#research">Research Experience</a></li>
-                <li><a href="#work">Work Experience</a></li>
-                <li><a href="#awards">Awards</a></li>
-                <li><a href="#publications">Publications</a></li>
-            </ul>
-        </div>
-        <div class="content">
-            <section id="about">
-                <h2>About</h2>
-                <p>
-                    I am Xiaoshan Wu, a Ph.D. candidate in Electrical and Electronic Engineering at The University of Hong Kong, specializing in In-Memory Computing, Spiking Neural Networks, and Event Data Processing.
-                </p>
-                <p>
-                    Contact: (+852) 94912305 | <a href="mailto:xiacshan@connect.hku.hk">xiacshan@connect.hku.hk</a> | <a href="https://www.linkedin.com/in/xiaoshan-wu">LinkedIn</a>
-                </p>
-            </section>
-            <section id="education">
-                <h2>Education</h2>
-                <h3>The University of Hong Kong</h3>
-                <p><i>Ph.D. in Electrical and Electronic Engineering</i> <span style="float:right;">2023.09 &ndash; Present</span></p>
-                <p>GPA: 4.0/4.3</p>
-                <p>Awards: Hong Kong PhD Fellowship, HKU Presidential Scholarship</p>
-                <p>Focus: In-Memory Computing, Spiking Neural Networks</p>
-                <p>Supervisor: Dr. Zhongrui Wang</p>
-                <h3>Zhejiang University</h3>
-                <p><i>B.S. in Computer Engineering</i> <span style="float:right;">2019.09 &ndash; 2023.05</span></p>
-                <p>Honors: Outstanding Graduate (Top 20%)</p>
-                <h3>University of Illinois at Urbana-Champaign</h3>
-                <p><i>B.S. in Computer Engineering</i> <span style="float:right;">2019.09 &ndash; 2023.05</span></p>
-                <p>GPA: 3.75/4.0</p>
-                <p>Honors: Dean’s List, 2020, 2021</p>
-            </section>
-            <section id="research">
-                <h2>Research Experience</h2>
-                <h3>Spike-MoE, Ph.D. Research <span style="float:right;">2023.06 &ndash; Present</span></h3>
-                <p>The University of Hong Kong</p>
-                <p>Supervisor: Dr. Zhongrui Wang</p>
-                <p>Developed Spike-MoE for event stream processing (depth, optical flow, segmentation).</p>
-                <h3>MSS-DepthNet, Research Intern <span style="float:right;">2022.04 &ndash; 2023.06</span></h3>
-                <p>Chinese Academy of Sciences</p>
-                <p>Supervisor: Professor Guoqi Li</p>
-                <p>Designed spiking neural network for depth prediction. <a href="https://arxiv.org/abs/2211.12156">arXiv:2211.12156</a>.</p>
-                <h3>PhyDNet, Research Intern <span style="float:right;">2022.05 &ndash; 2022.09</span></h3>
-                <p>College of William & Mary, USA</p>
-                <p>Supervisor: Assistant Professor Huajie Shao</p>
-                <p>Enhanced video prediction using Koopman operator.</p>
-                <h3>Memristor Crossbar SNN Circuit, Research Intern <span style="float:right;">2021.02 &ndash; 2021.05</span></h3>
-                <p>Zhejiang University, China</p>
-                <p>Supervisor: Assistant Professor Shu-run Tan</p>
-                <p>Replicated SNN circuit for Pavlov memory simulation.</p>
-                <h3>Teeth Alignment Prediction, Summer Research Intern <span style="float:right;">2021.05 &ndash; 2021.09</span></h3>
-                <p>Zhejiang University, China</p>
-                <p>Supervisor: Professor Youyi Zheng</p>
-                <p>Applied deep learning to teeth scanning point clouds.</p>
-            </section>
-            <section id="work">
-                <h2>Work Experience</h2>
-                <h3>Research Intern <span style="float:right;">2022.12 &ndash; 2023.03</span></h3>
-                <p>Megvii</p>
-                <p>Researched depth-enhanced segmentation for autonomous driving.</p>
-            </section>
-            <section id="awards">
-                <h2>Awards</h2>
-                <ul>
-                    <li>Hong Kong PhDmsm PhD Fellowship, 2023</li>
-                    <li>HKU Presidential PhD Scholarship, 2023</li>
-                    <li>Y S and Christabel Lung Postgraduate Scholarship, 2023</li>
-                    <li>Dean’s List, University of Illinois at Urbana-Champaign, 2020, 2021</li>
-                    <li>Zhejiang University Awards: Outstanding Student, Academic Excellence, 2020, 2021</li>
-                </ul>
-            </section>
-            <section id="publications">
-                <h2>Publications</h2>
-                <ol>
-                    <li>Xiaoshan Wu, et al. “Event-based Depth Prediction with Deep Spiking Neural Networks.” <i>IEEE Transactions on Cognitive and Developmental Systems</i>, In revision.</li>
-                </ol>
-            </section>
-        </div>
-    </div>
-    <script>
-        function toggleMenu() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        }
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector('.sidebar').classList.remove('active');
-            });
-        });
-    </script>
+  <!-- Publications -->
+  <div>
+    <table style="width:100%;">
+      <!-- First entry -->
+      <tr onmouseover="preview1_start()" onmouseout="preview1_stop()">
+        <td style="width:25%;">
+          <div class="preview-container">
+            <div class="preview-overlay" id="preview1">
+              <video muted autoplay loop src="images/project1.mp4"></video>
+            </div>
+            <img src="images/SegmentAnytime.jpg" style="width:100%;">
+          </div>
+        </td>
+        <td>
+          <papertitle>Segment Beyond Frames: Anytime Interframe Semantic Segmentation with Event Cameras</papertitle><br>
+          <strong>Xiaoshan Wu</strong>, Xiaoyang Lyu, Bo Wang, Yifei Yu, Zhongrui Wang, Xiaojuan Qi<br>
+          preprint, 2024<br>
+          <!-- <a href="https://arxiv.org/abs/2503.14600">arXiv</a> / <a href="https://github.com/Candy-Crusher/SegmentAnytime">code</a> -->
+        </td>
+      </tr>
+      <!-- Second entry -->
+      <tr onmouseover="preview2_start()" onmouseout="preview2_stop()">
+        <td style="width:25%;">
+          <div class="preview-container">
+            <!-- <div class="preview-overlay" id="preview2">
+              <video muted autoplay loop src="images/project2.mp4"></video>
+            </div> -->
+            <img src="images/Eag3r.jpg" style="width:100%;">
+          </div>
+        </td>
+        <td>
+          <papertitle>EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</papertitle><br>
+          <strong>Xiaoshan Wu*</strong>, Yifei Yu*, Bo Wang, Yi-Hua Huang, Xiaoyang Lyu, Baoheng Zhang, Zhongrui Wang, Xiaojuan Qi<br>
+          preprint, 2025<br>
+          <!-- <a href="https://arxiv.org/abs/2503.14600">arXiv</a> / <a href="https://github.com/Candy-Crusher/EAG3R">code</a> -->
+        </td>
+      </tr>
+      <!-- Third entry -->
+      <tr>
+        <td style="width:25%;">
+          <div class="preview-container">
+            <img src="images/CSGe.png" style="width:100%;">
+          </div>
+        </td>
+        <td>
+          <papertitle>Consistent Video Geometric Estimation with Stream Pack Tokens</papertitle><br>
+          Xiaoyang Lyu, Muxin Liu, <strong>Xiaoshan Wu</strong>, Shaoshuai Shi, Xiaojuan Qi<br>
+          preprint, 2025<br>
+        </td>
+      </tr>
+      <!-- Fourth entry -->
+      <tr>
+        <td style="width:25%;">
+          <div class="preview-container">
+            <img src="images/Continuous-time digital twin with analog memristive neural ordinary differential equation solver.png" style="width:100%;">
+          </div>
+        </td>
+        <td>
+          <papertitle>Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver</papertitle><br>
+          Hegan Chen, Jichang Yang, Jia Chen, Songqi Wang, Shaocong Wang, Dingchen Wang, Xinyu Tian, Yifei Yu, Xi Chen, Yinan Lin, Qifan Zhu, Yangu He, <strong>Xiaoshan Wu</strong>, Yi Li, Xinyuan Zhang, Ning Lin, Meng Xu, Yi Li, Xumeng Zhang, Xiaojuan Qi, Zhongrui Wang, Han Wang, Dashan Shang, Qi Liu, Kwang-Ting Cheng, Ming Liu<br>
+          Science Advances, vol. 11, no. 22, eadr7571, 2025<br>
+        </td>
+      </tr>
+      <!-- Fifth entry -->
+      <tr>
+        <td style="width:25%;">
+          <div class="preview-container">
+            <img src="images/Topology optimization of random memristors for input-aware dynamic SNN.png" style="width:100%;">
+          </div>
+        </td>
+        <td>
+          <papertitle>Topology Optimization of Random Memristors for Input-Aware Dynamic SNN</papertitle><br>
+          Bo Wang, Xinyuan Zhang, Shaocong Wang, Ning Lin, Yi Li, Yifei Yu, Yue Zhang, Jichang Yang, <strong>Xiaoshan Wu</strong>, Yangu He, Songqi Wang, Tao Wan, Rui Chen, Guoqi Li, Yue Deng, Xiaojuan Qi, Zhongrui Wang, Dashan Shang<br>
+          Science Advances, vol. 11, no. 16, eads5340, 2025<br>
+        </td>
+      </tr>
+      <!-- Sixth entry -->
+      <tr>
+        <td style="width:25%;">
+          <div class="preview-container">
+            <img src="images/Random memristor-based dynamic graph CNN for efficient point cloud learning at the edge.webp" style="width:100%;">
+          </div>
+        </td>
+        <td>
+          <papertitle>Random Memristor-Based Dynamic Graph CNN for Efficient Point Cloud Learning at the Edge</papertitle><br>
+          Yifei Yu, Shaocong Wang, Meng Xu, Woyu Zhang, Bo Wang, Jichang Yang, Songqi Wang, Yue Zhang, <strong>Xiaoshan Wu</strong>, Hegan Chen, Dingchen Wang, Xi Chen, Ning Lin, Xiaojuan Qi, Dashan Shang, Zhongrui Wang<br>
+          npj Unconventional Computing, vol. 1, no. 1, article 6, 2024<br>
+        </td>
+      </tr>
+      <!-- Seventh entry -->
+      <tr>
+        <td style="width:25%;">
+          <div class="preview-container">
+            <img src="images/Event-Based Depth Prediction With Deep Spiking Neural Network.gif" style="width:100%;">
+          </div>
+        </td>
+        <td>
+          <papertitle>Event-Based Depth Prediction with Deep Spiking Neural Network</papertitle><br>
+          <strong>Xiaoshan Wu</strong>, Weihua He, Man Yao, Ziyang Zhang, Yaoyuan Wang, Bo Xu, Guoqi Li<br>
+          IEEE Transactions on Cognitive and Developmental Systems, 2024<br>
+        </td>
+      </tr>
+      <!-- Eighth entry -->
+      <tr>
+        <td style="width:25%;">
+          <div class="preview-container">
+            <img src="images/Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing.jpeg" style="width:100%;">
+          </div>
+        </td>
+        <td>
+          <papertitle>Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing</papertitle><br>
+          Ce Li, Xi Chen, Zirui Zhang, <strong>Xiaoshan Wu</strong>, Tianze Yu, Ruitong Bie, Dongliang Yang, Yugui Yao, Zhongrui Wang, Linfeng Sun<br>
+          Nano Letters, vol. 24, no. 47, pp. 15025–15034, 2024<br>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Education -->
+  <div style="margin-top:40px;">
+    <heading>Education</heading>
+    <p>
+      <em>2023.09 - Present</em>, Ph.D. in Electrical and Electronic Engineering, The University of Hong Kong.<br>
+      GPA: 4.0/4.3, Awards: Hong Kong PhD Fellowship, HKU Presidential Scholarship<br>
+      Supervisors: Dr. Xiaojuan Qi, Dr. Zhongrui Wang
+    </p>
+    <p>
+      <em>2019.09 - 2023.05</em>, B.S. in Computer Engineering, Zhejiang University.<br>
+      GPA: 3.99/4.0, Honors: Outstanding Graduate in Zhejiang University
+    </p>
+    <p>
+      <em>2019.09 - 2023.05</em>, B.S. in Computer Engineering, University of Illinois at Urbana-Champaign.<br>
+      GPA: 3.75/4.0, Honors: Dean's List (2020, 2021)
+    </p>
+  </div>
+
+  <!-- Work Experience -->
+  <div style="margin-top:40px;">
+    <heading>Internships</heading>
+    <p>
+      <em>2022.12 - 2023.03</em>, Research Intern at Megvii Inc.<br>
+      Worked on depth-enhanced semantic segmentation for autonomous driving scenes.
+    </p>
+  </div>
+
+  <!-- Awards -->
+  <div style="margin-top:40px;">
+    <heading>Honors and Awards</heading>
+    <p>
+      <em>2023.09</em> Hong Kong PhD Fellowship<br>
+      <em>2023.09</em> HKU Presidential Scholarship<br>
+      <em>2023.09</em> Y S & Christabel Lung Postgraduate Scholarship<br>
+      <em>2020-2021</em> Dean's List, University of Illinois at Urbana-Champaign<br>
+      <em>2020-2021</em> Outstanding Student and Academic Excellence Award, Zhejiang University
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <p style="margin-top:40px; font-size: small; text-align:center;">
+    Thank source template.
+  </p>
+
+  <!-- JS to toggle tabs and hover -->
+  <script>
+    function showPubs(id){
+      document.getElementById('pubs_selected').classList.toggle('hidden', id!==0);
+      document.getElementById('pubs_by_date').classList.toggle('hidden', id!==1);
+      document.getElementById('select0').style.textDecoration = id===0? 'underline':'';
+      document.getElementById('select1').style.textDecoration = id===1? 'underline':'';
+      sessionStorage.setItem('activeTab', id);
+    }
+    window.addEventListener('DOMContentLoaded',()=>{
+      const t = sessionStorage.getItem('activeTab')||0;
+      showPubs(Number(t));
+    });
+
+    // Sample hover control (duplicate for each preview)
+    function preview1_start(){ document.getElementById('preview1').style.opacity=1; }
+    function preview1_stop(){ document.getElementById('preview1').style.opacity=0; }
+    function preview2_start(){ document.getEleƒmentById('preview2').style.opacity=1; }
+    function preview2_stop(){ document.getElementById('preview2').style.opacity=0; }
+  </script>
+
 </body>
 </html>
