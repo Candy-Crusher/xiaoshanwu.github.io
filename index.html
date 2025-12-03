@@ -1,276 +1,326 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Xiaoshan Wu</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Xiaoshan Wu - Research Portfolio</title>
+  
+  <meta name="author" content="Xiaoshan Wu">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  
   <style>
-    body { max-width: 900px; margin: auto; padding: 20px; font-family: sans-serif; }
-    name { font-size: 2rem; font-weight: 600; }
-    heading { font-size: 1.5rem; font-weight: 600; }
-    papertitle { font-size: 1.1rem; font-weight: 500; }
-    .hidden { display: none; }
-    .preview-container { 
-      position: relative; 
-      display: inline-block;
+    /* ================= CSS STYLES ================= */
+    body {
+      background-color: #ffffff;
+      font-family: 'Lato', Verdana, Helvetica, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    a { color: #1772d0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* 隐私保护层样式 */
+    #access-denied {
+      text-align: center;
+      padding-top: 150px;
+      font-family: sans-serif;
+      color: #666;
+    }
+    #main-content {
+      display: none; /* 默认隐藏！JS验证通过后才显示 */
+    }
+
+    /* 头部样式 */
+    .header-table { width: 100%; border: 0; border-spacing: 0; margin-bottom: 40px; }
+    .profile-info { vertical-align: middle; width: 70%; padding-right: 20px; }
+    .profile-photo { width: 30%; text-align: center; }
+    .profile-photo img {
       width: 200px;
       height: 200px;
-      margin: 10px 0;
-      background-color: #f5f5f5;
-      border-radius: 8px;
-      overflow: hidden;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    .preview-container img {
+    
+    h1.name { font-size: 34px; font-weight: bold; margin-bottom: 5px; color: #000; }
+    
+    /* 状态条 */
+    .status-badge {
+      background-color: #f0f7ff;
+      border-left: 4px solid #1772d0;
+      padding: 12px 15px;
+      margin: 20px 0;
+      font-size: 14px;
+      color: #333;
+      border-radius: 0 4px 4px 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      margin-top: 50px;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #444;
+    }
+
+    /* 论文列表样式 */
+    .paper-item { display: flex; margin-bottom: 35px; }
+    .paper-teaser { width: 25%; padding-right: 25px; min-width: 200px; }
+    .paper-teaser img {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 5px;
+      border-radius: 4px;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    .preview-overlay { 
-      position: absolute; 
-      top: 0; 
-      left: 0; 
-      width:100%; 
-      height:100%; 
-      opacity:0; 
-      transition:opacity .3s; 
-      overflow:hidden; 
+    .paper-desc { width: 75%; }
+    .paper-title { font-size: 17px; font-weight: bold; color: #000; display: block; margin-bottom: 4px; }
+    .paper-authors { font-size: 15px; color: #555; margin-bottom: 4px; }
+    .paper-venue { font-style: italic; color: #000; margin-bottom: 8px; }
+    
+    .highlight { color: #d92027; font-weight: bold; } /* 红色高亮 */
+    
+    .tag-links a {
+      font-size: 12px;
+      margin-right: 8px;
+      color: #555;
+      border: 1px solid #ddd;
+      padding: 1px 8px;
+      border-radius: 12px;
+      background: #fff;
+      display: inline-block;
+      margin-top: 4px;
     }
-    .preview-overlay video { 
-      width:100%; 
-      height:100%; 
-      object-fit:cover; 
-    }
-    tr {
-      margin-bottom: 20px;
-    }
-    td {
-      padding: 15px 0;
+    .tag-links a:hover { background: #f5f5f5; color: #000; border-color: #999; text-decoration: none; }
+
+    /* 移动端适配 */
+    @media screen and (max-width: 768px) {
+      .header-table, .header-table tbody, .header-table tr, .header-table td { display: block; width: 100%; text-align: center; }
+      .profile-info { padding: 0 0 20px 0; }
+      .paper-item { flex-direction: column; }
+      .paper-teaser { width: 100%; margin-bottom: 15px; padding-right: 0; }
+      .paper-teaser img { max-width: 100%; }
+      .paper-desc { width: 100%; }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Header + About Me -->
-  <table style="width:100%; margin: auto;">
-    <tr>
-      <td style="width:65%; vertical-align:top;">
-        <p style="text-align:center"><name>Xiaoshan Wu</name></p>
-        <p>
-          I am a Ph.D. student in Electrical and Electronic Engineering at <a href="https://www.hku.hk/">The University of Hong Kong</a>,
-          supervised by <a href="https://xjqi.github.io/">Dr. Xiaojuan Qi</a> and
-          <a href="https://www.sustech.edu.cn/en/faculties/zhongruiwang.html">Dr. Zhongrui Wang</a>. I received my B.Eng. degree from
-          <a href="https://www.zju.edu.cn/english/">Zhejiang University</a> and the
-          <a href="https://illinois.edu/">University of Illinois at Urbana-Champaign</a>.
-        </p>
-        <p>
-          My research focuses on high-resolution, temporally-consistent 3D/4D scene reconstruction and perception,
-          particularly under challenging conditions such as dynamic motion, low light, or extreme illumination.
-          I explore fusion of event-based and frame-based inputs, unified token representation, and video-spatial VLMs.
-        </p>
-        <p>
-          <strong>I'm looking for internship opportunities in 2025 summer.</strong>
-        </p>
-        <p>
-          <a href="mailto:xiaoshan@connect.hku.hk">Email</a> / 
-          <a href="cv_xiaoshanwu.pdf">CV</a> / 
-          <a href="https://scholar.google.com/citations?hl=en&user=9nsSKpsAAAAJ&view_op=list_works&authuser=1&gmla=AH8HC4wD8CI_TUBGoHminLcy1m_6GeICzO104ozDilAriMcFtuyII3OVZspUhmrhknVcawHHkVr4EjrH29dqLkX4">Google Scholar</a> / 
-          <a href="https://github.com/Candy-Crusher">GitHub</a>
-        </p>
-      </td>
-      <td style="width:30%; vertical-align:top; text-align:center;">
-        <img src="images/xiaoshanwu.jpg" alt="Xiaoshan Wu" style="width:100%; border-radius:8px;">
-      </td>
-    </tr>
-  </table>
-
-  <!-- Publication section header -->
-  <div style="margin-top:40px;">
-    <heading>Publications</heading>
+  <div id="access-denied">
+    <div style="font-size: 50px; margin-bottom: 20px;">🔒</div>
+    <h2>Access Restricted</h2>
+    <p>This portfolio contains unpublished research.<br>Please access via the QR code provided by the author.</p>
   </div>
 
-  <!-- Publications -->
-  <div>
-    <table style="width:100%;">
-      <!-- First entry -->
-      <tr onmouseover="preview1_start()" onmouseout="preview1_stop()">
-        <td style="width:25%;">
-          <div class="preview-container">
-            <div class="preview-overlay" id="preview1">
-              <video muted autoplay loop src="images/project1.mp4"></video>
-            </div>
-            <img src="images/SegmentAnytime.jpg" style="width:100%;">
-          </div>
-        </td>
-        <td>
-          <papertitle><strong>Segment Beyond Frames: Anytime Interframe Semantic Segmentation with Event Cameras</strong></papertitle><br>
-          <strong>Xiaoshan Wu</strong>, Xiaoyang Lyu, Bo Wang, Yifei Yu, Zhongrui Wang, Xiaojuan Qi<br>
-          preprint, 2024<br>
-          <!-- <a href="https://arxiv.org/abs/2503.14600">arXiv</a> / <a href="https://github.com/Candy-Crusher/SegmentAnytime">code</a> -->
-        </td>
-      </tr>
-      <!-- Second entry -->
-      <tr onmouseover="preview2_start()" onmouseout="preview2_stop()">
-        <td style="width:25%;">
-          <div class="preview-container">
-            <!-- <div class="preview-overlay" id="preview2">
-              <video muted autoplay loop src="images/project2.mp4"></video>
-            </div> -->
-            <img src="images/Eag3r.jpg" style="width:100%;">
-          </div>
-        </td>
-        <td>
-          <papertitle><strong>EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</strong></papertitle><br>
-          <strong>Xiaoshan Wu*</strong>, Yifei Yu*, Bo Wang, Yi-Hua Huang, Xiaoyang Lyu, Baoheng Zhang, Zhongrui Wang, Xiaojuan Qi<br>
-          preprint, 2025<br>
-          <!-- <a href="https://arxiv.org/abs/2503.14600">arXiv</a> / <a href="https://github.com/Candy-Crusher/EAG3R">code</a> -->
-        </td>
-      </tr>
-      <!-- Third entry -->
-      <!-- <tr>
-        <td style="width:25%;">
-          <div class="preview-container">
-            <img src="images/CSGe.png" style="width:100%;">
-          </div>
-        </td>
-        <td>
-          <papertitle><strong>Consistent Video Geometric Estimation with Stream Pack Tokens</strong></papertitle><br>
-          Xiaoyang Lyu, Muxin Liu, <strong>Xiaoshan Wu</strong>, Shaoshuai Shi, Xiaojuan Qi<br>
-          preprint, 2025<br>
-        </td>
-      </tr> -->
-      <!-- Fourth entry -->
+  <div id="main-content">
+  <div class="container">
+    
+    <table class="header-table">
       <tr>
-        <td style="width:25%;">
-          <div class="preview-container">
-            <img src="images/Continuous-time digital twin with analog memristive neural ordinary differential equation solver.png" style="width:100%;">
+        <td class="profile-info">
+          <h1 class="name">Xiaoshan Wu (吴小山)</h1>
+          <p>
+            Ph.D. Student @ HKU EEE<br>
+            Advisor: <a href="https://xjqi.github.io/" target="_blank">Dr. Xiaojuan Qi</a>
+          </p>
+          <p>
+            <a href="cv_xiaoshanwu.pdf" target="_blank"><strong>CV / Resume</strong></a> &nbsp;/&nbsp;
+            <a href="mailto:xiaoshan@connect.hku.hk">Email</a> &nbsp;/&nbsp;
+            <a href="https://github.com/yourusername">GitHub</a> &nbsp;/&nbsp;
+            <a href="https://scholar.google.com/">Google Scholar</a>
+          </p>
+          
+          <div class="status-badge">
+            👋 <strong>Hi, I'm currently at NeurIPS 2025!</strong><br>
+            I am presenting <em>EAG3R</em> (Spotlight). I am actively looking for <strong>Summer 2026 Research Internships</strong> in Generative AI & 3D/4D Vision.<br>
+            <span style="font-size:13px; margin-top:5px; display:inline-block;">
+              [<a href="Xiaoshan_Wu_CV.pdf" target="_blank"><strong>Download CV</strong></a>]
+            </span>
           </div>
+
+          <p>
+            My research bridges <strong>3D/4D Vision</strong> to construct next-generation <strong>World Models</strong>. I aim to build systems that are <strong>generative, interactive, persistent, real-time,</strong> and <strong>physically accurate</strong>, leveraging high-fidelity 3D/4D representations to ensure structural consistency in dynamic environment simulation.
+          </p>
         </td>
-        <td>
-          <papertitle><strong>Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver</strong></papertitle><br>
-          Hegan Chen, Jichang Yang, Jia Chen, Songqi Wang, Shaocong Wang, Dingchen Wang, Xinyu Tian, Yifei Yu, Xi Chen, Yinan Lin, Qifan Zhu, Yangu He, <strong>Xiaoshan Wu</strong>, Yi Li, Xinyuan Zhang, Ning Lin, Meng Xu, Yi Li, Xumeng Zhang, Xiaojuan Qi, Zhongrui Wang, Han Wang, Dashan Shang, Qi Liu, Kwang-Ting Cheng, Ming Liu<br>
-          Science Advances, vol. 11, no. 22, eadr7571, 2025<br>
-        </td>
-      </tr>
-      <!-- Fifth entry -->
-      <tr>
-        <td style="width:25%;">
-          <div class="preview-container">
-            <img src="images/Topology optimization of random memristors for input-aware dynamic SNN.png" style="width:100%;">
-          </div>
-        </td>
-        <td>
-          <papertitle><strong>Topology Optimization of Random Memristors for Input-Aware Dynamic SNN</strong></papertitle><br>
-          Bo Wang, Xinyuan Zhang, Shaocong Wang, Ning Lin, Yi Li, Yifei Yu, Yue Zhang, Jichang Yang, <strong>Xiaoshan Wu</strong>, Yangu He, Songqi Wang, Tao Wan, Rui Chen, Guoqi Li, Yue Deng, Xiaojuan Qi, Zhongrui Wang, Dashan Shang<br>
-          Science Advances, vol. 11, no. 16, eads5340, 2025<br>
-        </td>
-      </tr>
-      <!-- Sixth entry -->
-      <tr>
-        <td style="width:25%;">
-          <div class="preview-container">
-            <img src="images/Random memristor-based dynamic graph CNN for efficient point cloud learning at the edge.webp" style="width:100%;">
-          </div>
-        </td>
-        <td>
-          <papertitle><strong>Random Memristor-Based Dynamic Graph CNN for Efficient Point Cloud Learning at the Edge</strong></papertitle><br>
-          Yifei Yu, Shaocong Wang, Meng Xu, Woyu Zhang, Bo Wang, Jichang Yang, Songqi Wang, Yue Zhang, <strong>Xiaoshan Wu</strong>, Hegan Chen, Dingchen Wang, Xi Chen, Ning Lin, Xiaojuan Qi, Dashan Shang, Zhongrui Wang<br>
-          npj Unconventional Computing, vol. 1, no. 1, article 6, 2024<br>
-        </td>
-      </tr>
-      <!-- Seventh entry -->
-      <tr>
-        <td style="width:25%;">
-          <div class="preview-container">
-            <img src="images/Event-Based Depth Prediction With Deep Spiking Neural Network.gif" style="width:100%;">
-          </div>
-        </td>
-        <td>
-          <papertitle><strong>Event-Based Depth Prediction with Deep Spiking Neural Network</strong></papertitle><br>
-          <strong>Xiaoshan Wu</strong>, Weihua He, Man Yao, Ziyang Zhang, Yaoyuan Wang, Bo Xu, Guoqi Li<br>
-          IEEE Transactions on Cognitive and Developmental Systems, 2024<br>
-        </td>
-      </tr>
-      <!-- Eighth entry -->
-      <tr>
-        <td style="width:25%;">
-          <div class="preview-container">
-            <img src="images/Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing.jpeg" style="width:100%;">
-          </div>
-        </td>
-        <td>
-          <papertitle><strong>Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing</strong></papertitle><br>
-          Ce Li, Xi Chen, Zirui Zhang, <strong>Xiaoshan Wu</strong>, Tianze Yu, Ruitong Bie, Dongliang Yang, Yugui Yao, Zhongrui Wang, Linfeng Sun<br>
-          Nano Letters, vol. 24, no. 47, pp. 15025–15034, 2024<br>
+        <td class="profile-photo">
+          <img src="images/photo.jpg" alt="Xiaoshan Wu">
         </td>
       </tr>
     </table>
-  </div>
 
-  <!-- Education -->
-  <div style="margin-top:40px;">
-    <heading>Education</heading>
-    <p>
-      <em>2023.09 - Present</em>, Ph.D. in Electrical and Electronic Engineering, The University of Hong Kong.<br>
-      GPA: 4.0/4.3, Awards: Hong Kong PhD Fellowship, HKU Presidential Scholarship<br>
-      Supervisors: Dr. Xiaojuan Qi, Dr. Zhongrui Wang
-    </p>
-    <p>
-      <em>2019.09 - 2023.05</em>, B.S. in Computer Engineering, Zhejiang University.<br>
-      GPA: 3.99/4.0, Honors: Outstanding Graduate in Zhejiang University
-    </p>
-    <p>
-      <em>2019.09 - 2023.05</em>, B.S. in Computer Engineering, University of Illinois at Urbana-Champaign.<br>
-      GPA: 3.75/4.0, Honors: Dean's List (2020, 2021)
-    </p>
-  </div>
+    <h2>News</h2>
+    <ul style="padding-left: 20px; color: #444;">
+      <li><strong>[Dec 2025]</strong> Presenting <strong>EAG3R</strong> as a Spotlight at NeurIPS 2025 (San Diego).</li>
+      <li><strong>[Nov 2025]</strong> Submitted 5 papers to CVPR 2026 on Video Generation and 3D Geometry.</li>
+      <li><strong>[Sep 2023]</strong> Joined HKU as a Ph.D. student with HKPFS.</li>
+    </ul>
 
-  <!-- Work Experience -->
-  <div style="margin-top:40px;">
-    <heading>Internship</heading>
-    <p>
-      <em>2022.12 - 2023.03</em>, Research Intern at Megvii Inc.<br>
-      Worked on depth-enhanced semantic segmentation for autonomous driving scenes.
-    </p>
-  </div>
+    <h2>Selected Publications</h2>
 
-  <!-- Awards -->
-  <div style="margin-top:40px;">
-    <heading>Honors and Awards</heading>
-    <p>
-      <em>2023.09</em> Hong Kong PhD Fellowship<br>
-      <em>2023.09</em> HKU Presidential Scholarship<br>
-      <em>2023.09</em> Y S & Christabel Lung Postgraduate Scholarship<br>
-      <em>2020-2021</em> Dean's List, University of Illinois at Urbana-Champaign<br>
-      <em>2020-2021</em> Outstanding Student and Academic Excellence Award, Zhejiang University
-    </p>
-  </div>
+    <div class="paper-item">
+      <div class="paper-teaser">
+        <img src="images/EAG3R_poster.png" alt="EAG3R">
+      </div>
+      <div class="paper-desc">
+        <span class="paper-title">EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</span>
+        <div class="paper-authors">
+          <strong>Xiaoshan Wu</strong>, Yifei Yu, Xiaoyang Lyu, et al.
+        </div>
+        <div class="paper-venue">
+          NeurIPS 2025 <span class="highlight">(Spotlight, Top 3.18%)</span>
+        </div>
+        <div class="tag-links">
+          <a href="https://www.alphaxiv.org/abs/2512.00771">Paper</a>
+          <a href="#">Project Page</a>
+          <a href="#">Code</a>
+        </div>
+        <p>A framework leveraging event cameras to reconstruct high-fidelity 3D geometry in challenging dynamic and low-light environments.</p>
+      </div>
+    </div>
 
-  <!-- Footer -->
-  <p style="margin-top:40px; font-size: small; text-align:center;">
-    Thank source template.
-  </p>
+    <div class="paper-item">
+      <div class="paper-teaser">
+        <img src="images/videossm.png" alt="VideoSSM">
+      </div>
+      <div class="paper-desc">
+        <span class="paper-title">VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</span>
+        <div class="paper-authors">
+          Yifei Yu*, <strong>Xiaoshan Wu*</strong>, Xinting Hu, et al.
+        </div>
+        <div class="paper-venue">
+          Under Review at CVPR 2026
+        </div>
+        <p>An autoregressive world model utilizing State-Space Models (Mamba) for temporally consistent, long-horizon video generation.</p>
+      </div>
+    </div>
 
-  <!-- JS to toggle tabs and hover -->
-  <script>
-    function showPubs(id){
-      document.getElementById('pubs_selected').classList.toggle('hidden', id!==0);
-      document.getElementById('pubs_by_date').classList.toggle('hidden', id!==1);
-      document.getElementById('select0').style.textDecoration = id===0? 'underline':'';
-      document.getElementById('select1').style.textDecoration = id===1? 'underline':'';
-      sessionStorage.setItem('activeTab', id);
+    <div class="paper-item">
+      <div class="paper-teaser">
+        <img src="images/EVSplat.png" alt="EVSplat">
+      </div>
+      <div class="paper-desc">
+        <span class="paper-title">EVSplat: Pose-free Persistent Scene Reconstruction with Event-Visual Motion Disentanglement</span>
+        <div class="paper-authors">
+          <strong>Xiaoshan Wu</strong>, Yifei Yu, Xiaoyang Lyu, et al.
+        </div>
+        <div class="paper-venue">
+          Under Review at ICRA 2026
+        </div>
+        <p>Integrating 3D Gaussian Splatting with event cameras for pose-free reconstruction in dynamic scenes.</p>
+      </div>
+    </div>
+
+    <div class="paper-item">
+      <div class="paper-teaser">
+        <img src="images/LiFR-Seg.png" alt="LiFR-Seg">
+      </div>
+      <div class="paper-desc">
+        <span class="paper-title">LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</span>
+        <div class="paper-authors">
+          <strong>Xiaoshan Wu</strong>, Xiaoyang Lyu, Yifei Yu, et al.
+        </div>
+        <div class="paper-venue">
+          Under Review at ICLR 2026
+        </div>
+        <p>Achieving real-time, high-frame-rate segmentation by propagating features via event streams.</p>
+      </div>
+    </div>
+
+    <div class="paper-item">
+      <div class="paper-teaser">
+        <img src="images/streamingdepth.png" alt="Streaming">
+      </div>
+      <div class="paper-desc">
+        <span class="paper-title">Stabilizing Streaming Video Geometry via Dynamic Feature Normalization</span>
+        <div class="paper-authors">
+           Xiaoyang Lyu, Muxin Liu, <strong>Xiaoshan Wu</strong>, et al.
+        </div>
+        <div class="paper-venue">
+          Under Review at CVPR 2026
+        </div>
+        <p>Improving temporal stability in streaming geometric estimation.</p>
+      </div>
+    </div>
+    
+    <div class="paper-item">
+      <div class="paper-teaser">
+        <img src="images/foundationgeo/foundationgeo.png" alt="FoundationGeo">
+      </div>
+      <div class="paper-desc">
+        <span class="paper-title">FoundationGeo: Learning Pixel-Wise Scale Fields for Monocular Metric Geometry</span>
+        <div class="paper-authors">
+           Muxin Liu, Xiaoyang Lyu, Tianhe Ren, <strong>Xiaoshan Wu</strong>, et al.
+        </div>
+        <div class="paper-venue">
+          Under Review at CVPR 2026
+        </div>
+      </div>
+    </div>
+
+    <h2>Research Experience</h2>
+    
+    <div class="paper-item" style="margin-bottom: 20px;">
+      <div class="paper-teaser" style="width: 15%; min-width: 60px;">
+        <img src="images/didi_logo.png" alt="DiDi" style="border:none; box-shadow:none;">
+      </div>
+      <div class="paper-desc" style="width: 85%;">
+        <strong>DiDi AI Research (Autonomous Driving Labs)</strong><br>
+        <em>Research Intern (Dec 2022 -- Mar 2023)</em><br>
+        <span style="font-size: 14px; color: #555;">Designed an autoregressive world model capable of synchronously predicting RGB, depth, and optical flow, significantly improving temporal consistency for simulation.</span>
+      </div>
+    </div>
+
+    <div class="paper-item">
+      <div class="paper-teaser" style="width: 15%; min-width: 60px;">
+        <img src="images/megvii_logo.png" alt="Megvii" style="border:none; box-shadow:none;">
+      </div>
+      <div class="paper-desc" style="width: 85%;">
+        <strong>Megvii Inc. (Face++)</strong><br>
+        <em>Research Intern (Dec 2022 -- Mar 2023)</em><br>
+        <span style="font-size: 14px; color: #555;">Developed a depth-aware semantic segmentation network for complex autonomous driving scenes, enhancing accuracy in low-light scenarios.</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 60px; border-top: 1px solid #eee; padding-top: 20px; color: #999; font-size: 12px; text-align: center;">
+      &copy; 2025 Xiaoshan Wu. <br>
+      <a href="Xiaoshan_Wu_CV.pdf" target="_blank" style="color:#999; text-decoration: underline;">Download CV (PDF)</a>
+    </div>
+
+  </div> </div> <script>
+    // ⚠️ 设置你的访问暗号（和二维码链接一致）
+    const MY_SECRET_KEY = "nips2025"; 
+
+    // 1. 获取 URL 中的 ?access=xxx
+    const urlParams = new URLSearchParams(window.location.search);
+    const userKey = urlParams.get('access');
+
+    // 2. 自动检测是否在本地调试 (VS Code Go Live 通常使用 127.0.0.1 或 localhost)
+    const isLocal = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
+
+    // 3. 验证逻辑：如果有密码 OR 是本地调试，就显示内容
+    if (userKey === MY_SECRET_KEY || isLocal) {
+      document.getElementById('main-content').style.display = 'block';
+      document.getElementById('access-denied').style.display = 'none';
+      
+      // 如果是本地调试，可以在控制台提示一下
+      if (isLocal) { console.log("Local development environment detected. Access granted automatically."); }
+    } else {
+      // 验证失败，保持隐藏
+      console.log("Access restricted.");
     }
-    window.addEventListener('DOMContentLoaded',()=>{
-      const t = sessionStorage.getItem('activeTab')||0;
-      showPubs(Number(t));
-    });
-
-    // Sample hover control (duplicate for each preview)
-    function preview1_start(){ document.getElementById('preview1').style.opacity=1; }
-    function preview1_stop(){ document.getElementById('preview1').style.opacity=0; }
-    function preview2_start(){ document.getEleƒmentById('preview2').style.opacity=1; }
-    function preview2_stop(){ document.getElementById('preview2').style.opacity=0; }
   </script>
 
 </body>
