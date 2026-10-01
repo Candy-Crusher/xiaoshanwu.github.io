@@ -18,6 +18,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Normalize QR layout
+        run: |
+          sed -i 's/qrcode\[height=0.83in\]/qrcode[height=0.72in]/' cv.tex
+          sed -i 's/\\\\\[-2.5pt\]/\\\\[0.5pt]/' cv.tex
+
       - name: Compile CV
         uses: xu-cheng/latex-action@v3
         with:
