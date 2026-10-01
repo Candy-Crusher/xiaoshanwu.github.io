@@ -1,339 +1,197 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8">
   <title>Xiaoshan Wu - Research Portfolio</title>
-  
   <meta name="author" content="Xiaoshan Wu">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow">
-  
+  <meta name="description" content="Xiaoshan Wu's research portfolio: self-improving physical agents, world models, 3D/4D vision, and event-based perception.">
+  <meta name="robots" content="index, follow">
   <style>
-    /* ================= CSS STYLES ================= */
     body {
-      background-color: #ffffff;
-      font-family: 'Lato', Verdana, Helvetica, sans-serif;
+      background: #fff;
+      color: #222;
+      font-family: Lato, Verdana, Helvetica, sans-serif;
       font-size: 15px;
       line-height: 1.6;
-      color: #222;
       margin: 0;
-      padding: 0;
     }
-    
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
     a { color: #1772d0; text-decoration: none; }
     a:hover { text-decoration: underline; }
-
-    /* 隐私保护层样式 */
-    #access-denied {
-      text-align: center;
-      padding-top: 150px;
-      font-family: sans-serif;
-      color: #666;
-    }
-    #main-content {
-      display: none; /* 默认隐藏！JS验证通过后才显示 */
-    }
-
-    /* 头部样式 */
-    .header-table { width: 100%; border: 0; border-spacing: 0; margin-bottom: 40px; }
-    .profile-info { vertical-align: middle; width: 70%; padding-right: 20px; }
+    .header-table { width: 100%; border: 0; border-spacing: 0; margin-bottom: 30px; }
+    .profile-info { vertical-align: middle; width: 70%; padding-right: 24px; }
     .profile-photo { width: 30%; text-align: center; }
     .profile-photo img {
-      width: 200px;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 50%;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 200px; height: 200px; object-fit: cover; border-radius: 50%;
+      box-shadow: 0 2px 10px rgba(0,0,0,.10);
     }
-    
-    h1.name { font-size: 34px; font-weight: bold; margin-bottom: 5px; color: #000; }
-    
-    /* 状态条 */
-    .status-badge {
-      background-color: #f0f7ff;
-      border-left: 4px solid #1772d0;
-      padding: 12px 15px;
-      margin: 20px 0;
-      font-size: 14px;
-      color: #333;
-      border-radius: 0 4px 4px 0;
-    }
-
+    h1.name { font-size: 34px; margin: 0 0 5px; color: #000; }
     h2 {
-      font-size: 20px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
-      margin-top: 50px;
-      margin-bottom: 25px;
+      color: #444; border-bottom: 1px solid #eee; font-size: 20px;
+      letter-spacing: 1px; margin: 46px 0 24px; padding-bottom: 9px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #444;
     }
-
-    /* 论文列表样式 */
-    .paper-item { display: flex; margin-bottom: 35px; }
-    .paper-teaser { width: 25%; padding-right: 25px; min-width: 200px; }
+    .status-badge {
+      background: #f0f7ff; border-left: 4px solid #1772d0;
+      border-radius: 0 4px 4px 0; color: #333; margin: 20px 0;
+      padding: 12px 15px;
+    }
+    .paper-item { display: flex; gap: 25px; margin-bottom: 32px; }
+    .paper-teaser { flex: 0 0 200px; }
     .paper-teaser img {
-      width: 100%;
-      border-radius: 4px;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      width: 100%; max-height: 130px; object-fit: cover; border: 1px solid #f0f0f0;
+      border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,.05);
     }
-    .paper-desc { width: 75%; }
-    .paper-title { font-size: 17px; font-weight: bold; color: #000; display: block; margin-bottom: 4px; }
-    .paper-authors { font-size: 15px; color: #555; margin-bottom: 4px; }
-    .paper-venue { font-style: italic; color: #000; margin-bottom: 8px; }
-    
-    .highlight { color: #d92027; font-weight: bold; } /* 红色高亮 */
-    
+    .paper-desc { flex: 1; min-width: 0; }
+    .paper-title { color: #000; display: block; font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .paper-authors { color: #555; margin-bottom: 3px; }
+    .paper-venue { color: #000; font-style: italic; margin-bottom: 7px; }
+    .highlight { color: #d92027; font-weight: 700; }
     .tag-links a {
-      font-size: 12px;
-      margin-right: 8px;
-      color: #555;
-      border: 1px solid #ddd;
+      background: #fff; border: 1px solid #ddd; border-radius: 12px;
+      color: #555; display: inline-block; font-size: 12px; margin: 4px 8px 0 0;
       padding: 1px 8px;
-      border-radius: 12px;
-      background: #fff;
-      display: inline-block;
-      margin-top: 4px;
     }
-    .tag-links a:hover { background: #f5f5f5; color: #000; border-color: #999; text-decoration: none; }
-
-    /* 移动端适配 */
-    @media screen and (max-width: 768px) {
+    .tag-links a:hover { background: #f5f5f5; border-color: #999; color: #000; text-decoration: none; }
+    .experience { margin-bottom: 24px; }
+    .experience-head { display: flex; justify-content: space-between; gap: 20px; }
+    .muted { color: #555; }
+    footer {
+      border-top: 1px solid #eee; color: #999; font-size: 12px;
+      margin-top: 56px; padding-top: 20px; text-align: center;
+    }
+    @media (max-width: 768px) {
       .header-table, .header-table tbody, .header-table tr, .header-table td { display: block; width: 100%; text-align: center; }
-      .profile-info { padding: 0 0 20px 0; }
-      .paper-item { flex-direction: column; }
-      .paper-teaser { width: 100%; margin-bottom: 15px; padding-right: 0; }
-      .paper-teaser img { max-width: 100%; }
-      .paper-desc { width: 100%; }
+      .profile-info { padding: 0 0 22px; }
+      .paper-item { flex-direction: column; gap: 14px; }
+      .paper-teaser { flex-basis: auto; width: 100%; }
+      .paper-teaser img { max-height: none; }
+      .experience-head { display: block; }
     }
   </style>
 </head>
-
 <body>
-
-  <div id="access-denied">
-    <div style="font-size: 50px; margin-bottom: 20px;">🔒</div>
-    <h2>Access Restricted</h2>
-    <p>This portfolio contains unpublished research.<br>Please access via the QR code provided by the author.</p>
-  </div>
-
-  <div id="main-content">
-  <div class="container">
-    
+  <main class="container">
     <table class="header-table">
       <tr>
         <td class="profile-info">
           <h1 class="name">Xiaoshan Wu (吴小山)</h1>
           <p>
-            Ph.D. Student @ HKU EEE<br>
-            Advisor: <a href="https://xjqi.github.io/" target="_blank">Dr. Xiaojuan Qi</a>
+            Ph.D. Candidate, Department of Electrical and Electronic Engineering, The University of Hong Kong<br>
+            Advisor: <a href="https://xjqi.github.io/" target="_blank" rel="noopener">Prof. Xiaojuan Qi</a>
           </p>
           <p>
             <a href="ia8eshfzfsvn.pdf" target="_blank"><strong>CV / Resume</strong></a> &nbsp;/&nbsp;
             <a href="mailto:xiaoshan@connect.hku.hk">Email</a> &nbsp;/&nbsp;
-            <a href="https://github.com/Candy-Crusher">GitHub</a> &nbsp;/&nbsp;
-            <a href="https://scholar.google.com/citations?user=9nsSKpsAAAAJ&hl=en">Google Scholar</a>
+            <a href="https://github.com/Candy-Crusher" target="_blank" rel="noopener">GitHub</a> &nbsp;/&nbsp;
+            <a href="https://scholar.google.com/citations?user=9nsSKpsAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>
           </p>
-          
           <div class="status-badge">
-            👋 <strong>Hi, I'm currently at NeurIPS 2025!</strong><br>
-            I am presenting <em>EAG3R</em> (Spotlight). I am actively looking for <strong>Summer 2026 Research Internships</strong> in Generative AI & 3D/4D Vision.<br>
-            <span style="font-size:13px; margin-top:5px; display:inline-block;">
-              [<a href="Xiaoshan_Wu_CV.pdf" target="_blank"><strong>Download CV</strong></a>]
-            </span>
+            <strong>Research vision:</strong> Self-Improving Physical Agents through Agent&ndash;World Model Co-Evolution.
           </div>
-
           <p>
-            My research bridges <strong>3D/4D Vision</strong> to construct next-generation <strong>World Models</strong>. I aim to build systems that are <strong>generative, interactive, persistent, real-time,</strong> and <strong>physically accurate</strong>, leveraging high-fidelity 3D/4D representations to ensure structural consistency in dynamic environment simulation.
+            I study physical agents that turn interaction into cumulative improvement. My work focuses on action-conditioned
+            3D/4D world models, embodied spatial reasoning, and closed-loop robot learning for robust planning and control.
           </p>
         </td>
-        <td class="profile-photo">
-          <img src="images/photo.jpg" alt="Xiaoshan Wu">
-        </td>
+        <td class="profile-photo"><img src="images/photo.jpg" alt="Xiaoshan Wu"></td>
       </tr>
     </table>
 
     <h2>News</h2>
-    <ul style="padding-left: 20px; color: #444;">
-      <li>
-        <strong>[Dec 2025]</strong> Presenting <strong>EAG3R</strong> as a <span class="highlight">Spotlight (Top 3%)</span> at NeurIPS 2025 in San Diego. Come say hi at my poster!
-      </li>
-      
-      <li>
-        <strong>[Nov 2025]</strong> Submitted <strong>5 papers</strong> to CVPR 2026, focusing on <strong>Long Video Generation</strong>, and <strong>3D Vision</strong>.
-      </li>
-      
-      <li>
-        <strong>[Nov 2025]</strong> <strong>LiFR-Seg</strong> is currently under review at ICLR 2026 with positive initial feedback.
-      </li>
-      
-      <li>
-        <strong>[Sep 2023]</strong> Joined HKU as a Ph.D. student supported by the <strong>Hong Kong PhD Fellowship (HKPFS)</strong>.
-      </li>
+    <ul>
+      <li><strong>[Sep 2026]</strong> Released <strong>LiFR v2</strong>, a completion-augmented framework for high-rate dense prediction; the manuscript is under review at IEEE TPAMI.</li>
+      <li><strong>[Aug 2026]</strong> Completed a visiting research stay at Harvard University, collaborating with Yilun Du and Mengyu Wang.</li>
+      <li><strong>[2026]</strong> <strong>FoundationGeo</strong> and <strong>VideoSSM</strong> appeared at ECCV; <strong>Stabilizing Streaming Video Geometry</strong> at CVPR; and <strong>LiFR-Seg</strong> at ICLR.</li>
+      <li><strong>[2025]</strong> <strong>EAG3R</strong> was selected as a NeurIPS Spotlight presentation.</li>
     </ul>
 
     <h2>Selected Publications</h2>
 
-    <div class="paper-item">
-      <div class="paper-teaser">
-        <img src="images/EAG3R_poster.png" alt="EAG3R">
-      </div>
+    <article class="paper-item">
+      <div class="paper-teaser"><img src="images/EAG3R_poster.png" alt="EAG3R"></div>
       <div class="paper-desc">
         <span class="paper-title">EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</span>
-        <div class="paper-authors">
-          <strong>Xiaoshan Wu</strong>, Yifei Yu, Xiaoyang Lyu, et al.
-        </div>
-        <div class="paper-venue">
-          NeurIPS 2025 <span class="highlight">(Spotlight, Top 3.18%)</span>
-        </div>
-        <div class="tag-links">
-          <a href="https://www.alphaxiv.org/abs/2512.00771">Paper</a>
-          <a href="#">Project Page</a>
-          <a href="#">Code</a>
-        </div>
-        <p>A framework leveraging event cameras to reconstruct high-fidelity 3D geometry in challenging dynamic and low-light environments.</p>
+        <div class="paper-authors"><strong>Xiaoshan Wu*</strong>, Yifei Yu*, Xiaoyang Lyu, et al.</div>
+        <div class="paper-venue">NeurIPS 2025 <span class="highlight">(Spotlight, Top 3.18%)</span></div>
+        <div class="tag-links"><a href="https://arxiv.org/abs/2512.00771" target="_blank" rel="noopener">Paper</a></div>
       </div>
-    </div>
+    </article>
 
-    <div class="paper-item">
-      <div class="paper-teaser">
-        <img src="images/videossm.png" alt="VideoSSM">
+    <article class="paper-item">
+      <div class="paper-teaser"><img src="images/LiFR-Seg.png" alt="LiFR v2"></div>
+      <div class="paper-desc">
+        <span class="paper-title">LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction</span>
+        <div class="paper-authors">Tao Wan*, <strong>Xiaoshan Wu*</strong> (Project Lead), Yifei Yu, et al.</div>
+        <div class="paper-venue">Under Review at IEEE TPAMI</div>
+        <div class="tag-links"><a href="https://arxiv.org/abs/2609.25803" target="_blank" rel="noopener">Paper</a></div>
       </div>
+    </article>
+
+    <article class="paper-item">
+      <div class="paper-teaser"><img src="images/foundationgeo/foundationgeo.png" alt="FoundationGeo"></div>
+      <div class="paper-desc">
+        <span class="paper-title">FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry</span>
+        <div class="paper-authors">Muxin Liu*, Xiaoyang Lyu*, Tianhe Ren, Peng Dai, <strong>Xiaoshan Wu</strong>, et al.</div>
+        <div class="paper-venue">ECCV 2026</div>
+        <div class="tag-links"><a href="https://arxiv.org/abs/2607.11588" target="_blank" rel="noopener">Paper</a></div>
+      </div>
+    </article>
+
+    <article class="paper-item">
+      <div class="paper-teaser"><img src="images/videossm.png" alt="VideoSSM"></div>
       <div class="paper-desc">
         <span class="paper-title">VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</span>
-        <div class="paper-authors">
-          Yifei Yu*, <strong>Xiaoshan Wu*</strong>, Xinting Hu, et al.
-        </div>
-        <div class="paper-venue">
-          Under Review at CVPR 2026
-        </div>
-        <p>An autoregressive world model utilizing State-Space Models (Mamba) for temporally consistent, long-horizon video generation.</p>
+        <div class="paper-authors">Yifei Yu*, <strong>Xiaoshan Wu*</strong>, Xinting Hu, et al.</div>
+        <div class="paper-venue">ECCV 2026</div>
+        <div class="tag-links"><a href="https://arxiv.org/abs/2512.04519" target="_blank" rel="noopener">Paper</a></div>
       </div>
-    </div>
+    </article>
 
-    <div class="paper-item">
-      <div class="paper-teaser">
-        <img src="images/EVSplat.png" alt="EVSplat">
-      </div>
-      <div class="paper-desc">
-        <span class="paper-title">EVSplat: Pose-free Persistent Scene Reconstruction with Event-Visual Motion Disentanglement</span>
-        <div class="paper-authors">
-          <strong>Xiaoshan Wu</strong>, Yifei Yu, Xiaoyang Lyu, et al.
-        </div>
-        <div class="paper-venue">
-          Under Review at ICRA 2026
-        </div>
-        <p>Integrating 3D Gaussian Splatting with event cameras for pose-free reconstruction in dynamic scenes.</p>
-      </div>
-    </div>
-
-    <div class="paper-item">
-      <div class="paper-teaser">
-        <img src="images/LiFR-Seg.png" alt="LiFR-Seg">
-      </div>
+    <article class="paper-item">
+      <div class="paper-teaser"><img src="images/LiFR-Seg.png" alt="LiFR-Seg"></div>
       <div class="paper-desc">
         <span class="paper-title">LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</span>
-        <div class="paper-authors">
-          <strong>Xiaoshan Wu</strong>, Xiaoyang Lyu, Yifei Yu, et al.
-        </div>
-        <div class="paper-venue">
-          Under Review at ICLR 2026 <strong></strong>(6,6,6,4)</strong>
-        </div>
-        <p>Achieving real-time, high-frame-rate segmentation by propagating features via event streams.</p>
+        <div class="paper-authors"><strong>Xiaoshan Wu</strong>, Xiaoyang Lyu, Yifei Yu, et al.</div>
+        <div class="paper-venue">ICLR 2026</div>
+        <div class="tag-links"><a href="https://arxiv.org/abs/2603.21115" target="_blank" rel="noopener">Paper</a></div>
       </div>
-    </div>
+    </article>
 
-    <div class="paper-item">
-      <div class="paper-teaser">
-        <img src="images/streamingdepth.png" alt="Streaming">
-      </div>
+    <article class="paper-item">
+      <div class="paper-teaser"><img src="images/streamingdepth.png" alt="Streaming video geometry"></div>
       <div class="paper-desc">
         <span class="paper-title">Stabilizing Streaming Video Geometry via Dynamic Feature Normalization</span>
-        <div class="paper-authors">
-           Xiaoyang Lyu, Muxin Liu, <strong>Xiaoshan Wu</strong>, et al.
-        </div>
-        <div class="paper-venue">
-          Under Review at CVPR 2026
-        </div>
-        <p>Improving temporal stability in streaming geometric estimation.</p>
+        <div class="paper-authors">Xiaoyang Lyu*, Muxin Liu*, <strong>Xiaoshan Wu</strong>, et al.</div>
+        <div class="paper-venue">CVPR 2026</div>
+        <div class="tag-links"><a href="https://arxiv.org/abs/2605.25308" target="_blank" rel="noopener">Paper</a></div>
       </div>
-    </div>
-    
-    <div class="paper-item">
-      <div class="paper-teaser">
-        <img src="images/foundationgeo/foundationgeo.png" alt="FoundationGeo">
-      </div>
+    </article>
+
+    <article class="paper-item">
+      <div class="paper-teaser"><img src="images/CSGe.png" alt="Neural-field reconstruction using resistive memory"></div>
       <div class="paper-desc">
-        <span class="paper-title">FoundationGeo: Learning Pixel-Wise Scale Fields for Monocular Metric Geometry</span>
-        <div class="paper-authors">
-           Muxin Liu, Xiaoyang Lyu, Tianhe Ren, <strong>Xiaoshan Wu</strong>, et al.
-        </div>
-        <div class="paper-venue">
-          Under Review at CVPR 2026
-        </div>
+        <span class="paper-title">Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory</span>
+        <div class="paper-authors">Yifei Yu, Xinyuan Zhang, Shaocong Wang, ..., <strong>Xiaoshan Wu</strong>, et al.</div>
+        <div class="paper-venue">Nature, 2026</div>
+        <div class="tag-links"><a href="https://www.nature.com/articles/s41586-026-10646-w" target="_blank" rel="noopener">Paper</a></div>
       </div>
-    </div>
+    </article>
 
     <h2>Research Experience</h2>
-    
-    <div class="paper-item" style="margin-bottom: 20px;">
-      <div class="paper-teaser" style="width: 15%; min-width: 60px;">
-        <img src="images/didi_logo.png" alt="DiDi" style="border:none; box-shadow:none;">
+    <section class="experience">
+      <div class="experience-head">
+        <div><strong>Harvard University</strong><br><em>Visiting Researcher</em></div>
+        <div class="muted">Cambridge, MA, USA<br>Apr. 2026 &ndash; Aug. 2026</div>
       </div>
-      <div class="paper-desc" style="width: 85%;">
-        <strong>DiDi AI Research (Autonomous Driving Labs)</strong><br>
-        <em>Research Intern (Aug 2025 -- Present)</em><br>
-        <span style="font-size: 14px; color: #555;">Designed an autoregressive world model capable of synchronously predicting RGB, depth, and optical flow, significantly improving temporal consistency for simulation.</span>
-      </div>
-    </div>
+      <p>Collaborated with Yilun Du and Mengyu Wang on self-improving physical agents and agent&ndash;world model co-evolution.</p>
+    </section>
 
-    <div class="paper-item">
-      <div class="paper-teaser" style="width: 15%; min-width: 60px;">
-        <img src="images/megvii_logo.png" alt="Megvii" style="border:none; box-shadow:none;">
-      </div>
-      <div class="paper-desc" style="width: 85%;">
-        <strong>Megvii Inc. (Face++)</strong><br>
-        <em>Research Intern (Dec 2022 -- Mar 2023)</em><br>
-        <span style="font-size: 14px; color: #555;">Developed a depth-aware semantic segmentation network for complex autonomous driving scenes, enhancing accuracy in low-light scenarios.</span>
-      </div>
-    </div>
-
-    <div style="margin-top: 60px; border-top: 1px solid #eee; padding-top: 20px; color: #999; font-size: 12px; text-align: center;">
-      &copy; 2025 Xiaoshan Wu. <br>
-      <a href="Xiaoshan_Wu_CV.pdf" target="_blank" style="color:#999; text-decoration: underline;">Download CV (PDF)</a>
-    </div>
-
-  </div> </div> <script>
-    // ⚠️ 设置你的访问暗号（和二维码链接一致）
-    const MY_SECRET_KEY = "nips2025"; 
-
-    // 1. 获取 URL 中的 ?access=xxx
-    const urlParams = new URLSearchParams(window.location.search);
-    const userKey = urlParams.get('access');
-
-    // 2. 自动检测是否在本地调试 (VS Code Go Live 通常使用 127.0.0.1 或 localhost)
-    const isLocal = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
-
-    // 3. 验证逻辑：如果有密码 OR 是本地调试，就显示内容
-    if (userKey === MY_SECRET_KEY || isLocal) {
-      document.getElementById('main-content').style.display = 'block';
-      document.getElementById('access-denied').style.display = 'none';
-      
-      // 如果是本地调试，可以在控制台提示一下
-      if (isLocal) { console.log("Local development environment detected. Access granted automatically."); }
-    } else {
-      // 验证失败，保持隐藏
-      console.log("Access restricted.");
-    }
-  </script>
-
+    <footer>
+      &copy; 2026 Xiaoshan Wu &nbsp;&middot;&nbsp;
+      <a href="ia8eshfzfsvn.pdf" target="_blank">Download CV (PDF)</a>
+    </footer>
+  </main>
 </body>
 </html>
