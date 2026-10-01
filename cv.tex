@@ -1,0 +1,143 @@
+\documentclass[9pt,a4paper]{article}
+
+\usepackage[a4paper,top=0.27in,bottom=0.29in,left=0.44in,right=0.32in]{geometry}
+\usepackage[default]{sourceserifpro}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{array,tabularx}
+\usepackage{enumitem}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+\usepackage{calc}
+\usepackage{etoolbox}
+\usepackage{qrcode}
+
+\definecolor{cvblue}{RGB}{0,0,150}
+\definecolor{cvred}{RGB}{230,0,0}
+\hypersetup{
+  colorlinks=true,
+  urlcolor=black,
+  linkcolor=black,
+  citecolor=black,
+  pdfauthor={Xiaoshan Wu},
+  pdftitle={Xiaoshan Wu - Curriculum Vitae}
+}
+\urlstyle{same}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\tabcolsep}{0pt}
+\linespread{0.965}
+\emergencystretch=1.5em
+
+\newcommand{\sepbar}{\hspace{9pt}{\color{gray!70}\vrule height 9pt width 0.45pt}\hspace{9pt}}
+\newcommand{\cvsection}[1]{%
+  \vspace{4.4pt}%
+  {\color{cvblue}\fontsize{12}{13.5}\selectfont\bfseries\MakeUppercase{#1}}\par
+  \vspace{-3.6pt}{\color{cvblue}\rule{\textwidth}{0.45pt}}\par\vspace{1.9pt}%
+}
+\newcommand{\dashitem}{\makebox[1.15em][l]{--}}
+
+\begin{document}
+\fontsize{9}{10.45}\selectfont
+
+\begin{minipage}[t]{0.835\textwidth}
+  \centering
+  \vspace{7pt}
+  {\fontsize{24.88}{27}\selectfont\bfseries Xiaoshan Wu}\par
+  \vspace{2.5pt}
+  {\fontsize{8.65}{10}\selectfont
+  \href{mailto:xiaoshan@connect.hku.hk}{\underline{xiaoshan@connect.hku.hk}}%
+  \sepbar
+  (+852) 9491 2305%
+  \sepbar
+  \href{https://candy-crusher.github.io/xiaoshanwu.github.io/}{\underline{Research Portfolio}}%
+  \sepbar
+  \href{https://scholar.google.com/citations?user=9nsSKpsAAAAJ\&hl=en}{Google Scholar}}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.115\textwidth}
+  \centering
+  \vspace{-1.5pt}
+  \href{https://candy-crusher.github.io/xiaoshanwu.github.io/}{\qrcode[height=0.83in]{https://candy-crusher.github.io/xiaoshanwu.github.io/}}\\[-2.5pt]
+  {\color{gray}\fontsize{5.5}{6}\selectfont Scan for Portfolio.}
+\end{minipage}
+\vspace{-4.5pt}
+
+\cvsection{Education}
+\begin{tabular*}{\textwidth}{@{\hspace{1.35em}}p{0.72\textwidth}@{\extracolsep{\fill}}r}
+\textbf{The University of Hong Kong (HKU)} & \textit{Hong Kong}\\[-0.2pt]
+\textit{Ph.D. in Electrical and Electronic Engineering (Focus: 3D/4D Vision, World Models \& Embodied AI)} & \textit{Sep. 2023 -- Present}
+\end{tabular*}
+\vspace{0.5pt}
+\begin{tabular}{@{}p{\textwidth}@{}}
+\dashitem\textbf{Awards:} Hong Kong PhD Fellowship (\textbf{HKPFS, Top Tier}), HKU Presidential Scholarship.\\[-0.25pt]
+\dashitem\textbf{Advisor:} Prof. Xiaojuan Qi. \textbf{GPA:} 4.0/4.3.
+\end{tabular}
+\vspace{1.1pt}
+\begin{tabular*}{\textwidth}{@{\hspace{1.35em}}p{0.72\textwidth}@{\extracolsep{\fill}}r}
+\textbf{Zhejiang University (ZJU) \& UIUC} & \textit{China \& USA}\\[-0.2pt]
+\textit{Dual B.S. in Computer Engineering (ZJUI Institute)} & \textit{Sep. 2019 -- Jun. 2023}
+\end{tabular*}
+\vspace{0.5pt}
+\dashitem\textbf{Honors:} Outstanding Graduate (Rank 5), Dean's List. \textbf{GPA:} 3.99/4.0 (ZJU), 3.75/4.0 (UIUC).
+
+\cvsection{Research Interests}
+\justifying
+\textbf{Self-Improving Physical Agents through Agent--World Model Co-Evolution.}
+I study agents that turn physical interaction into cumulative improvement, with a focus on action-conditioned 3D/4D world models, embodied spatial reasoning, and closed-loop robot learning for robust planning and control.
+
+\cvsection{Publications \& Preprints}
+{\fontsize{8.55}{9.7}\selectfont\textit{* indicates equal contribution; \textdagger\ denotes project lead.}}\par\vspace{0.2pt}
+\begin{enumerate}[leftmargin=1.62em,labelsep=0.38em,itemsep=0.5pt,topsep=0pt,parsep=0pt,partopsep=0pt]
+\item \textbf{X. Wu}, et al. \textbf{Verifiable 4D World--Action Model for Robust Robot Control.}\\[-0.55pt]
+      \textit{Under Review at ICLR 2027.}
+\item \textbf{X. Wu}, et al. \textbf{GaMe: Geometry as Memory for Multi-View Spatial Reasoning.}\\[-0.55pt]
+      \textit{Under Review at ICRA 2027.}
+\item T. Wan*, \textbf{X. Wu*\textdagger}, Y. Yu, et al. \textbf{LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction.}\\[-0.55pt]
+      \textit{Under Review at IEEE TPAMI.}
+\item M. Liu*, X. Lyu*, T. Ren, P. Dai, \textbf{X. Wu}, et al. \textbf{FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry.}\\[-0.55pt]
+      \textit{ECCV 2026.}
+\item Y. Yu*, \textbf{X. Wu*}, X. Hu, et al. \textbf{VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory.}\\[-0.55pt]
+      \textit{ECCV 2026.}
+\item \textbf{X. Wu}, X. Lyu, Y. Yu, et al. \textbf{LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation.}\\[-0.55pt]
+      \textit{ICLR 2026.}
+\item X. Lyu, M. Liu, \textbf{X. Wu}, et al. \textbf{Stabilizing Streaming Video Geometry via Dynamic Feature Normalization.}\\[-0.55pt]
+      \textit{CVPR 2026.}
+\item Y. Yu, X. Zhang, S. Wang, ..., \textbf{X. Wu}, et al. \textbf{Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory.}\\[-0.55pt]
+      \textit{Nature, 2026.}
+\item \textbf{X. Wu*}, Y. Yu*, X. Lyu, et al. \textbf{EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes.}\\[-0.55pt]
+      \textit{NeurIPS 2025 (}{\color{cvred}\bfseries Spotlight, Top 3.18\%}\textit{).}
+\item B. Wang, X. Zhang, S. Wang, ..., \textbf{X. Wu}, et al. \textbf{Topology Optimization of Random Memristors for Input-Aware Dynamic SNN.}\\[-0.55pt]
+      \textit{Science Advances, 2025.}
+\item H. Chen, J. Yang, J. Chen, ..., \textbf{X. Wu}, et al. \textbf{Continuous-Time Digital Twin with Analog Memristive Neural ODE Solver.}\\[-0.55pt]
+      \textit{Science Advances, 2025.}
+\item C. Li, X. Chen, Z. Zhang, \textbf{X. Wu}, et al. \textbf{Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing.}\\[-0.55pt]
+      \textit{Nano Letters, 2024.}
+\item Y. Yu, S. Wang, M. Xu, ..., \textbf{X. Wu}, et al. \textbf{Random Memristor-Based Dynamic Graph CNN for Efficient Point Cloud Learning at the Edge.}\\[-0.55pt]
+      \textit{npj Unconventional Computing, 2024.}
+\item \textbf{X. Wu}, W. He, M. Yao, et al. \textbf{Event-Based Depth Prediction with Deep Spiking Neural Network.}\\[-0.55pt]
+      \textit{IEEE Transactions on Cognitive and Developmental Systems (TCDS), 2024.}
+\end{enumerate}
+
+\cvsection{Research Experience}
+\begin{tabular*}{\textwidth}{@{\hspace{1.35em}}p{0.72\textwidth}@{\extracolsep{\fill}}r}
+\textbf{Harvard University (SEAS)} & \textit{Cambridge, MA, USA}\\[-0.2pt]
+\textit{Visiting Researcher} & \textit{Apr. 2026 -- Aug. 2026}
+\end{tabular*}
+\vspace{0.65pt}
+\dashitem Collaborated with Yilun Du and Mengyu Wang on self-improving physical agents and agent--world model co-evolution.
+
+\cvsection{Technical Skills}
+\hspace{1.35em}\textbf{Research Expertise:} Self-Improving Physical Agents, World--Action Models, 3D/4D Vision, Spatial Reasoning, Video Generation, Event Vision.\\[-0.15pt]
+\hspace{1.35em}\textbf{Frameworks \& Tools:} PyTorch, CUDA, Diffusers, Open3D, OpenCV.
+
+\cvsection{Selected Awards}
+\begin{tabular*}{\textwidth}{@{\hspace{1.35em}}l@{\extracolsep{\fill}}r}
+Hong Kong PhD Fellowship (HKPFS) & 2023\\[-0.4pt]
+HKU Presidential Scholarship & 2023\\[-0.4pt]
+Outstanding Graduate of Zhejiang University & 2023
+\end{tabular*}
+
+\end{document}
