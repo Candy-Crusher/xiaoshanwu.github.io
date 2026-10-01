@@ -1,17 +1,14 @@
 \documentclass[9pt,a4paper]{article}
 
 \usepackage[a4paper,margin=0.5in]{geometry}
+\usepackage[default]{sourceserifpro}
 \usepackage[T1]{fontenc}
 \usepackage{microtype}
 \usepackage{xcolor}
-\usepackage{graphicx}
-\usepackage{qrcode}
 \usepackage{array,tabularx}
 \usepackage{enumitem}
-\usepackage{ragged2e}
 \usepackage{hyperref}
 \usepackage{calc}
-\usepackage{etoolbox}
 
 \definecolor{cvblue}{RGB}{0,0,150}
 \definecolor{cvred}{RGB}{230,0,0}
@@ -29,66 +26,64 @@
 \setlength{\parskip}{0pt}
 \setlength{\tabcolsep}{0pt}
 \linespread{0.965}
-\emergencystretch=1.5em
+\emergencystretch=2.5em
 
-\newcommand{\sepbar}{\hspace{9pt}{\color{gray!70}\vrule height 9pt width 0.45pt}\hspace{9pt}}
+\newcommand{\sepbar}{\hspace{7pt}{\color{gray!70}\vrule height 9pt width 0.45pt}\hspace{7pt}}
 \newcommand{\cvsection}[1]{%
   \vspace{4.4pt}%
   {\color{cvblue}\fontsize{12}{13.5}\selectfont\bfseries\MakeUppercase{#1}}\par
   \vspace{-3.6pt}{\color{cvblue}\rule{\textwidth}{0.45pt}}\par\vspace{1.9pt}%
 }
 \newcommand{\dashitem}{\makebox[1.15em][l]{--}}
-\newcommand{\tightline}[1]{\parbox[t]{\dimexpr\linewidth-1.25em\relax}{#1}}
+\newcommand{\indentedblock}[1]{%
+  \hspace{1.35em}\begin{minipage}[t]{\dimexpr\textwidth-1.35em\relax}#1\end{minipage}%
+}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}p{0.235\textwidth}}
 
 \begin{document}
 \fontsize{9}{10.45}\selectfont
 
-\begin{minipage}[t]{0.835\textwidth}
-  \centering
-  \vspace{7pt}
+% ==================== HEADER ====================
+\begin{center}
+  \vspace*{6.5pt}
   {\fontsize{24.88}{27}\selectfont\bfseries Xiaoshan Wu}\par
   \vspace{2.5pt}
-  {\fontsize{8.65}{10}\selectfont
-  \href{mailto:xiaoshan@connect.hku.hk}{\underline{xiaoshan@connect.hku.hk}}%
+  {\fontsize{8.55}{10}\selectfont
+  \href{mailto:wuxiaoshan630@gmail.com}{\underline{wuxiaoshan630@gmail.com}}%
   \sepbar
-  (+852) 9491 2305%
+  (+1) 617-894-4567%
   \sepbar
-  \href{https://candy-crusher.github.io/xiaoshanwu.github.io/}{\underline{Research Portfolio}}%
+  \href{https://candy-crusher.github.io/xiaoshanwu.github.io/}{\underline{Personal Website}}%
   \sepbar
-  25'NIPS}
-\end{minipage}%
-\hfill
-\begin{minipage}[t]{0.115\textwidth}
-  \centering
-  \vspace{-1.5pt}
-  \href{https://candy-crusher.github.io/xiaoshanwu.github.io/}{\qrcode[height=0.72in]{https://candy-crusher.github.io/xiaoshanwu.github.io/}}\\[0.5pt]
-  {\color{gray}\fontsize{5.5}{6}\selectfont Scan for Portfolio.}
-\end{minipage}
-\vspace{-4.5pt}
+  \href{https://scholar.google.com/citations?user=9nsSKpsAAAAJ\&hl=en}{\underline{Google Scholar}}}
+\end{center}
+\vspace{-6.5pt}
 
+% ==================== EDUCATION ====================
 \cvsection{Education}
-\begin{tabular*}{\textwidth}{@{\hspace{1.35em}}p{0.72\textwidth}@{\extracolsep{\fill}}r}
+\begin{tabularx}{\textwidth}{@{\hspace{1.35em}}X@{\hspace{0.8em}}R@{}}
 \textbf{The University of Hong Kong (HKU)} & \textit{Hong Kong}\\[-0.2pt]
 \textit{Ph.D. in Electrical and Electronic Engineering (Focus: 3D/4D Vision, World Models \& Embodied AI)} & \textit{Sep. 2023 -- Present}
-\end{tabular*}
+\end{tabularx}
 \vspace{0.5pt}
 \begin{tabular}{@{}p{\textwidth}@{}}
 \dashitem\textbf{Awards:} Hong Kong PhD Fellowship (\textbf{HKPFS, Top Tier}), HKU Presidential Scholarship.\\[-0.25pt]
 \dashitem\textbf{Advisor:} Dr. Xiaojuan Qi. \textbf{GPA:} 4.0/4.3.
 \end{tabular}
 \vspace{1.1pt}
-\begin{tabular*}{\textwidth}{@{\hspace{1.35em}}p{0.72\textwidth}@{\extracolsep{\fill}}r}
+\begin{tabularx}{\textwidth}{@{\hspace{1.35em}}X@{\hspace{0.8em}}R@{}}
 \textbf{Zhejiang University (ZJU) \& UIUC} & \textit{China \& USA}\\[-0.2pt]
 \textit{Dual B.S. in Computer Engineering (ZJUI Institute)} & \textit{Sep. 2019 -- Jun. 2023}
-\end{tabular*}
+\end{tabularx}
 \vspace{0.5pt}
 \dashitem\textbf{Honors:} Outstanding Graduate (Rank 5), Dean's List. \textbf{GPA:} 3.99/4.0 (ZJU), 3.75/4.0 (UIUC).
 
+% ==================== RESEARCH INTERESTS ====================
 \cvsection{Research Interests}
-\justifying
 \textbf{Self-Improving Physical Agents through Agent--World Model Co-Evolution.}
-I study agents that turn physical interaction into cumulative improvement, with a focus on action-conditioned 3D/4D world models, embodied spatial reasoning, and closed-loop robot learning for robust planning and control.
+I connect robust perception, action-conditioned 4D world models, and scene/experience memory to turn limited physical interaction into cumulative, transferable capability, enabling agents to choose informative experiments, evaluate persistent consequences, and reuse verified successes, failures, and recoveries.
 
+% ==================== PUBLICATIONS ====================
 \cvsection{Selected Publications \& Preprints}
 {\fontsize{8.55}{9.7}\selectfont\textit{* indicates equal contribution; \textdagger\ denotes project lead.}}\par\vspace{0.2pt}
 \begin{enumerate}[leftmargin=1.62em,labelsep=0.38em,itemsep=0.5pt,topsep=0pt,parsep=0pt,partopsep=0pt]
@@ -112,23 +107,27 @@ I study agents that turn physical interaction into cumulative improvement, with 
       \textit{NeurIPS 2025 (}{\color{cvred}\bfseries Spotlight, Top 3.18\%}\textit{).}
 \end{enumerate}
 
+% ==================== RESEARCH EXPERIENCE ====================
 \cvsection{Research Experience}
-\begin{tabular*}{\textwidth}{@{\hspace{1.35em}}p{0.72\textwidth}@{\extracolsep{\fill}}r}
-\textbf{Harvard University} & \textit{Cambridge, MA, USA}\\[-0.2pt]
+\begin{tabularx}{\textwidth}{@{\hspace{1.35em}}X@{\hspace{0.8em}}R@{}}
+\textbf{Harvard University (SEAS)} & \textit{Cambridge, MA, USA}\\[-0.2pt]
 \textit{Visiting Researcher} & \textit{Apr. 2026 -- Aug. 2026}
-\end{tabular*}
+\end{tabularx}
 \vspace{0.65pt}
 \dashitem Collaborated with Yilun Du and Mengyu Wang on self-improving physical agents and agent--world model co-evolution.
 
+% ==================== SKILLS ====================
 \cvsection{Technical Skills}
-\hspace{1.35em}\textbf{Research Expertise:} Self-Improving Physical Agents, World--Action Models, 3D/4D Vision, Spatial Reasoning, Video Generation, Event Vision.\\[-0.15pt]
-\hspace{1.35em}\textbf{Frameworks \& Tools:} PyTorch, CUDA, Diffusers, Open3D, OpenCV.
+\indentedblock{\textbf{Research Expertise:} Self-Improving Physical Agents, World--Action Models, 3D/4D Vision, Spatial Reasoning, Video Generation, Event Vision.}\par
+\vspace{-0.15pt}
+\indentedblock{\textbf{Frameworks \& Tools:} PyTorch, CUDA, Diffusers, Open3D, OpenCV.}
 
+% ==================== AWARDS ====================
 \cvsection{Selected Awards}
-\begin{tabular*}{\textwidth}{@{\hspace{1.35em}}l@{\extracolsep{\fill}}r}
+\begin{tabularx}{\textwidth}{@{\hspace{1.35em}}X@{\hspace{0.8em}}>{\raggedleft\arraybackslash}p{2.5em}@{}}
 Hong Kong PhD Fellowship (HKPFS) & 2023\\[-0.4pt]
 HKU Presidential Scholarship & 2023\\[-0.4pt]
 Outstanding Graduate of Zhejiang University & 2023
-\end{tabular*}
+\end{tabularx}
 
 \end{document}
