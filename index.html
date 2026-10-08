@@ -1,196 +1,284 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Xiaoshan Wu - Research Portfolio</title>
+  <title>Xiaoshan Wu | World Models &amp; Embodied AI</title>
   <meta name="author" content="Xiaoshan Wu">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Xiaoshan Wu's research portfolio: self-improving physical agents, world models, 3D/4D vision, and event-based perception.">
+  <meta name="description" content="Xiaoshan Wu, Ph.D. candidate at HKU. Research in 4D world models, video generation, geometry-grounded memory, and embodied intelligence.">
   <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://candy-crusher.github.io/xiaoshanwu.github.io/">
+  <meta property="og:title" content="Xiaoshan Wu | World Models &amp; Embodied AI">
+  <meta property="og:description" content="World models, memory, and embodied intelligence. Research and publications by Xiaoshan Wu.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://candy-crusher.github.io/xiaoshanwu.github.io/">
   <style>
-    body {
-      background: #fff;
-      color: #222;
-      font-family: Lato, Verdana, Helvetica, sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
-      margin: 0;
-    }
-    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-    a { color: #1772d0; text-decoration: none; }
+    * { box-sizing: border-box; }
+    html { scroll-padding-top: 24px; }
+    body { margin: 0; background: #fff; color: #252525; font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .container { max-width: 940px; margin: 0 auto; padding: 32px 26px 24px; }
+    a { color: #1767a6; text-decoration: none; text-underline-offset: 3px; }
     a:hover { text-decoration: underline; }
-    .header-table { width: 100%; border: 0; border-spacing: 0; margin-bottom: 30px; }
-    .profile-info { vertical-align: middle; width: 70%; padding-right: 24px; }
-    .profile-photo { width: 30%; text-align: center; }
-    .profile-photo img {
-      width: 200px; height: 200px; object-fit: cover; border-radius: 50%;
-      box-shadow: 0 2px 10px rgba(0,0,0,.10);
+    a:focus-visible, summary:focus-visible { outline: 2px solid #1767a6; outline-offset: 4px; }
+    p { margin: 0 0 14px; }
+    .site-nav { display: flex; flex-wrap: wrap; gap: 24px; justify-content: flex-end; margin-bottom: 34px; font-size: 14px; }
+    .profile { display: grid; grid-template-columns: minmax(0, 1fr) 184px; gap: 42px; align-items: center; }
+    h1 { margin: 0 0 9px; font-size: 34px; line-height: 1.25; font-weight: 650; letter-spacing: -0.7px; }
+    .native-name { font-size: 23px; font-weight: 400; color: #555; letter-spacing: 0; white-space: nowrap; }
+    .profile-photo { width: 184px; height: 184px; border-radius: 50%; object-fit: cover; }
+    .contact-links { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 16px; }
+    .research { margin-top: 35px; }
+    .research h2 { border: 0; margin: 0 0 12px; padding: 0; font-size: 24px; line-height: 1.35; letter-spacing: -0.3px; }
+    h2 { margin: 42px 0 18px; padding-bottom: 9px; border-bottom: 1px solid #dedede; font-size: 22px; line-height: 1.4; font-weight: 600; }
+    h3 { margin: 29px 0 19px; font-size: 17px; line-height: 1.45; font-weight: 600; color: #404040; }
+    .muted, .section-note { color: #666; }
+    .section-note { font-size: 13px; margin-top: -6px; }
+    .news { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 7px 18px; margin: 0; }
+    .news dt { color: #666; font-variant-numeric: tabular-nums; }
+    .news dd { margin: 0; }
+    .paper-item { display: grid; grid-template-columns: minmax(0, 1fr) 168px; gap: 26px; align-items: center; margin: 0 0 26px; }
+    .paper-item.no-teaser { grid-template-columns: minmax(0, 1fr); }
+    .paper-title { margin: 0 0 5px; color: #171717; font-size: 16px; line-height: 1.45; font-weight: 650; }
+    .paper-authors { margin-bottom: 3px; font-size: 14px; line-height: 1.6; color: #5a5a5a; }
+    .paper-authors strong { color: #222; }
+    .paper-venue { font-size: 14px; font-style: italic; }
+    .paper-venue strong { font-style: normal; }
+    .paper-note { margin: 6px 0 0; font-size: 14px; color: #555; }
+    .paper-links { font-size: 13px; margin-top: 5px; }
+    .paper-teaser img { display: block; width: 168px; height: 112px; object-fit: contain; }
+    .highlight { color: #b52c32; font-style: normal; font-weight: 600; }
+    sup { font-size: 10px; line-height: 0; }
+    .experience { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 28px; margin-bottom: 20px; }
+    .experience p { margin: 0; }
+    .experience .dates { color: #666; font-size: 14px; text-align: right; }
+    .experience .detail { color: #555; font-size: 14px; }
+    .awards { margin: 0; padding-left: 19px; }
+    .awards li { padding-left: 3px; margin-bottom: 4px; }
+    footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; border-top: 1px solid #e3e3e3; margin-top: 42px; padding-top: 18px; color: #777; font-size: 12px; }
+    @media (max-width: 660px) {
+      .container { padding: 22px 20px; }
+      .site-nav { justify-content: flex-start; gap: 20px; margin-bottom: 28px; }
+      .profile { grid-template-columns: minmax(0, 1fr) 104px; gap: 18px; align-items: start; }
+      h1 { font-size: 28px; }
+      .native-name { display: block; font-size: 19px; margin-top: 5px; }
+      .profile-photo { width: 104px; height: 104px; margin-top: 3px; }
+      .contact-links { gap: 6px 16px; }
+      .research { margin-top: 28px; }
+      .research h2 { font-size: 22px; }
+      .paper-item { display: block; }
+      .paper-teaser { display: none; }
+      .experience { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+      .experience .dates { text-align: left; }
     }
-    h1.name { font-size: 34px; margin: 0 0 5px; color: #000; }
-    h2 {
-      color: #444; border-bottom: 1px solid #eee; font-size: 20px;
-      letter-spacing: 1px; margin: 46px 0 24px; padding-bottom: 9px;
-      text-transform: uppercase;
+    @media (max-width: 380px) {
+      .profile { grid-template-columns: minmax(0, 1fr); }
+      .profile-photo { grid-row: 1; }
     }
-    .status-badge {
-      background: #f0f7ff; border-left: 4px solid #1772d0;
-      border-radius: 0 4px 4px 0; color: #333; margin: 20px 0;
-      padding: 12px 15px;
-    }
-    .paper-item { display: flex; gap: 25px; margin-bottom: 32px; }
-    .paper-teaser { flex: 0 0 200px; }
-    .paper-teaser img {
-      width: 100%; max-height: 130px; object-fit: cover; border: 1px solid #f0f0f0;
-      border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,.05);
-    }
-    .paper-desc { flex: 1; min-width: 0; }
-    .paper-title { color: #000; display: block; font-size: 17px; font-weight: 700; margin-bottom: 4px; }
-    .paper-authors { color: #555; margin-bottom: 3px; }
-    .paper-venue { color: #000; font-style: italic; margin-bottom: 7px; }
-    .highlight { color: #d92027; font-weight: 700; }
-    .tag-links a {
-      background: #fff; border: 1px solid #ddd; border-radius: 12px;
-      color: #555; display: inline-block; font-size: 12px; margin: 4px 8px 0 0;
-      padding: 1px 8px;
-    }
-    .tag-links a:hover { background: #f5f5f5; border-color: #999; color: #000; text-decoration: none; }
-    .experience { margin-bottom: 24px; }
-    .experience-head { display: flex; justify-content: space-between; gap: 20px; }
-    .muted { color: #555; }
-    footer {
-      border-top: 1px solid #eee; color: #999; font-size: 12px;
-      margin-top: 56px; padding-top: 20px; text-align: center;
-    }
-    @media (max-width: 768px) {
-      .header-table, .header-table tbody, .header-table tr, .header-table td { display: block; width: 100%; text-align: center; }
-      .profile-info { padding: 0 0 22px; }
-      .paper-item { flex-direction: column; gap: 14px; }
-      .paper-teaser { flex-basis: auto; width: 100%; }
-      .paper-teaser img { max-height: none; }
-      .experience-head { display: block; }
+    @media print {
+      .container { max-width: none; padding: 0; }
+      .site-nav, .paper-teaser, footer { display: none; }
+      .paper-item { display: block; break-inside: avoid; }
+      a { color: inherit; }
     }
   </style>
 </head>
 <body>
   <main class="container">
-    <table class="header-table">
-      <tr>
-        <td class="profile-info">
-          <h1 class="name">Xiaoshan Wu (吴小山)</h1>
-          <p>
-            Ph.D. Candidate, Department of Electrical and Electronic Engineering, The University of Hong Kong<br>
-            Advisor: <a href="https://xjqi.github.io/" target="_blank" rel="noopener">Prof. Xiaojuan Qi</a>
-          </p>
-          <p>
-            <a href="ia8eshfzfsvn.pdf" target="_blank"><strong>CV / Resume</strong></a> &nbsp;/&nbsp;
-            <a href="mailto:xiaoshan@connect.hku.hk">Email</a> &nbsp;/&nbsp;
-            <a href="https://github.com/Candy-Crusher" target="_blank" rel="noopener">GitHub</a> &nbsp;/&nbsp;
-            <a href="https://scholar.google.com/citations?user=9nsSKpsAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>
-          </p>
-          <div class="status-badge">
-            <strong>Research vision:</strong> Self-Improving Physical Agents through Agent&ndash;World Model Co-Evolution.
-          </div>
-          <p>
-            I study physical agents that turn interaction into cumulative improvement. My work focuses on action-conditioned
-            3D/4D world models, embodied spatial reasoning, and closed-loop robot learning for robust planning and control.
-          </p>
-        </td>
-        <td class="profile-photo"><img src="images/photo.jpg" alt="Xiaoshan Wu"></td>
-      </tr>
-    </table>
-
-    <h2>News</h2>
-    <ul>
-      <li><strong>[Sep 2026]</strong> Released <strong>LiFR v2</strong>, a completion-augmented framework for high-rate dense prediction; the manuscript is under review at IEEE TPAMI.</li>
-      <li><strong>[Aug 2026]</strong> Completed a visiting research stay at Harvard University, collaborating with Yilun Du and Mengyu Wang.</li>
-      <li><strong>[2026]</strong> <strong>FoundationGeo</strong> and <strong>VideoSSM</strong> appeared at ECCV; <strong>Stabilizing Streaming Video Geometry</strong> at CVPR; and <strong>LiFR-Seg</strong> at ICLR.</li>
-      <li><strong>[2025]</strong> <strong>EAG3R</strong> was selected as a NeurIPS Spotlight presentation.</li>
-    </ul>
-
-    <h2>Selected Publications</h2>
-
-    <article class="paper-item">
-      <div class="paper-teaser"><img src="images/EAG3R_poster.png" alt="EAG3R"></div>
-      <div class="paper-desc">
-        <span class="paper-title">EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</span>
-        <div class="paper-authors"><strong>Xiaoshan Wu*</strong>, Yifei Yu*, Xiaoyang Lyu, et al.</div>
-        <div class="paper-venue">NeurIPS 2025 <span class="highlight">(Spotlight, Top 3.18%)</span></div>
-        <div class="tag-links"><a href="https://arxiv.org/abs/2512.00771" target="_blank" rel="noopener">Paper</a></div>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="#research">Research</a><a href="#publications">Publications</a><a href="#background">Background</a><a href="Xiaoshan_Wu_CV.pdf" target="_blank" rel="noopener">CV</a>
+    </nav>
+    <header class="profile">
+      <div>
+        <h1>Xiaoshan Wu <span class="native-name" lang="zh">吴小山</span></h1>
+        <p>Ph.D. candidate, The University of Hong Kong<br>Advised by <a href="https://xjqi.github.io/" target="_blank" rel="noopener">Prof. Xiaojuan Qi</a></p>
+        <p>I was a visiting researcher at Harvard University from April to August 2026, working with Yilun Du and Mengyu Wang.</p>
+        <div class="contact-links">
+          <a href="mailto:wuxiaoshan630@gmail.com">Email</a>
+          <a href="https://scholar.google.com/citations?user=9nsSKpsAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>
+          <a href="https://github.com/Candy-Crusher" target="_blank" rel="noopener">GitHub</a>
+          <a href="Xiaoshan_Wu_CV.pdf" target="_blank" rel="noopener">CV / Resume</a>
+        </div>
       </div>
-    </article>
+      <img class="profile-photo" src="images/photo.jpg" alt="Xiaoshan Wu" width="184" height="184" fetchpriority="high">
+    </header>
 
-    <article class="paper-item">
-      <div class="paper-teaser"><img src="images/LiFR-Seg.png" alt="LiFR v2"></div>
-      <div class="paper-desc">
-        <span class="paper-title">LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction</span>
-        <div class="paper-authors">Tao Wan*, <strong>Xiaoshan Wu*</strong> (Project Lead), Yifei Yu, et al.</div>
-        <div class="paper-venue">Under Review at IEEE TPAMI</div>
-        <div class="tag-links"><a href="https://arxiv.org/abs/2609.25803" target="_blank" rel="noopener">Paper</a></div>
-      </div>
-    </article>
-
-    <article class="paper-item">
-      <div class="paper-teaser"><img src="images/foundationgeo/foundationgeo.png" alt="FoundationGeo"></div>
-      <div class="paper-desc">
-        <span class="paper-title">FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry</span>
-        <div class="paper-authors">Muxin Liu*, Xiaoyang Lyu*, Tianhe Ren, Peng Dai, <strong>Xiaoshan Wu</strong>, et al.</div>
-        <div class="paper-venue">ECCV 2026</div>
-        <div class="tag-links"><a href="https://arxiv.org/abs/2607.11588" target="_blank" rel="noopener">Paper</a></div>
-      </div>
-    </article>
-
-    <article class="paper-item">
-      <div class="paper-teaser"><img src="images/videossm.png" alt="VideoSSM"></div>
-      <div class="paper-desc">
-        <span class="paper-title">VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</span>
-        <div class="paper-authors">Yifei Yu*, <strong>Xiaoshan Wu*</strong>, Xinting Hu, et al.</div>
-        <div class="paper-venue">ECCV 2026</div>
-        <div class="tag-links"><a href="https://arxiv.org/abs/2512.04519" target="_blank" rel="noopener">Paper</a></div>
-      </div>
-    </article>
-
-    <article class="paper-item">
-      <div class="paper-teaser"><img src="images/LiFR-Seg.png" alt="LiFR-Seg"></div>
-      <div class="paper-desc">
-        <span class="paper-title">LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</span>
-        <div class="paper-authors"><strong>Xiaoshan Wu</strong>, Xiaoyang Lyu, Yifei Yu, et al.</div>
-        <div class="paper-venue">ICLR 2026</div>
-        <div class="tag-links"><a href="https://arxiv.org/abs/2603.21115" target="_blank" rel="noopener">Paper</a></div>
-      </div>
-    </article>
-
-    <article class="paper-item">
-      <div class="paper-teaser"><img src="images/streamingdepth.png" alt="Streaming video geometry"></div>
-      <div class="paper-desc">
-        <span class="paper-title">Stabilizing Streaming Video Geometry via Dynamic Feature Normalization</span>
-        <div class="paper-authors">Xiaoyang Lyu*, Muxin Liu*, <strong>Xiaoshan Wu</strong>, et al.</div>
-        <div class="paper-venue">CVPR 2026</div>
-        <div class="tag-links"><a href="https://arxiv.org/abs/2605.25308" target="_blank" rel="noopener">Paper</a></div>
-      </div>
-    </article>
-
-    <article class="paper-item">
-      <div class="paper-teaser"><img src="images/CSGe.png" alt="Neural-field reconstruction using resistive memory"></div>
-      <div class="paper-desc">
-        <span class="paper-title">Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory</span>
-        <div class="paper-authors">Yifei Yu, Xinyuan Zhang, Shaocong Wang, ..., <strong>Xiaoshan Wu</strong>, et al.</div>
-        <div class="paper-venue">Nature, 2026</div>
-        <div class="tag-links"><a href="https://www.nature.com/articles/s41586-026-10646-w" target="_blank" rel="noopener">Paper</a></div>
-      </div>
-    </article>
-
-    <h2>Research Experience</h2>
-    <section class="experience">
-      <div class="experience-head">
-        <div><strong>Harvard University</strong><br><em>Visiting Researcher</em></div>
-        <div class="muted">Cambridge, MA, USA<br>Apr. 2026 &ndash; Aug. 2026</div>
-      </div>
-      <p>Collaborated with Yilun Du and Mengyu Wang on self-improving physical agents and agent&ndash;world model co-evolution.</p>
+    <section class="research" aria-labelledby="research">
+      <h2 id="research">World models, memory, and embodied intelligence</h2>
+      <p>I study how robots can use world models to reason about actions and improve through interaction. My work connects <strong>4D world&ndash;action models</strong>, <strong>video generation</strong>, and <strong>geometry-grounded memory</strong> for spatial reasoning. My longer-term goal is to build agents that test alternatives in learned environments and turn real-world feedback into reusable knowledge.</p>
+      <p>Earlier work on event-based perception and neuromorphic computing informs my approach to reliable perception and efficient learning in the physical world.</p>
     </section>
 
+    <section aria-labelledby="news">
+      <h2 id="news">News</h2>
+      <dl class="news">
+        <dt>2026</dt><dd>Current manuscripts explore <a href="#world-models">verifiable 4D world&ndash;action models and geometry-based memory</a>, alongside <a href="#event-vision">LiFR v2</a> for high-rate dense prediction.</dd>
+        <dt>2026</dt><dd>FoundationGeo at ECCV, streaming video geometry at CVPR, and LiFR-Seg at ICLR.</dd>
+        <dt>2025</dt><dd>EAG3R received a NeurIPS <span class="highlight">Spotlight</span>.</dd>
+      </dl>
+    </section>
+
+    <h2 id="publications">Publications &amp; preprints</h2>
+    <p class="section-note">Grouped by research area. * Equal contribution; &dagger; project lead. Author lists are abbreviated.</p>
+    <section class="publication-group" aria-labelledby="world-models">
+      <h3 id="world-models">World models, video generation &amp; embodied reasoning</h3>
+      <article class="paper-item no-teaser">
+        <div class="paper-desc">
+          <h4 class="paper-title">Verifiable 4D World&ndash;Action Model for Robust Robot Control</h4>
+          <div class="paper-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou, M. Wang, and Y. Du.</div>
+          <div class="paper-venue">Under review at ICLR 2027</div>
+          <p class="paper-note">Connecting visual prediction and robot actions through explicit 4D geometry.</p>
+        </div>
+      </article>
+      <article class="paper-item no-teaser">
+        <div class="paper-desc">
+          <h4 class="paper-title">GaMe: Geometry as Memory for Multi-View Spatial Reasoning</h4>
+          <div class="paper-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, M. Liu, S. Shi, Z. Wang, and X. Qi.</div>
+          <div class="paper-venue">Under review at ICRA 2027</div>
+          <p class="paper-note">Using geometry as memory for spatial reasoning across multiple views.</p>
+        </div>
+      </article>
+      <article class="paper-item">
+        <div class="paper-desc">
+          <h4 class="paper-title">VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</h4>
+          <div class="paper-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup></strong>, X. Hu, et al.</div>
+          <div class="paper-venue">arXiv preprint, 2025</div>
+          <p class="paper-note">Hybrid state-space memory for coherent, autoregressive long-video generation.</p>
+          <div class="paper-links"><a href="https://arxiv.org/abs/2512.04519" target="_blank" rel="noopener">Paper</a></div>
+        </div>
+        <div class="paper-teaser"><img src="images/videossm.png" alt="VideoSSM overview" loading="lazy" decoding="async" width="168" height="112"></div>
+      </article>
+    </section>
+    <section class="publication-group" aria-labelledby="geometry">
+      <h3 id="geometry">3D geometry &amp; neural representations</h3>
+      <article class="paper-item">
+        <div class="paper-desc">
+          <h4 class="paper-title">Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory</h4>
+          <div class="paper-authors">Y. Yu, X. Zhang, S. Wang, &hellip;, <strong>X. Wu</strong>, et al.</div>
+          <div class="paper-venue"><strong>Nature</strong>, 654:642&ndash;651, 2026</div>
+          <div class="paper-links"><a href="https://www.nature.com/articles/s41586-026-10646-w" target="_blank" rel="noopener">Paper</a></div>
+        </div>
+        <div class="paper-teaser"><img src="images/CSGe.png" alt="Neural-field reconstruction using resistive memory" loading="lazy" decoding="async" width="168" height="112"></div>
+      </article>
+      <article class="paper-item">
+        <div class="paper-desc">
+          <h4 class="paper-title">FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry</h4>
+          <div class="paper-authors">M. Liu, X. Lyu, T. Ren, P. Dai, <strong>X. Wu</strong>, et al.</div>
+          <div class="paper-venue">ECCV 2026</div>
+          <div class="paper-links"><a href="https://arxiv.org/abs/2607.11588" target="_blank" rel="noopener">Paper</a></div>
+        </div>
+        <div class="paper-teaser"><img src="images/foundationgeo/foundationgeo.png" alt="FoundationGeo overview" loading="lazy" decoding="async" width="168" height="112"></div>
+      </article>
+      <article class="paper-item">
+        <div class="paper-desc">
+          <h4 class="paper-title">Stabilizing Streaming Video Geometry via Dynamic Feature Normalization</h4>
+          <div class="paper-authors">X. Lyu, M. Liu, <strong>X. Wu</strong>, et al.</div>
+          <div class="paper-venue">CVPR 2026</div>
+          <div class="paper-links"><a href="https://arxiv.org/abs/2605.25308" target="_blank" rel="noopener">Paper</a></div>
+        </div>
+        <div class="paper-teaser"><img src="images/streamingdepth.png" alt="Streaming video geometry" loading="lazy" decoding="async" width="168" height="112"></div>
+      </article>
+      <article class="paper-item no-teaser">
+        <div class="paper-desc">
+          <h4 class="paper-title">OptiGeo: Efficient Monocular Geometry for Embodied Perception in Optically Challenging Scenes</h4>
+          <div class="paper-authors">M. Liu, T. Liu, J. Xia, X. Lyu, <strong>X. Wu</strong>, et al.</div>
+          <div class="paper-venue">arXiv preprint, 2026</div>
+          <div class="paper-links"><a href="https://arxiv.org/abs/2608.29881" target="_blank" rel="noopener">Paper</a></div>
+        </div>
+      </article>
+    </section>
+    <section class="publication-group" aria-labelledby="event-vision">
+      <h3 id="event-vision">Event-based perception</h3>
+      <article class="paper-item">
+        <div class="paper-desc">
+          <h4 class="paper-title">EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</h4>
+          <div class="paper-authors"><strong>X. Wu</strong>, Y. Yu, X. Lyu, et al.</div>
+          <div class="paper-venue">NeurIPS 2025 &middot; <span class="highlight">Spotlight</span></div>
+          <div class="paper-links"><a href="https://arxiv.org/abs/2512.00771" target="_blank" rel="noopener">Paper</a></div>
+        </div>
+        <div class="paper-teaser"><img src="images/Eag3r_pipeline.jpg" alt="EAG3R pipeline" loading="lazy" decoding="async" width="168" height="112"></div>
+      </article>
+      <article class="paper-item">
+        <div class="paper-desc">
+          <h4 class="paper-title">EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera</h4>
+          <div class="paper-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup><sup>&dagger;</sup></strong>, X. Lyu, Z. Wang, and X. Qi.</div>
+          <div class="paper-venue">Under review at AAAI 2027</div>
+        </div>
+        <div class="paper-teaser"><img src="images/EVSplat.gif" alt="EVSplat reconstruction" loading="lazy" decoding="async" width="168" height="112"></div>
+      </article>
+      <article class="paper-item no-teaser">
+        <div class="paper-desc">
+          <h4 class="paper-title">LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction</h4>
+          <div class="paper-authors">T. Wan<sup>*</sup>, <strong>X. Wu<sup>*</sup><sup>&dagger;</sup></strong>, Y. Yu, et al.</div>
+          <div class="paper-venue">Under review at IEEE TPAMI &middot; arXiv, 2026</div>
+          <div class="paper-links"><a href="https://arxiv.org/abs/2609.25803" target="_blank" rel="noopener">Paper</a></div>
+        </div>
+      </article>
+      <article class="paper-item">
+        <div class="paper-desc">
+          <h4 class="paper-title">LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</h4>
+          <div class="paper-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, B. Wang, Z. Wang, and X. Qi.</div>
+          <div class="paper-venue">ICLR 2026</div>
+          <div class="paper-links"><a href="https://arxiv.org/abs/2603.21115" target="_blank" rel="noopener">Paper</a></div>
+        </div>
+        <div class="paper-teaser"><img src="images/LiFR-Seg.png" alt="LiFR-Seg overview" loading="lazy" decoding="async" width="168" height="112"></div>
+      </article>
+      <article class="paper-item no-teaser">
+        <div class="paper-desc">
+          <h4 class="paper-title">Event-Based Depth Prediction With Deep Spiking Neural Network</h4>
+          <div class="paper-authors"><strong>X. Wu</strong>, W. He, M. Yao, et al.</div>
+          <div class="paper-venue">IEEE Transactions on Cognitive and Developmental Systems, 16(6):2008&ndash;2018, 2024</div>
+        </div>
+      </article>
+    </section>
+    <section class="publication-group" aria-labelledby="neuromorphic">
+      <h3 id="neuromorphic">Neuromorphic computing &amp; devices</h3>
+      <article class="paper-item no-teaser">
+        <div class="paper-desc">
+          <h4 class="paper-title">Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver</h4>
+          <div class="paper-authors">H. Chen, J. Yang, J. Chen, &hellip;, <strong>X. Wu</strong>, et al.</div>
+          <div class="paper-venue">Science Advances, 11(22):eadr7571, 2025</div>
+        </div>
+      </article>
+      <article class="paper-item no-teaser">
+        <div class="paper-desc">
+          <h4 class="paper-title">Topology Optimization of Random Memristors for Input-Aware Dynamic SNN</h4>
+          <div class="paper-authors">B. Wang, X. Zhang, S. Wang, &hellip;, <strong>X. Wu</strong>, et al.</div>
+          <div class="paper-venue">Science Advances, 11(16):eads5340, 2025</div>
+        </div>
+      </article>
+      <article class="paper-item no-teaser">
+        <div class="paper-desc">
+          <h4 class="paper-title">Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing</h4>
+          <div class="paper-authors">C. Li, X. Chen, Z. Zhang, <strong>X. Wu</strong>, et al.</div>
+          <div class="paper-venue">Nano Letters, 24(47):15025&ndash;15034, 2024</div>
+        </div>
+      </article>
+    </section>
+    <section aria-labelledby="background">
+      <h2 id="background">Background</h2>
+      <div class="experience">
+        <div><strong>Harvard University</strong><p>Visiting Researcher</p><p class="detail">Yilun Du and Mengyu Wang &middot; Embodied AI and 4D world models</p></div>
+        <div class="dates">Apr. 2026 &ndash; Aug. 2026<br>Cambridge, MA, USA</div>
+      </div>
+      <div class="experience">
+        <div><strong>The University of Hong Kong</strong><p>Ph.D. in Electrical and Computer Engineering</p><p class="detail">Advisor: Prof. Xiaojuan Qi</p></div>
+        <div class="dates">Sep. 2023 &ndash; Present<br>Hong Kong</div>
+      </div>
+      <div class="experience">
+        <div><strong>Zhejiang University &amp; University of Illinois Urbana-Champaign</strong><p>Dual B.S. in Computer Engineering</p><p class="detail">ZJUI Institute</p></div>
+        <div class="dates">Sep. 2019 &ndash; Jun. 2023<br>China &amp; USA</div>
+      </div>
+      <h3>Selected awards</h3>
+      <ul class="awards">
+        <li>Hong Kong PhD Fellowship (HKPFS), 2023</li>
+        <li>HKU Presidential Scholarship, 2023</li>
+        <li>Outstanding Graduate of Zhejiang University, 2023</li>
+        <li>NeurIPS Travel Award, 2025; ICLR Travel Award, 2026</li>
+      </ul>
+    </section>
     <footer>
-      &copy; 2026 Xiaoshan Wu &nbsp;&middot;&nbsp;
-      <a href="ia8eshfzfsvn.pdf" target="_blank">Download CV (PDF)</a>
+      <span>&copy; 2026 Xiaoshan Wu &middot; Updated October 2026</span>
+      <a href="Xiaoshan_Wu_CV.pdf" target="_blank" rel="noopener">Download CV (PDF)</a>
     </footer>
   </main>
 </body>
