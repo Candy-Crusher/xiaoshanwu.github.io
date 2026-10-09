@@ -1,0 +1,91 @@
+/* The author's film still frames an aspiration; the research retains a quiet, readable surface. */
+:root { --paper: #fcfbf9; --accent: #655375; --ink: #29272e; --muted: #69646c; --line: #e2dde3; --spotlight: #924f59; }
+::selection { background: #e7ddec; color: #30243b; }
+.cinematic-shell { position: relative; isolation: isolate; overflow: hidden; background: #140e20; color: #faf6fc; }
+.cinematic-shell .wrap { width: min(1224px, 100%); padding-inline: 40px; }
+.cinematic-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 48%; z-index: -3; }
+.cinematic-shell::before { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: linear-gradient(90deg, rgba(16,10,28,.02) 0%, rgba(16,10,28,.1) 38%, rgba(16,10,28,.70) 60%, rgba(16,10,28,.62) 79%, rgba(16,10,28,.18) 100%); }
+.cinematic-shell::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, rgba(13,9,23,.64), transparent 25%, transparent 65%, rgba(13,9,23,.5)); }
+.cinematic-shell .site-header { position: relative; padding-block: 25px; }
+.cinematic-shell .wordmark { color: #fff8ff; font-size: 20px; }
+.cinematic-shell .wordmark span { color: #d8cadd; }
+.cinematic-shell .site-nav a { color: #eee5f1; }
+.cinematic-shell a:focus-visible { outline-color: #f0d3f9; }
+.cinematic-hero { min-height: 472px; display: flex; align-items: center; padding-block: 32px 44px; }
+.hero-copy { margin-left: auto; width: 470px; max-width: 47%; }
+.hero-kicker { color: #dec8e8; font-size: 10px; line-height: 1.6; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 15px; }
+.cinematic-hero h1 { font: 32px/1.3 var(--serif); letter-spacing: -.7px; }
+.cinematic-hero h1 span { font: 15px/1.4 'Songti SC', serif; letter-spacing: .15em; color: #e3d3e7; margin-left: 13px; white-space: nowrap; }
+.hero-statement { font: 49px/1.15 var(--serif); letter-spacing: -1.2px; margin-top: 25px; color: #fff9ff; }
+.hero-direction { font-size: 13px; line-height: 1.8; color: #e8ddeb; margin-top: 23px; }
+.hero-links { display: flex; gap: 26px; flex-wrap: wrap; font-size: 12px; margin-top: 21px; }
+.hero-links a { color: #fbecff; padding-block: 7px; text-decoration: underline; text-decoration-color: rgba(233,206,242,.4); }
+.hero-links a:hover { text-decoration-color: #fbecff; }
+.hero-foot { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 22px; font-size: 10px; letter-spacing: .03em; }
+.hero-foot a { color: #e0cedf; padding-block: 5px; }
+.hero-foot span { margin-left: 8px; }
+.research-direction { padding-top: 47px; scroll-margin-top: 22px; }
+.research-intro-grid { display: grid; grid-template-columns: minmax(0,1fr) 118px; gap: 42px; align-items: start; }
+.eyebrow { color: var(--accent); font-size: 10px; letter-spacing: .12em; line-height: 1.6; text-transform: uppercase; margin-bottom: 13px; }
+.direction-copy h2 { font-size: 27px; line-height: 1.25; letter-spacing: -.55px; }
+.direction-copy h2 span { font-size: 21px; line-height: 1.5; color: #5b4b64; letter-spacing: -.25px; }
+.direction-intro { font-size: 14px; line-height: 1.75; margin-top: 16px; color: #423e47; }
+.bio-compact { font-size: 12.5px; line-height: 1.7; color: var(--muted); margin-top: 11px; }
+.bio-compact a { text-decoration: underline; text-decoration-color: #cbbfce; }
+.research-portrait { padding-top: 30px; }
+.research-portrait img { display: block; width: 118px; height: 161px; object-fit: cover; object-position: center 58%; border-radius: 1px; }
+.direction-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 35px; margin: 29px 0 41px; padding: 23px 0 26px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.direction-number { font-size: 10px; color: var(--muted); letter-spacing: .05em; margin-bottom: 9px; }
+.direction-pair h3 { font: 21px/1.3 var(--serif); letter-spacing: -.3px; margin-bottom: 10px; }
+.direction-pair section>p:last-child { font-size: 12.5px; line-height: 1.75; color: #605966; }
+.research-result strong { color: var(--accent); }
+.research-copy h3 a, .pub-title a { color: var(--ink); }
+.research-summary { color: #56505c; }
+.inspiration-note { margin-top: 41px; padding: 24px 0 0; border-top: 1px solid var(--line); scroll-margin-top: 24px; }
+.inspiration-note>p:not(.eyebrow):not(.image-credit) { max-width: 720px; font: 17px/1.6 var(--serif); color: #62576b; }
+.image-credit { font-size: 10px; line-height: 1.65; margin-top: 12px; color: var(--muted); }
+.inspiration-note cite { font-style: italic; }
+.site-footer { margin-top: 29px; }
+@media(min-width:1500px) { .cinematic-hero { min-height: 535px; } .cinematic-image { object-position: center 46%; } }
+@media(max-width:1050px) and (min-width:681px) { .hero-copy { max-width: 49%; } .hero-statement { font-size: 42px; } .cinematic-shell .wrap { padding-inline: 32px; } .cinematic-hero { min-height: 448px; } }
+@media(max-width:760px) { .research-intro-grid { gap: 24px; grid-template-columns: minmax(0,1fr) 98px; } .research-portrait img { width: 98px; height: 140px; } .direction-copy h2 { font-size: 24px; } .direction-copy h2 span { font-size: 19px; } }
+@media(max-width:680px) {
+  .cinematic-shell .wrap { padding-inline: 24px; }
+  .cinematic-shell .site-header { background: #140e20; padding-block: 17px 11px; flex-wrap: wrap; gap: 8px; }
+  .cinematic-shell .wordmark { font-size: 18px; }
+  .cinematic-shell .site-nav { flex-basis: 100%; font-size: 11.5px; gap: 22px; }
+  .cinematic-shell .site-nav a { padding-block: 6px; }
+  .cinematic-image { position: relative; display: block; inset: auto; z-index: -3; height: auto; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+  .cinematic-shell::before { display: none; }
+  .cinematic-shell::after { display: none; }
+  .cinematic-hero { min-height: 0; padding-top: 29px; padding-bottom: 26px; }
+  .hero-copy { margin-left: 0; width: 100%; max-width: 100%; }
+  .hero-kicker { font-size: 9px; margin-bottom: 11px; }
+  .cinematic-hero h1 { font-size: 28px; }
+  .cinematic-hero h1 span { font-size: 14px; }
+  .hero-statement { font-size: 39px; line-height: 1.18; margin-top: 19px; letter-spacing: -.8px; }
+  .hero-direction { margin-top: 18px; font-size: 12px; }
+  .hero-links { margin-top: 15px; gap: 25px; font-size: 12px; }
+  .hero-foot { font-size: 9px; padding-bottom: 16px; }
+  .hero-foot a { padding-block: 6px; }
+  .hero-foot span { margin-left: 4px; }
+  .research-direction { padding-top: 34px; }
+  .research-intro-grid { grid-template-columns: minmax(0,1fr) 72px; gap: 15px; }
+  .direction-copy { display: contents; }
+  .direction-copy .eyebrow { grid-column: 1; grid-row: 1; margin: 0; font-size: 9px; align-self: end; }
+  .direction-copy h2 { grid-column: 1; grid-row: 2; font-size: 22px; line-height: 1.28; letter-spacing: -.5px; }
+  .direction-copy h2 span { display: block; font-size: 16px; line-height: 1.45; margin-top: 8px; }
+  .direction-copy h2 br { display: none; }
+  .direction-intro,.bio-compact { grid-column: 1/-1; margin-top: 0; }
+  .direction-intro { font-size: 13px; }
+  .bio-compact { font-size: 12px; }
+  .research-portrait { grid-column: 2; grid-row: 1 / span 2; align-self: center; padding-top: 0; }
+  .research-portrait img { width: 72px; height: 108px; }
+  .direction-pair { grid-template-columns: 1fr; gap: 25px; padding-block: 23px; margin: 26px 0 34px; }
+  .direction-pair h3 { font-size: 21px; }
+  .direction-pair section>p:last-child { font-size: 12.5px; }
+  .inspiration-note { margin-top: 32px; }
+  .inspiration-note>p:not(.eyebrow):not(.image-credit) { font-size: 16px; }
+}
+@media(max-width:360px) { .hero-statement { font-size: 34px; } .hero-direction { font-size: 11px; } .hero-links { gap: 23px; } .direction-copy h2 { font-size: 20px; } }
+@media print { .cinematic-shell { background: white; color: black; } .cinematic-image,.cinematic-shell::before,.cinematic-shell::after,.hero-links,.hero-foot,.inspiration-note { display: none; } .cinematic-hero { min-height: 0; padding: 0; } .hero-copy { width: 100%; max-width: none; margin: 0; } .cinematic-hero p,.cinematic-hero h1,.cinematic-hero h1 span { color: black; } .hero-statement { display: none; } .hero-direction { margin-top: 8px; } .research-direction { padding-top: 20px; } }
