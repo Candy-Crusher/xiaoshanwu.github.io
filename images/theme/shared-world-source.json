@@ -1,0 +1,44 @@
+{
+  "source_url": "https://wallup.net/wp-content/uploads/2018/09/25/571291-Officer_K-blue_hair-finger_pointing-eye_contact-Ana_de_Armas-women-Joi-Blade_Runner_2049-hologram-bridge-neon_glow-coats-futuristic-cyberpunk-Blade_Runner.jpg",
+  "source_page": "https://wallup.net/officer-k-blue-hair-finger-pointing-eye-contact-ana-de-armas-women-joi-blade-runner-2049-hologram-bridge-neon-glow-coats-futuristic-cyberpunk-blade-runner/",
+  "source_dimensions": [
+    2864,
+    1200
+  ],
+  "source_sha256": "f98bc14c4df8eeef63ccbd6e923dcff0525008bad02afccab716e5bf255930e0",
+  "processing": "Downsampling and WebP encoding only. Mobile preview is a crop of the same source. No upscaling, synthetic detail, sharpening, or color filters.",
+  "credit": "Film still from Blade Runner 2049 (2017). All rights remain with the respective rights holders. The source page is not a reuse license.",
+  "files": {
+    "shared-world-1440.webp": {
+      "width": 1440,
+      "height": 603,
+      "bytes": 75062
+    },
+    "shared-world-1920.webp": {
+      "width": 1920,
+      "height": 804,
+      "bytes": 121418
+    },
+    "shared-world-2864.webp": {
+      "width": 2864,
+      "height": 1200,
+      "bytes": 222000
+    },
+    "shared-world-mobile-790.webp": {
+      "width": 790,
+      "height": 600,
+      "bytes": 46110
+    },
+    "shared-world-mobile-1580.webp": {
+      "width": 1580,
+      "height": 1200,
+      "bytes": 129864
+    }
+  },
+  "mobile_crop_xyxy": [
+    535,
+    0,
+    2115,
+    1200
+  ]
+}
