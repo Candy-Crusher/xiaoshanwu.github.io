@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -29,27 +30,13 @@
     .native-name { margin-left: 5px; font-size: 22px; font-weight: 400; color: #555; letter-spacing: 0; white-space: nowrap; }
     .profile-photo { display: block; width: 178px; height: 178px; border-radius: 50%; object-fit: cover; }
     .contact-links { display: flex; flex-wrap: wrap; gap: 7px 20px; margin-top: 15px; }
-    .research { margin-top: 30px; }
-    .research h2 { border: 0; margin: 0 0 10px; padding: 0; font-size: 23px; line-height: 1.35; }
     h2 { margin: 37px 0 18px; padding-bottom: 9px; border-bottom: 1px solid #dedede; font-size: 22px; line-height: 1.4; font-weight: 600; letter-spacing: -0.2px; }
     h3 { margin: 27px 0 16px; font-size: 17px; line-height: 1.45; font-weight: 600; }
     .muted, .section-note { color: #666; }
     .section-note { font-size: 13px; margin: -6px 0 18px; }
-    .feature { display: grid; grid-template-columns: minmax(0, 1fr) 224px; gap: 25px; align-items: center; margin: 0 0 25px; }
-    .feature.no-teaser { display: block; padding-left: 0; }
-    .feature h3 { margin: 0 0 6px; font-size: 17px; line-height: 1.45; font-weight: 650; }
-    .feature .research-question { margin: 0 0 7px; color: #444; font-size: 14px; }
-    .feature-authors { color: #595959; font-size: 14px; margin-bottom: 3px; }
-    .feature-authors strong { color: #222; }
-    .feature-meta { font-size: 13px; display: flex; gap: 7px 16px; align-items: baseline; flex-wrap: wrap; }
-    .feature-role { color: #1767a6; }
     .paper-venue { font-size: 13px; color: #555; }
     .paper-venue strong { color: #222; font-weight: 650; }
-    .feature > div { grid-column: 1; grid-row: 1; }
-    .teaser { margin: 0; grid-column: 2; grid-row: 1; }
-    .teaser img { display: block; width: 100%; height: auto; max-height: 130px; object-fit: contain; }
     .highlight { color: #b52c32; font-weight: 600; }
-    .paper-links { display: inline; }
     sup { font-size: 10px; line-height: 0; }
     .publication-list { padding-left: 23px; margin: 0; }
     .publication-list li { padding-left: 4px; margin: 0 0 17px; break-inside: avoid; }
@@ -78,12 +65,6 @@
       .native-name { display: block; font-size: 19px; margin: 4px 0 0; }
       .profile-photo { width: 100px; height: 100px; margin-top: 3px; }
       .contact-links { gap: 6px 15px; }
-      .research { margin-top: 27px; }
-      .research h2 { font-size: 21px; }
-      .feature { grid-template-columns: minmax(0, 1fr); gap: 11px; margin-bottom: 27px; }
-      .teaser { max-width: 330px; }
-      .feature .teaser { grid-column: 1; grid-row: 2; }
-      .teaser img { max-height: 120px; }
       .experience { grid-template-columns: minmax(0, 1fr); gap: 3px; }
       .experience .dates { text-align: left; }
     }
@@ -94,18 +75,16 @@
     @media print {
       .container { max-width: none; padding: 0; }
       .site-nav, .skip-link, .teaser, footer { display: none; }
-      .feature { display: block; break-inside: avoid; }
       a { color: inherit; }
-    }
-</style>
-</head>
+    }</style>
+<link href="assets/css/research.css" rel="stylesheet"/><script defer="" src="assets/js/research.js"></script></head>
 <body>
-  <a class="skip-link" href="#selected-research">Skip to research</a>
-  <main class="container">
-    <nav class="site-nav" aria-label="Main navigation">
-      <a href="#selected-research">Research</a><a href="#publications">Publications</a><a href="#background">Background</a><a href="Xiaoshan_Wu_CV.pdf" target="_blank" rel="noopener">CV</a>
-    </nav>
-    <header class="profile">
+<a class="skip-link" href="#selected-research">Skip to research</a>
+<main class="container">
+<nav aria-label="Main navigation" class="site-nav">
+<a href="#selected-research">Research</a><a href="#publications">Publications</a><a href="#background">Background</a><a href="Xiaoshan_Wu_CV.pdf" rel="noopener" target="_blank">CV</a>
+</nav>
+<header class="profile">
 <div>
 <h1>Xiaoshan Wu <span class="native-name" lang="zh">吴小山</span></h1>
 <p>Ph.D. candidate, The University of Hong Kong<br/>Advised by <a href="https://xjqi.github.io/" rel="noopener" target="_blank">Prof. Xiaojuan Qi</a></p>
@@ -117,157 +96,198 @@
 <a href="Xiaoshan_Wu_CV.pdf" rel="noopener" target="_blank">CV / Resume</a>
 </div>
 </div>
-<img alt="Xiaoshan Wu" class="profile-photo" fetchpriority="high" height="184" src="images/photo.jpg" width="184"/>
+<img alt="Xiaoshan Wu" class="profile-photo" fetchpriority="high" height="184" src="images/research/profile.webp" width="184"/>
 </header>
-    <section class="research" aria-labelledby="research">
-      <h2 id="research">World models and memory for embodied intelligence</h2>
-      <p>I study how robots can use world models to reason about actions and improve through interaction. My research connects <strong>action-grounded 4D prediction</strong>, <strong>video generation</strong>, and <strong>geometry-grounded memory</strong>. My goal is to build physical agents that test alternatives in learned environments and turn real-world feedback into reusable knowledge.</p>
-    </section>
-    <section aria-labelledby="selected-research">
-      <h2 id="selected-research">Selected Research</h2>
-      <article class="feature no-teaser" id="selected-world-action-model">
-        
-        <div>
-          <h3>Verifiable 4D World–Action Model for Robust Robot Control</h3>
-          <p class="research-question">Connecting visual prediction and robot actions through explicit 4D geometry.</p>
-          <div class="feature-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, et al.</div>
-          <div class="feature-meta"><span class="paper-venue">Under review at ICLR 2027</span><span class="feature-role">Co-first author</span><span class="paper-links"></span><a href="#pub-world-action-model" aria-label="Publication details for Verifiable 4D World–Action Model for Robust Robot Control">Details</a></div>
-        </div>
-      </article>
-      <article class="feature no-teaser" id="selected-game">
-        
-        <div>
-          <h3>GaMe: Geometry as Memory for Multi-View Spatial Reasoning</h3>
-          <p class="research-question">Using geometry as persistent memory for spatial reasoning across multiple views.</p>
-          <div class="feature-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, et al.</div>
-          <div class="feature-meta"><span class="paper-venue">Under review at ICRA 2027</span><span class="feature-role">First author</span><span class="paper-links"></span><a href="#pub-game" aria-label="Publication details for GaMe: Geometry as Memory for Multi-View Spatial Reasoning">Details</a></div>
-        </div>
-      </article>
-      <article class="feature" id="selected-videossm">
-        <figure class="teaser"><img src="images/videossm.png" alt="VideoSSM long-video examples and hybrid-memory architecture" loading="lazy" decoding="async"></figure>
-        <div>
-          <h3>VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</h3>
-          <p class="research-question">Hybrid state-space memory for autoregressive long-video generation.</p>
-          <div class="feature-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup></strong>, X. Hu, et al.</div>
-          <div class="feature-meta"><span class="paper-venue">arXiv preprint, 2025</span><span class="feature-role">Co-first author</span><span class="paper-links"><a href="https://arxiv.org/abs/2512.04519" rel="noopener" target="_blank">Paper</a></span><a href="#pub-videossm" aria-label="Publication details for VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory">Details</a></div>
-        </div>
-      </article>
-      <article class="feature" id="selected-eag3r">
-        <figure class="teaser"><img src="images/Eag3r_pipeline.jpg" alt="EAG3R combines RGB and events to estimate 3D geometry" loading="lazy" decoding="async"></figure>
-        <div>
-          <h3>EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</h3>
-          <p class="research-question">Recovering 3D geometry in dynamic scenes and extreme lighting with complementary visual and event observations.</p>
-          <div class="feature-authors"><strong>X. Wu</strong>, Y. Yu, X. Lyu, et al.</div>
-          <div class="feature-meta"><span class="paper-venue"><strong>NeurIPS 2025</strong> · <span class="highlight">Spotlight</span></span><span class="feature-role">First author</span><span class="paper-links"><a href="https://arxiv.org/abs/2512.00771" rel="noopener" target="_blank">Paper</a></span><a href="#pub-eag3r" aria-label="Publication details for EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes">Details</a></div>
-        </div>
-      </article>
-      <article class="feature" id="selected-lifr-seg">
-        <figure class="teaser"><img src="images/LiFR-Seg.png" alt="LiFR-Seg updates segmentation between RGB frames" loading="lazy" decoding="async"></figure>
-        <div>
-          <h3>LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</h3>
-          <p class="research-question">Keeping scene perception up to date between RGB frames through event-guided propagation.</p>
-          <div class="feature-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, et al.</div>
-          <div class="feature-meta"><span class="paper-venue"><strong>ICLR 2026</strong></span><span class="feature-role">First author</span><span class="paper-links"><a href="https://arxiv.org/abs/2603.21115" rel="noopener" target="_blank">Paper</a></span><a href="#pub-lifr-seg" aria-label="Publication details for LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation">Details</a></div>
-        </div>
-      </article>
-    </section>
-    <section aria-labelledby="publications">
-      <h2 id="publications">Publications &amp; Preprints</h2>
-      <p class="section-note">* Equal contribution; &dagger; project lead. Author lists are abbreviated; publication and review status are shown for each work.</p>
-      <section aria-labelledby="first-author-work">
-        <h3 id="first-author-work">First- and Co-first-author Work</h3>
+<section aria-labelledby="research" class="research">
+<h2 id="research">World models and memory for embodied intelligence</h2>
+<p>I study how robots can use world models to reason about actions and improve through interaction. My research connects <strong>action-grounded 4D prediction</strong>, <strong>video generation</strong>, and <strong>geometry-grounded memory</strong>. My goal is to build physical agents that test alternatives in learned environments and turn real-world feedback into reusable knowledge.</p>
+</section>
+ <section aria-labelledby="selected-research" class="selected-research">
+<div class="section-heading"><h2 id="selected-research">Selected Research</h2><a href="#publications">Full publication list <span aria-hidden="true">↓</span></a></div>
+<p class="research-intro">World models for action, memory for spatial reasoning, and perception that keeps pace with a changing world.</p>
+<article class="research-entry" id="selected-world-action-model">
+<figure class="research-visual">
+<a aria-label="Enlarge World–action models figure" class="figure-preview" data-caption="S4NDBOX: architecture schematic from the research source. This is a conceptual diagram, not an empirical attention map." data-figure="" href="images/research/s4ndbox-architecture-full.webp">
+<img alt="Multimodal prediction architecture" decoding="async" height="381" loading="lazy" src="images/research/s4ndbox-architecture.webp" width="720"/>
+<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+</a>
+<figcaption>Multimodal prediction architecture</figcaption>
+</figure>
+<div class="research-copy">
+<p class="research-area">World–action models</p>
+<h3>Verifiable 4D World–Action Model for Robust Robot Control</h3>
+<p class="research-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, et al.</p>
+<p class="research-meta"><span>Under review at ICLR 2027</span><span class="research-role">Co-first author</span></p>
+<p class="research-summary">Jointly predicting appearance, depth, motion fields, and actions makes a robot’s imagined future geometrically testable. S4NDBOX uses agreement between predicted motion and candidate actions to guide selection before execution, with evaluations on domain-randomized manipulation and zero-shot simulation-to-real transfer.</p>
+<nav aria-label="World–action models resources" class="research-links"><a href="#pub-world-action-model">Publication details</a></nav>
+</div>
+</article>
+<article class="research-entry" id="selected-game">
+<figure class="research-visual">
+<a aria-label="Enlarge Spatial reasoning &amp; memory figure" class="figure-preview" data-caption="GaMe: conceptual overview from the manuscript. The scenes, point cloud, and example answer illustrate the approach; they are not benchmark inputs or measured model predictions." data-figure="" href="images/research/game-overview.webp">
+<img alt="Geometry-enriched working memory · conceptual overview" decoding="async" height="276" loading="lazy" src="images/research/game-overview.webp" width="600"/>
+<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+</a>
+<figcaption>Geometry-enriched working memory · conceptual overview</figcaption>
+</figure>
+<div class="research-copy">
+<p class="research-area">Spatial reasoning &amp; memory</p>
+<h3>GaMe: Geometry as Memory for Multi-View Spatial Reasoning</h3>
+<p class="research-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, et al.</p>
+<p class="research-meta"><span>Under review at ICRA 2027</span><span class="research-role">First author</span></p>
+<p class="research-summary">GaMe aggregates visual and geometric features across views into a 16-slot working-memory bank. A second language-model pass reads this compact representation alongside the original images and question, bringing geometric evidence into multi-view spatial reasoning.</p>
+<nav aria-label="Spatial reasoning &amp; memory resources" class="research-links"><a href="#pub-game">Publication details</a></nav>
+</div>
+</article>
+<article class="research-entry" id="selected-videossm">
+<figure class="research-visual">
+<a aria-label="Enlarge Long-video generation figure" class="figure-preview" data-caption="VideoSSM: original overview figure. The homepage preview focuses on the hybrid-memory architecture; the full figure includes long-video examples and the training framework." data-figure="" href="images/research/videossm-full.webp">
+<img alt="Lossless local memory + compressed global memory" decoding="async" height="687" loading="lazy" src="images/research/videossm-memory.webp" width="680"/>
+<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+</a>
+<figcaption>Lossless local memory + compressed global memory</figcaption>
+</figure>
+<div class="research-copy">
+<p class="research-area">Long-video generation</p>
+<h3>VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</h3>
+<p class="research-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup></strong>, X. Hu, et al.</p>
+<p class="research-meta"><span>arXiv preprint, 2025</span><span class="research-role">Co-first author</span></p>
+<p class="research-summary">VideoSSM combines a lossless local attention window with recurrent state-space memory for older frames. This hybrid design preserves recent visual detail while retaining long-range context, supporting minute-long autoregressive generation and prompt changes without an ever-growing KV cache.</p>
+<nav aria-label="Long-video generation resources" class="research-links"><a href="https://arxiv.org/abs/2512.04519" rel="noopener" target="_blank">Paper</a></nav>
+</div>
+</article>
+<article class="research-entry" id="selected-eag3r">
+<figure class="research-visual">
+<a aria-label="Enlarge Dynamic 3D geometry figure" class="figure-preview" data-caption="EAG3R: nighttime depth comparison cropped from the original research poster. From left to right: RGB input, RGB-only depth, and EAG3R depth." data-figure="" href="images/research/eag3r-night-depth.webp">
+<img alt="Nighttime depth: RGB input / RGB-only / EAG3R" decoding="async" height="284" loading="lazy" src="images/research/eag3r-night-depth.webp" width="848"/>
+<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+</a>
+<figcaption>Nighttime depth: RGB input / RGB-only / EAG3R</figcaption>
+</figure>
+<div class="research-copy">
+<p class="research-area">Dynamic 3D geometry</p>
+<h3>EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</h3>
+<p class="research-authors"><strong>X. Wu</strong>, Y. Yu, X. Lyu, et al.</p>
+<p class="research-meta"><span><strong>NeurIPS 2025</strong> <span class="highlight">· Spotlight</span></span><span class="research-role">First author</span></p>
+<p class="research-summary">SNR-aware fusion weights RGB and event features by image reliability, while event-based photometric constraints refine the recovered geometry. This combination supports depth and camera-motion estimation in dynamic, low-light scenes, including daytime-to-nighttime transfer without nighttime fine-tuning.</p>
+<nav aria-label="Dynamic 3D geometry resources" class="research-links"><a href="https://arxiv.org/abs/2512.00771" rel="noopener" target="_blank">Paper</a><a href="https://candy-crusher.github.io/EAG3R_Proj/" rel="noopener" target="_blank">Project</a><a href="https://github.com/Candy-Crusher/EAG3R" rel="noopener" target="_blank">Code</a><a aria-label="View EAG3R method figure" class="figure-link" data-caption="EAG3R: original reconstruction and optimization pipeline." data-figure="" href="images/research/eag3r-pipeline-full.webp">Method figure</a></nav>
+</div>
+</article>
+<article class="research-entry" id="selected-lifr-seg">
+<figure class="research-visual">
+<a aria-label="Enlarge Continuous scene perception figure" class="figure-preview" data-caption="LiFR-Seg: original teaser showing event-guided segmentation between RGB observations. The displayed semantic predictions are from the research figure, not generated for this website." data-figure="" href="images/research/lifr-seg-full.webp">
+<img alt="Segmentation between RGB observations" decoding="async" height="432" loading="lazy" src="images/research/lifr-seg-overview.webp" width="720"/>
+<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+</a>
+<figcaption>Segmentation between RGB observations</figcaption>
+</figure>
+<div class="research-copy">
+<p class="research-area">Continuous scene perception</p>
+<h3>LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</h3>
+<p class="research-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, et al.</p>
+<p class="research-meta"><span><strong>ICLR 2026</strong></span><span class="research-role">First author</span></p>
+<p class="research-summary">LiFR-Seg updates semantic predictions between RGB frames using asynchronous events. Confidence-aware feature warping and temporal-memory attention preserve previously observed content as the scene evolves, enabling segmentation at a requested time without an RGB frame at that instant.</p>
+<nav aria-label="Continuous scene perception resources" class="research-links"><a href="https://arxiv.org/abs/2603.21115" rel="noopener" target="_blank">Paper</a></nav>
+</div>
+</article>
+</section>
+<section aria-labelledby="publications">
+<h2 id="publications">Publications &amp; Preprints</h2>
+<p class="section-note">* Equal contribution; † project lead. Author lists are abbreviated; publication and review status are shown for each work.</p>
+<section aria-labelledby="first-author-work">
+<h3 id="first-author-work">First- and Co-first-author Work</h3>
 <ol class="publication-list" start="1">
-        <li id="pub-world-action-model">
-          <h4 class="pub-title">Verifiable 4D World–Action Model for Robust Robot Control</h4>
-          <div class="pub-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou, M. Wang, and Y. Du.</div>
-          <div class="pub-detail"><span class="paper-venue">Under review at ICLR 2027</span><span class="pub-role">Co-first author</span></div>
-        </li>
-        <li id="pub-game">
-          <h4 class="pub-title">GaMe: Geometry as Memory for Multi-View Spatial Reasoning</h4>
-          <div class="pub-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, M. Liu, S. Shi, Z. Wang, and X. Qi.</div>
-          <div class="pub-detail"><span class="paper-venue">Under review at ICRA 2027</span><span class="pub-role">First author</span></div>
-        </li>
-        <li id="pub-videossm">
-          <h4 class="pub-title">VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</h4>
-          <div class="pub-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup></strong>, X. Hu, et al.</div>
-          <div class="pub-detail"><span class="paper-venue">arXiv preprint, 2025</span><span class="pub-role">Co-first author</span><span class="paper-links"><a href="https://arxiv.org/abs/2512.04519" rel="noopener" target="_blank">Paper</a></span></div>
-        </li>
-        <li id="pub-eag3r">
-          <h4 class="pub-title">EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</h4>
-          <div class="pub-authors"><strong>X. Wu</strong>, Y. Yu, X. Lyu, et al.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>NeurIPS 2025</strong> · <span class="highlight">Spotlight</span></span><span class="pub-role">First author</span><span class="paper-links"><a href="https://arxiv.org/abs/2512.00771" rel="noopener" target="_blank">Paper</a></span></div>
-        </li>
-        <li id="pub-lifr-seg">
-          <h4 class="pub-title">LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</h4>
-          <div class="pub-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, B. Wang, Z. Wang, and X. Qi.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>ICLR 2026</strong></span><span class="pub-role">First author</span><span class="paper-links"><a href="https://arxiv.org/abs/2603.21115" rel="noopener" target="_blank">Paper</a></span></div>
-        </li>
-        <li id="pub-evsplat">
-          <h4 class="pub-title">EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera</h4>
-          <div class="pub-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup><sup>†</sup></strong>, X. Lyu, Z. Wang, and X. Qi.</div>
-          <div class="pub-detail"><span class="paper-venue">Under review at AAAI 2027</span><span class="pub-role">Co-first author · Project lead</span></div>
-        </li>
-        <li id="pub-lifr-v2">
-          <h4 class="pub-title">LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction</h4>
-          <div class="pub-authors">T. Wan<sup>*</sup>, <strong>X. Wu<sup>*</sup><sup>†</sup></strong>, Y. Yu, et al.</div>
-          <div class="pub-detail"><span class="paper-venue">Under review at IEEE TPAMI · arXiv, 2026</span><span class="pub-role">Co-first author · Project lead</span><span class="paper-links"><a href="https://arxiv.org/abs/2609.25803" rel="noopener" target="_blank">Paper</a></span></div>
-        </li>
-        <li id="pub-spiking-depth">
-          <h4 class="pub-title">Event-Based Depth Prediction With Deep Spiking Neural Network</h4>
-          <div class="pub-authors"><strong>X. Wu</strong>, W. He, M. Yao, et al.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>IEEE TCDS</strong>, 16(6):2008–2018, 2024</span><span class="pub-role">First author</span></div>
-        </li>
+<li id="pub-world-action-model">
+<h4 class="pub-title">Verifiable 4D World–Action Model for Robust Robot Control</h4>
+<div class="pub-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou, M. Wang, and Y. Du.</div>
+<div class="pub-detail"><span class="paper-venue">Under review at ICLR 2027</span><span class="pub-role">Co-first author</span></div>
+</li>
+<li id="pub-game">
+<h4 class="pub-title">GaMe: Geometry as Memory for Multi-View Spatial Reasoning</h4>
+<div class="pub-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, M. Liu, S. Shi, Z. Wang, and X. Qi.</div>
+<div class="pub-detail"><span class="paper-venue">Under review at ICRA 2027</span><span class="pub-role">First author</span></div>
+</li>
+<li id="pub-videossm">
+<h4 class="pub-title">VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</h4>
+<div class="pub-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup></strong>, X. Hu, et al.</div>
+<div class="pub-detail"><span class="paper-venue">arXiv preprint, 2025</span><span class="pub-role">Co-first author</span><span class="paper-links"><a href="https://arxiv.org/abs/2512.04519" rel="noopener" target="_blank">Paper</a></span></div>
+</li>
+<li id="pub-eag3r">
+<h4 class="pub-title">EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</h4>
+<div class="pub-authors"><strong>X. Wu</strong>, Y. Yu, X. Lyu, et al.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>NeurIPS 2025</strong> · <span class="highlight">Spotlight</span></span><span class="pub-role">First author</span><span class="paper-links"><a href="https://arxiv.org/abs/2512.00771" rel="noopener" target="_blank">Paper</a></span></div>
+</li>
+<li id="pub-lifr-seg">
+<h4 class="pub-title">LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</h4>
+<div class="pub-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, B. Wang, Z. Wang, and X. Qi.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>ICLR 2026</strong></span><span class="pub-role">First author</span><span class="paper-links"><a href="https://arxiv.org/abs/2603.21115" rel="noopener" target="_blank">Paper</a></span></div>
+</li>
+<li id="pub-evsplat">
+<h4 class="pub-title">EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera</h4>
+<div class="pub-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup><sup>†</sup></strong>, X. Lyu, Z. Wang, and X. Qi.</div>
+<div class="pub-detail"><span class="paper-venue">Under review at AAAI 2027</span><span class="pub-role">Co-first author · Project lead</span></div>
+</li>
+<li id="pub-lifr-v2">
+<h4 class="pub-title">LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction</h4>
+<div class="pub-authors">T. Wan<sup>*</sup>, <strong>X. Wu<sup>*</sup><sup>†</sup></strong>, Y. Yu, et al.</div>
+<div class="pub-detail"><span class="paper-venue">Under review at IEEE TPAMI · arXiv, 2026</span><span class="pub-role">Co-first author · Project lead</span><span class="paper-links"><a href="https://arxiv.org/abs/2609.25803" rel="noopener" target="_blank">Paper</a></span></div>
+</li>
+<li id="pub-spiking-depth">
+<h4 class="pub-title">Event-Based Depth Prediction With Deep Spiking Neural Network</h4>
+<div class="pub-authors"><strong>X. Wu</strong>, W. He, M. Yao, et al.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>IEEE TCDS</strong>, 16(6):2008–2018, 2024</span><span class="pub-role">First author</span></div>
+</li>
 </ol>
-      </section>
-      <section class="collaborative" aria-labelledby="collaborative-work">
-        <h3 id="collaborative-work">Collaborative Work</h3>
+</section>
+<section aria-labelledby="collaborative-work" class="collaborative">
+<h3 id="collaborative-work">Collaborative Work</h3>
 <ol class="publication-list" start="9">
-        <li id="pub-neural-field-memory">
-          <h4 class="pub-title">Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory</h4>
-          <div class="pub-authors">Y. Yu, X. Zhang, S. Wang, …, <strong>X. Wu</strong>, et al.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>Nature</strong>, 654:642–651, 2026</span><span class="paper-links"><a href="https://www.nature.com/articles/s41586-026-10646-w" rel="noopener" target="_blank">Paper</a></span></div>
-        </li>
-        <li id="pub-foundationgeo">
-          <h4 class="pub-title">FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry</h4>
-          <div class="pub-authors">M. Liu, X. Lyu, T. Ren, P. Dai, <strong>X. Wu</strong>, et al.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>ECCV 2026</strong></span><span class="paper-links"><a href="https://arxiv.org/abs/2607.11588" rel="noopener" target="_blank">Paper</a></span></div>
-        </li>
-        <li id="pub-streaming-geometry">
-          <h4 class="pub-title">Stabilizing Streaming Video Geometry via Dynamic Feature Normalization</h4>
-          <div class="pub-authors">X. Lyu, M. Liu, <strong>X. Wu</strong>, et al.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>CVPR 2026</strong></span><span class="paper-links"><a href="https://arxiv.org/abs/2605.25308" rel="noopener" target="_blank">Paper</a></span></div>
-        </li>
-        <li id="pub-optigeo">
-          <h4 class="pub-title">OptiGeo: Efficient Monocular Geometry for Embodied Perception in Optically Challenging Scenes</h4>
-          <div class="pub-authors">M. Liu, T. Liu, J. Xia, X. Lyu, <strong>X. Wu</strong>, et al.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>CoRL 2026</strong></span><span class="paper-links"><a href="https://arxiv.org/abs/2608.29881" rel="noopener" target="_blank">Paper</a></span></div>
-        </li>
-        <li id="pub-digital-twin">
-          <h4 class="pub-title">Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver</h4>
-          <div class="pub-authors">H. Chen, J. Yang, J. Chen, …, <strong>X. Wu</strong>, et al.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>Science Advances</strong>, 11(22):eadr7571, 2025</span></div>
-        </li>
-        <li id="pub-dynamic-snn">
-          <h4 class="pub-title">Topology Optimization of Random Memristors for Input-Aware Dynamic SNN</h4>
-          <div class="pub-authors">B. Wang, X. Zhang, S. Wang, …, <strong>X. Wu</strong>, et al.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>Science Advances</strong>, 11(16):eads5340, 2025</span></div>
-        </li>
-        <li id="pub-floating-gate-memory">
-          <h4 class="pub-title">Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing</h4>
-          <div class="pub-authors">C. Li, X. Chen, Z. Zhang, <strong>X. Wu</strong>, et al.</div>
-          <div class="pub-detail"><span class="paper-venue"><strong>Nano Letters</strong>, 24(47):15025–15034, 2024</span></div>
-        </li>
+<li id="pub-neural-field-memory">
+<h4 class="pub-title">Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory</h4>
+<div class="pub-authors">Y. Yu, X. Zhang, S. Wang, …, <strong>X. Wu</strong>, et al.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>Nature</strong>, 654:642–651, 2026</span><span class="paper-links"><a href="https://www.nature.com/articles/s41586-026-10646-w" rel="noopener" target="_blank">Paper</a></span></div>
+</li>
+<li id="pub-foundationgeo">
+<h4 class="pub-title">FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry</h4>
+<div class="pub-authors">M. Liu, X. Lyu, T. Ren, P. Dai, <strong>X. Wu</strong>, et al.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>ECCV 2026</strong></span><span class="paper-links"><a href="https://arxiv.org/abs/2607.11588" rel="noopener" target="_blank">Paper</a></span></div>
+</li>
+<li id="pub-streaming-geometry">
+<h4 class="pub-title">Stabilizing Streaming Video Geometry via Dynamic Feature Normalization</h4>
+<div class="pub-authors">X. Lyu, M. Liu, <strong>X. Wu</strong>, et al.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>CVPR 2026</strong></span><span class="paper-links"><a href="https://arxiv.org/abs/2605.25308" rel="noopener" target="_blank">Paper</a></span></div>
+</li>
+<li id="pub-optigeo">
+<h4 class="pub-title">OptiGeo: Efficient Monocular Geometry for Embodied Perception in Optically Challenging Scenes</h4>
+<div class="pub-authors">M. Liu, T. Liu, J. Xia, X. Lyu, <strong>X. Wu</strong>, et al.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>CoRL 2026</strong></span><span class="paper-links"><a href="https://arxiv.org/abs/2608.29881" rel="noopener" target="_blank">Paper</a></span></div>
+</li>
+<li id="pub-digital-twin">
+<h4 class="pub-title">Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver</h4>
+<div class="pub-authors">H. Chen, J. Yang, J. Chen, …, <strong>X. Wu</strong>, et al.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>Science Advances</strong>, 11(22):eadr7571, 2025</span></div>
+</li>
+<li id="pub-dynamic-snn">
+<h4 class="pub-title">Topology Optimization of Random Memristors for Input-Aware Dynamic SNN</h4>
+<div class="pub-authors">B. Wang, X. Zhang, S. Wang, …, <strong>X. Wu</strong>, et al.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>Science Advances</strong>, 11(16):eads5340, 2025</span></div>
+</li>
+<li id="pub-floating-gate-memory">
+<h4 class="pub-title">Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing</h4>
+<div class="pub-authors">C. Li, X. Chen, Z. Zhang, <strong>X. Wu</strong>, et al.</div>
+<div class="pub-detail"><span class="paper-venue"><strong>Nano Letters</strong>, 24(47):15025–15034, 2024</span></div>
+</li>
 </ol>
-      </section>
-    </section>
-    <section aria-labelledby="news">
-      <h2 id="news">News</h2>
-      <dl class="news">
-        <dt>2026</dt><dd>Current manuscripts explore <a href="#pub-world-action-model">verifiable 4D world–action models</a> and <a href="#pub-game">geometry-based memory</a>, alongside <a href="#pub-lifr-v2">LiFR v2</a> for high-rate dense prediction.</dd>
-        <dt>2026</dt><dd>OptiGeo at CoRL, FoundationGeo at ECCV, streaming video geometry at CVPR, and LiFR-Seg at ICLR.</dd>
-        <dt>2025</dt><dd>EAG3R received a NeurIPS <span class="highlight">Spotlight</span>.</dd>
-      </dl>
-    </section>
+</section>
+</section>
+<section aria-labelledby="news">
+<h2 id="news">News</h2>
+<dl class="news">
+<dt>2026</dt><dd>Current manuscripts explore <a href="#pub-world-action-model">verifiable 4D world–action models</a> and <a href="#pub-game">geometry-based memory</a>, alongside <a href="#pub-lifr-v2">LiFR v2</a> for high-rate dense prediction.</dd>
+<dt>2026</dt><dd>OptiGeo at CoRL, FoundationGeo at ECCV, streaming video geometry at CVPR, and LiFR-Seg at ICLR.</dd>
+<dt>2025</dt><dd>EAG3R received a NeurIPS <span class="highlight">Spotlight</span>.</dd>
+</dl>
+</section>
 <section aria-labelledby="background">
 <h2 id="background">Background</h2>
 <div class="experience">
@@ -290,10 +310,14 @@
 <li>NeurIPS Travel Award, 2025; ICLR Travel Award, 2026</li>
 </ul>
 </section>
-    <footer>
-      <span>&copy; 2026 Xiaoshan Wu · Updated October 2026</span>
-      <a href="Xiaoshan_Wu_CV.pdf" target="_blank" rel="noopener">Download CV (PDF)</a>
-    </footer>
-  </main>
-</body>
+<footer>
+<span>© 2026 Xiaoshan Wu · Updated October 2026</span>
+<a href="Xiaoshan_Wu_CV.pdf" rel="noopener" target="_blank">Download CV (PDF)</a>
+</footer>
+</main>
+<dialog aria-labelledby="figure-dialog-title" class="figure-dialog" id="research-figure">
+<div class="figure-dialog-bar"><p id="figure-dialog-title">Research figure</p><button aria-label="Close figure" class="figure-close" type="button">Close <span aria-hidden="true">×</span></button></div>
+<img alt="" class="figure-dialog-image"/>
+<p class="figure-dialog-caption"></p>
+</dialog></body>
 </html>
