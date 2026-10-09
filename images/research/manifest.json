@@ -1,0 +1,52 @@
+{
+  "eag3r-night-depth.webp": {
+    "width": 848,
+    "height": 284,
+    "bytes": 18436
+  },
+  "eag3r-pipeline-full.webp": {
+    "width": 1800,
+    "height": 400,
+    "bytes": 55256
+  },
+  "game-overview.webp": {
+    "width": 600,
+    "height": 276,
+    "bytes": 17952
+  },
+  "lifr-seg-full.webp": {
+    "width": 1440,
+    "height": 864,
+    "bytes": 193354
+  },
+  "lifr-seg-overview.webp": {
+    "width": 720,
+    "height": 432,
+    "bytes": 70248
+  },
+  "profile.webp": {
+    "width": 480,
+    "height": 720,
+    "bytes": 60232
+  },
+  "s4ndbox-architecture-full.webp": {
+    "width": 1680,
+    "height": 889,
+    "bytes": 122672
+  },
+  "s4ndbox-architecture.webp": {
+    "width": 720,
+    "height": 381,
+    "bytes": 45818
+  },
+  "videossm-full.webp": {
+    "width": 1800,
+    "height": 593,
+    "bytes": 203582
+  },
+  "videossm-memory.webp": {
+    "width": 680,
+    "height": 687,
+    "bytes": 31386
+  }
+}
