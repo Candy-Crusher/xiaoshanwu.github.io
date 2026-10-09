@@ -1,0 +1,10 @@
+{
+  "project_url": "https://demo1-indol-gamma.vercel.app/",
+  "figure_sources": [
+    "static/images/teaser.png",
+    "static/images/method.png"
+  ],
+  "content_basis": "User-supplied Spatial_Forcing_WAM__ICLR27__Xiaoshan_s_project_.pdf",
+  "content_basis_sha256": "60c3859d1fa7dbda0410da12637c18f51d83673149d8da64cc802e2d825cd34c",
+  "note": "Project figures correspond to Figures 1 and 2 in the supplied manuscript. Descriptions and experimental claims follow that PDF."
+}

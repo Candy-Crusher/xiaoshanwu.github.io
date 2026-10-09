@@ -77,7 +77,7 @@
       .site-nav, .skip-link, .teaser, footer { display: none; }
       a { color: inherit; }
     }</style>
-<link href="assets/css/research.css" rel="stylesheet"/><script defer="" src="assets/js/research.js"></script></head>
+<link href="assets/css/research.css?v=s4ndbox-20261009" rel="stylesheet"/><script defer="" src="assets/js/research.js"></script></head>
 <body>
 <a class="skip-link" href="#selected-research">Skip to research</a>
 <main class="container">
@@ -107,19 +107,21 @@
 <p class="research-intro">World models for action, memory for spatial reasoning, and perception that keeps pace with a changing world.</p>
 <article class="research-entry" id="selected-world-action-model">
 <figure class="research-visual">
-<a aria-label="Enlarge World–action models figure" class="figure-preview" data-caption="S4NDBOX: architecture schematic from the research source. This is a conceptual diagram, not an empirical attention map." data-figure="" href="images/research/s4ndbox-architecture-full.webp">
-<img alt="Multimodal prediction architecture" decoding="async" height="381" loading="lazy" src="images/research/s4ndbox-architecture.webp" width="720"/>
+<a aria-label="Enlarge S4NDBOX overview" class="figure-preview" data-caption="S4NDBOX overview: 4D generation, world–action agreement and robustness under distribution shifts. Project-site figure corresponding to Figure 1 of the supplied manuscript. The regeneration panel is schematic." data-figure="" href="images/research/s4ndbox-overview-full.webp">
+<img alt="S4NDBOX: predicted RGB, depth and motion, action verification, and simulation-to-real examples" decoding="async" height="458" loading="lazy" src="images/research/s4ndbox-overview.webp" width="900"/>
 <span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
 </a>
-<figcaption>Multimodal prediction architecture</figcaption>
+<figcaption>4D prediction, action verification &amp; zero-shot transfer</figcaption>
+<div class="s4ndbox-figure-links"><a data-figure="" data-caption="S4NDBOX method: shared-VAE multimodal prediction and causal 4D-to-action coupling. Project-site figure corresponding to Figure 2 of the supplied manuscript." href="images/research/s4ndbox-method-full.webp">Method figure</a><a href="https://demo1-indol-gamma.vercel.app/static/videos/disco_light_10x.mp4" target="_blank" rel="noopener">Robot demo (10×)</a></div>
 </figure>
 <div class="research-copy">
 <p class="research-area">World–action models</p>
 <h3>Verifiable 4D World–Action Model for Robust Robot Control</h3>
 <p class="research-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, et al.</p>
 <p class="research-meta"><span>Under review at ICLR 2027</span><span class="research-role">Co-first author</span></p>
-<p class="research-summary">Jointly predicting appearance, depth, motion fields, and actions makes a robot’s imagined future geometrically testable. S4NDBOX uses agreement between predicted motion and candidate actions to guide selection before execution, with evaluations on domain-randomized manipulation and zero-shot simulation-to-real transfer.</p>
-<nav aria-label="World–action models resources" class="research-links"><a href="#pub-world-action-model">Publication details</a></nav>
+<p class="research-summary">S4NDBOX predicts RGB, metric depth, and view-specific motion, then generates actions conditioned on the predicted 4D future. Agreement between fixed-view motion, wrist orientation, and the paired action provides a geometric signal for selecting candidates before execution.</p>
+<p class="s4ndbox-result"><strong>+13.3 percentage points on RoboTwin Hard</strong> over RGB-only after clean-only task training; zero-shot sim-to-real evaluation on a Franka Research 3.</p>
+<nav aria-label="S4NDBOX resources" class="research-links"><a href="https://demo1-indol-gamma.vercel.app/" target="_blank" rel="noopener">Project</a><a href="https://demo1-indol-gamma.vercel.app/rdf-viewer.html?case=pose-1" target="_blank" rel="noopener">Interactive 4D</a></nav>
 </div>
 </article>
 <article class="research-entry" id="selected-game">
@@ -200,7 +202,7 @@
 <li id="pub-world-action-model">
 <h4 class="pub-title">Verifiable 4D World–Action Model for Robust Robot Control</h4>
 <div class="pub-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou, M. Wang, and Y. Du.</div>
-<div class="pub-detail"><span class="paper-venue">Under review at ICLR 2027</span><span class="pub-role">Co-first author</span></div>
+<div class="pub-detail"><span class="paper-venue">Under review at ICLR 2027</span><span class="pub-role">Co-first author</span><span class="paper-links"><a href="https://demo1-indol-gamma.vercel.app/" target="_blank" rel="noopener">Project</a></span></div>
 </li>
 <li id="pub-game">
 <h4 class="pub-title">GaMe: Geometry as Memory for Multi-View Spatial Reasoning</h4>

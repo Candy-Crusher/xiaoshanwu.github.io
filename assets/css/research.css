@@ -75,3 +75,9 @@ body { color: var(--ink); }
   .research-visual, .research-links, .section-heading > a, .figure-dialog { display: none; }
   .research-entry { padding: 13px 0; }
 }
+
+/* S4NDBOX: paper-aligned figures and project demonstrations. */
+.s4ndbox-figure-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px 17px; margin-top: 9px; font-size: 12px; }
+.s4ndbox-result { font-size: 12.5px; line-height: 1.65; color: #535e68; margin: 0 0 12px; }
+.s4ndbox-result strong { font-weight: 600; color: #303b45; }
+@media print { .s4ndbox-figure-links { display: none; } }
