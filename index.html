@@ -1,310 +1,158 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>Xiaoshan Wu | World Models &amp; Embodied AI</title>
-<meta content="Xiaoshan Wu" name="author"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Xiaoshan Wu, Ph.D. candidate at HKU. Research in 4D world models, video generation, geometry-grounded memory, and embodied intelligence." name="description"/>
-<meta content="index, follow" name="robots"/>
-<link href="https://candy-crusher.github.io/xiaoshanwu.github.io/" rel="canonical"/>
-<meta content="Xiaoshan Wu | World Models &amp; Embodied AI" property="og:title"/>
-<meta content="World models, memory, and embodied intelligence. Research and publications by Xiaoshan Wu." property="og:description"/>
-<meta content="website" property="og:type"/>
-<meta content="https://candy-crusher.github.io/xiaoshanwu.github.io/" property="og:url"/>
-<style>
-    * { box-sizing: border-box; }
-    html { scroll-padding-top: 24px; }
-    body { margin: 0; background: #fff; color: #242424; font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
-    .container { max-width: 970px; margin: 0 auto; padding: 30px 26px 24px; }
-    a { color: #1767a6; text-decoration: none; text-underline-offset: 3px; }
-    a:hover { text-decoration: underline; }
-    a:focus-visible { outline: 2px solid #1767a6; outline-offset: 4px; }
-    .skip-link { position: absolute; left: 12px; top: -80px; padding: 8px 12px; background: white; z-index: 2; }
-    .skip-link:focus { top: 12px; }
-    p { margin: 0 0 13px; }
-    .site-nav { display: flex; flex-wrap: wrap; gap: 24px; justify-content: flex-end; margin-bottom: 32px; font-size: 14px; }
-    .profile { display: grid; grid-template-columns: minmax(0, 1fr) 178px; gap: 44px; align-items: center; }
-    h1 { margin: 0 0 10px; font-size: 34px; line-height: 1.25; font-weight: 650; letter-spacing: -0.6px; }
-    .native-name { margin-left: 5px; font-size: 22px; font-weight: 400; color: #555; letter-spacing: 0; white-space: nowrap; }
-    .profile-photo { display: block; width: 178px; height: 178px; border-radius: 50%; object-fit: cover; }
-    .contact-links { display: flex; flex-wrap: wrap; gap: 7px 20px; margin-top: 15px; }
-    h2 { margin: 37px 0 18px; padding-bottom: 9px; border-bottom: 1px solid #dedede; font-size: 22px; line-height: 1.4; font-weight: 600; letter-spacing: -0.2px; }
-    h3 { margin: 27px 0 16px; font-size: 17px; line-height: 1.45; font-weight: 600; }
-    .muted, .section-note { color: #666; }
-    .section-note { font-size: 13px; margin: -6px 0 18px; }
-    .paper-venue { font-size: 13px; color: #555; }
-    .paper-venue strong { color: #222; font-weight: 650; }
-    .highlight { color: #b52c32; font-weight: 600; }
-    sup { font-size: 10px; line-height: 0; }
-    .publication-list { padding-left: 23px; margin: 0; }
-    .publication-list li { padding-left: 4px; margin: 0 0 17px; break-inside: avoid; }
-    .publication-list li::marker { color: #777; font-size: 13px; font-variant-numeric: tabular-nums; }
-    .pub-title { margin: 0 0 3px; font-size: 15px; line-height: 1.5; font-weight: 600; }
-    .pub-authors { color: #666; font-size: 13px; line-height: 1.6; }
-    .pub-authors strong { color: #222; font-weight: 700; }
-    .pub-detail { font-size: 13px; line-height: 1.6; display: flex; flex-wrap: wrap; gap: 5px 13px; }
-    .pub-role { color: #1767a6; }
-    .collaborative .publication-list li { margin-bottom: 15px; }
-    .news { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 7px 16px; margin: 0; font-size: 14px; }
-    .news dt { color: #666; font-variant-numeric: tabular-nums; }
-    .news dd { margin: 0; }
-    .experience { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 28px; margin-bottom: 20px; }
-    .experience p { margin: 0; }
-    .experience .dates { color: #666; font-size: 14px; text-align: right; }
-    .experience .detail { color: #555; font-size: 14px; }
-    .awards { margin: 0; padding-left: 19px; }
-    .awards li { padding-left: 3px; margin-bottom: 4px; }
-    footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; border-top: 1px solid #e3e3e3; margin-top: 38px; padding-top: 17px; color: #777; font-size: 12px; }
-    @media (max-width: 680px) {
-      .container { padding: 22px 20px; }
-      .site-nav { justify-content: flex-start; gap: 18px; margin-bottom: 27px; }
-      .profile { grid-template-columns: minmax(0, 1fr) 100px; gap: 17px; align-items: start; }
-      h1 { font-size: 28px; }
-      .native-name { display: block; font-size: 19px; margin: 4px 0 0; }
-      .profile-photo { width: 100px; height: 100px; margin-top: 3px; }
-      .contact-links { gap: 6px 15px; }
-      .experience { grid-template-columns: minmax(0, 1fr); gap: 3px; }
-      .experience .dates { text-align: left; }
-    }
-    @media (max-width: 380px) {
-      .profile { grid-template-columns: minmax(0, 1fr); }
-      .profile-photo { grid-row: 1; }
-    }
-    @media print {
-      .container { max-width: none; padding: 0; }
-      .site-nav, .skip-link, .teaser, footer { display: none; }
-      a { color: inherit; }
-    }</style>
-<link href="assets/css/research.css?v=s4ndbox-20261009" rel="stylesheet"/><script defer="" src="assets/js/research.js"></script></head>
-<body>
-<a class="skip-link" href="#selected-research">Skip to research</a>
-<main class="container">
-<nav aria-label="Main navigation" class="site-nav">
-<a href="#selected-research">Research</a><a href="#publications">Publications</a><a href="#background">Background</a><a href="Xiaoshan_Wu_CV.pdf" rel="noopener" target="_blank">CV</a>
-</nav>
-<header class="profile">
-<div>
-<h1>Xiaoshan Wu <span class="native-name" lang="zh">吴小山</span></h1>
-<p>Ph.D. candidate, The University of Hong Kong<br/>Advised by <a href="https://xjqi.github.io/" rel="noopener" target="_blank">Prof. Xiaojuan Qi</a></p>
-<p>I was a visiting researcher at Harvard University from April to August 2026, working with Yilun Du and Mengyu Wang.</p>
-<div class="contact-links">
-<a href="mailto:wuxiaoshan630@gmail.com">Email</a>
-<a href="https://scholar.google.com/citations?user=9nsSKpsAAAAJ&amp;hl=en" rel="noopener" target="_blank">Google Scholar</a>
-<a href="https://github.com/Candy-Crusher" rel="noopener" target="_blank">GitHub</a>
-<a href="Xiaoshan_Wu_CV.pdf" rel="noopener" target="_blank">CV / Resume</a>
-</div>
-</div>
-<img alt="Xiaoshan Wu" class="profile-photo" fetchpriority="high" height="184" src="images/research/profile.webp" width="184"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Xiaoshan Wu">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Xiaoshan Wu — world models and memory for embodied intelligence. Research in 3D/4D vision, video generation, and spatial reasoning.">
+  <title>Xiaoshan Wu | World Models &amp; Embodied AI</title>
+  <link rel="canonical" href="https://candy-crusher.github.io/xiaoshanwu.github.io/">
+  <meta property="og:title" content="Xiaoshan Wu | World Models &amp; Embodied AI">
+  <meta property="og:description" content="World models and memory for embodied intelligence.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="assets/css/editorial.css?v=20261010">
+  <script defer src="assets/js/editorial.js?v=20261010"></script>
+</head>
+<body id="top" data-page="home">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header wrap">
+  <a class="wordmark" href="index.html" aria-label="Xiaoshan Wu, homepage">Xiaoshan Wu<span lang="zh" aria-hidden="true">小山</span></a>
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="#selected-research">Research</a>
+    <a href="publications.html">Publications</a>
+    <a href="#background">Background</a>
+    <a href="Xiaoshan_Wu_CV.pdf" target="_blank" rel="noopener">CV <span aria-hidden="true">↗</span></a>
+  </nav>
 </header>
-<section aria-labelledby="research" class="research">
-<h2 id="research">World models and memory for embodied intelligence</h2>
-<p>I study how robots can use world models to reason about actions and improve through interaction. My research connects <strong>action-grounded 4D prediction</strong>, <strong>video generation</strong>, and <strong>geometry-grounded memory</strong>. My goal is to build physical agents that test alternatives in learned environments and turn real-world feedback into reusable knowledge.</p>
+<main id="main" class="wrap">
+<section class="profile" aria-labelledby="name">
+  <div class="profile-copy">
+    <h1 id="name">Xiaoshan Wu <span class="native-name" lang="zh">吴小山</span></h1>
+    <p class="affiliation">Ph.D. candidate · The University of Hong Kong</p>
+    <p class="research-statement">World models and memory<br>for embodied intelligence.</p>
+    <p>I connect <strong>3D/4D perception, video generation, and spatial reasoning</strong> to help robots understand and act in the physical world. My longer-term goal is to build agents that improve through interaction and feedback.</p>
+    <p class="biography">At HKU, I am advised by <a href="https://xjqi.github.io/" target="_blank" rel="noopener">Prof. Xiaojuan Qi</a>. Previously, I visited Harvard University, working with Yilun Du and Mengyu Wang.</p>
+    <nav class="contact-links" aria-label="Contact and profiles">
+      <a href="mailto:wuxiaoshan630@gmail.com">Email</a>
+      <a href="https://scholar.google.com/citations?user=9nsSKpsAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>
+      <a href="https://github.com/Candy-Crusher" target="_blank" rel="noopener">GitHub</a>
+      <a href="Xiaoshan_Wu_CV.pdf" target="_blank" rel="noopener">CV</a>
+    </nav>
+  </div>
+  <figure class="portrait"><img src="images/research/profile.webp" width="480" height="720" alt="Xiaoshan Wu" fetchpriority="high" decoding="async"></figure>
 </section>
- <section aria-labelledby="selected-research" class="selected-research">
-<div class="section-heading"><h2 id="selected-research">Selected Research</h2><a href="#publications">Full publication list <span aria-hidden="true">↓</span></a></div>
-<p class="research-intro">World models for action, memory for spatial reasoning, and perception that keeps pace with a changing world.</p>
-<article class="research-entry" id="selected-world-action-model">
+<section class="selected-section" aria-labelledby="selected-research">
+  <div class="section-heading"><h2 id="selected-research">Selected research</h2><a href="publications.html">All publications <span aria-hidden="true">→</span></a></div>
+  <p class="section-note">First- and co-first-author work. <span>* Equal contribution.</span></p>
+  <article class="research-entry" id="selected-world-action-model">
 <figure class="research-visual">
 <a aria-label="Enlarge S4NDBOX overview" class="figure-preview" data-caption="S4NDBOX overview: 4D generation, world–action agreement and robustness under distribution shifts. Project-site figure corresponding to Figure 1 of the supplied manuscript. The regeneration panel is schematic." data-figure="" href="images/research/s4ndbox-overview-full.webp">
 <img alt="S4NDBOX: predicted RGB, depth and motion, action verification, and simulation-to-real examples" decoding="async" height="458" loading="lazy" src="images/research/s4ndbox-overview.webp" width="900"/>
-<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+<span aria-hidden="true" class="figure-expand">↗</span>
 </a>
-<figcaption>4D prediction, action verification &amp; zero-shot transfer</figcaption>
-<div class="s4ndbox-figure-links"><a data-figure="" data-caption="S4NDBOX method: shared-VAE multimodal prediction and causal 4D-to-action coupling. Project-site figure corresponding to Figure 2 of the supplied manuscript." href="images/research/s4ndbox-method-full.webp">Method figure</a><a href="https://demo1-indol-gamma.vercel.app/static/videos/disco_light_10x.mp4" target="_blank" rel="noopener">Robot demo (10×)</a></div>
+<figcaption>4D prediction &amp; geometric verification</figcaption>
+
 </figure>
 <div class="research-copy">
-<p class="research-area">World–action models</p>
+
 <h3>Verifiable 4D World–Action Model for Robust Robot Control</h3>
 <p class="research-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, et al.</p>
 <p class="research-meta"><span>Under review at ICLR 2027</span><span class="research-role">Co-first author</span></p>
-<p class="research-summary">S4NDBOX predicts RGB, metric depth, and view-specific motion, then generates actions conditioned on the predicted 4D future. Agreement between fixed-view motion, wrist orientation, and the paired action provides a geometric signal for selecting candidates before execution.</p>
-<p class="s4ndbox-result"><strong>+13.3 percentage points on RoboTwin Hard</strong> over RGB-only after clean-only task training; zero-shot sim-to-real evaluation on a Franka Research 3.</p>
-<nav aria-label="S4NDBOX resources" class="research-links"><a href="https://demo1-indol-gamma.vercel.app/" target="_blank" rel="noopener">Project</a><a href="https://demo1-indol-gamma.vercel.app/rdf-viewer.html?case=pose-1" target="_blank" rel="noopener">Interactive 4D</a></nav>
+<p class="research-summary">S4NDBOX predicts appearance, geometry, and motion before generating actions. Agreement between the predicted future and its paired action provides a geometric signal for candidate selection before execution.</p>
+<p class="research-result"><strong>+13.3 percentage points</strong> on RoboTwin Hard over RGB-only after clean-only task training; zero-shot sim-to-real on a Franka Research 3.</p>
+<nav aria-label="S4NDBOX resources" class="research-links"><a href="https://demo1-indol-gamma.vercel.app/" rel="noopener" target="_blank">Project</a><a href="https://demo1-indol-gamma.vercel.app/rdf-viewer.html?case=pose-1" rel="noopener" target="_blank">Interactive 4D</a><a data-caption="S4NDBOX method: shared-VAE multimodal prediction and causal 4D-to-action coupling. Project-site figure corresponding to Figure 2 of the supplied manuscript." data-figure="" href="images/research/s4ndbox-method-full.webp">Method figure</a><a href="https://demo1-indol-gamma.vercel.app/static/videos/disco_light_10x.mp4" rel="noopener" target="_blank">Robot demo (10×)</a></nav>
 </div>
-</article>
-<article class="research-entry" id="selected-game">
+</article><article class="research-entry" id="selected-game">
 <figure class="research-visual">
 <a aria-label="Enlarge Spatial reasoning &amp; memory figure" class="figure-preview" data-caption="GaMe: conceptual overview from the manuscript. The scenes, point cloud, and example answer illustrate the approach; they are not benchmark inputs or measured model predictions." data-figure="" href="images/research/game-overview.webp">
 <img alt="Geometry-enriched working memory · conceptual overview" decoding="async" height="276" loading="lazy" src="images/research/game-overview.webp" width="600"/>
-<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+<span aria-hidden="true" class="figure-expand">↗</span>
 </a>
-<figcaption>Geometry-enriched working memory · conceptual overview</figcaption>
+<figcaption>Geometric working memory · conceptual overview</figcaption>
 </figure>
 <div class="research-copy">
-<p class="research-area">Spatial reasoning &amp; memory</p>
+
 <h3>GaMe: Geometry as Memory for Multi-View Spatial Reasoning</h3>
 <p class="research-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, et al.</p>
 <p class="research-meta"><span>Under review at ICRA 2027</span><span class="research-role">First author</span></p>
-<p class="research-summary">GaMe aggregates visual and geometric features across views into a 16-slot working-memory bank. A second language-model pass reads this compact representation alongside the original images and question, bringing geometric evidence into multi-view spatial reasoning.</p>
-<nav aria-label="Spatial reasoning &amp; memory resources" class="research-links"><a href="#pub-game">Publication details</a></nav>
+<p class="research-summary">A 16-slot geometric working memory combines evidence across views and augments the original visual–language context for spatial question answering.</p>
+<nav aria-label="Spatial reasoning &amp; memory resources" class="research-links"><a href="publications.html#pub-game">Details</a></nav>
 </div>
-</article>
-<article class="research-entry" id="selected-videossm">
+</article><article class="research-entry" id="selected-videossm">
 <figure class="research-visual">
 <a aria-label="Enlarge Long-video generation figure" class="figure-preview" data-caption="VideoSSM: original overview figure. The homepage preview focuses on the hybrid-memory architecture; the full figure includes long-video examples and the training framework." data-figure="" href="images/research/videossm-full.webp">
 <img alt="Lossless local memory + compressed global memory" decoding="async" height="687" loading="lazy" src="images/research/videossm-memory.webp" width="680"/>
-<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+<span aria-hidden="true" class="figure-expand">↗</span>
 </a>
-<figcaption>Lossless local memory + compressed global memory</figcaption>
+<figcaption>Local detail &amp; long-range memory</figcaption>
 </figure>
 <div class="research-copy">
-<p class="research-area">Long-video generation</p>
+
 <h3>VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</h3>
 <p class="research-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup></strong>, X. Hu, et al.</p>
 <p class="research-meta"><span>arXiv preprint, 2025</span><span class="research-role">Co-first author</span></p>
-<p class="research-summary">VideoSSM combines a lossless local attention window with recurrent state-space memory for older frames. This hybrid design preserves recent visual detail while retaining long-range context, supporting minute-long autoregressive generation and prompt changes without an ever-growing KV cache.</p>
+<p class="research-summary">Local attention preserves recent detail while recurrent state-space memory retains long-range context, supporting autoregressive long-video generation without an ever-growing KV cache.</p>
 <nav aria-label="Long-video generation resources" class="research-links"><a href="https://arxiv.org/abs/2512.04519" rel="noopener" target="_blank">Paper</a></nav>
 </div>
-</article>
-<article class="research-entry" id="selected-eag3r">
+</article><article class="research-entry" id="selected-eag3r">
 <figure class="research-visual">
 <a aria-label="Enlarge Dynamic 3D geometry figure" class="figure-preview" data-caption="EAG3R: nighttime depth comparison cropped from the original research poster. From left to right: RGB input, RGB-only depth, and EAG3R depth." data-figure="" href="images/research/eag3r-night-depth.webp">
 <img alt="Nighttime depth: RGB input / RGB-only / EAG3R" decoding="async" height="284" loading="lazy" src="images/research/eag3r-night-depth.webp" width="848"/>
-<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+<span aria-hidden="true" class="figure-expand">↗</span>
 </a>
-<figcaption>Nighttime depth: RGB input / RGB-only / EAG3R</figcaption>
+<figcaption>RGB input / RGB-only / EAG3R</figcaption>
 </figure>
 <div class="research-copy">
-<p class="research-area">Dynamic 3D geometry</p>
+
 <h3>EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</h3>
 <p class="research-authors"><strong>X. Wu</strong>, Y. Yu, X. Lyu, et al.</p>
 <p class="research-meta"><span><strong>NeurIPS 2025</strong> <span class="highlight">· Spotlight</span></span><span class="research-role">First author</span></p>
-<p class="research-summary">SNR-aware fusion weights RGB and event features by image reliability, while event-based photometric constraints refine the recovered geometry. This combination supports depth and camera-motion estimation in dynamic, low-light scenes, including daytime-to-nighttime transfer without nighttime fine-tuning.</p>
+<p class="research-summary">Reliability-aware RGB–event fusion and event-based photometric constraints recover geometry in dynamic, low-light scenes, including daytime-to-nighttime transfer.</p>
 <nav aria-label="Dynamic 3D geometry resources" class="research-links"><a href="https://arxiv.org/abs/2512.00771" rel="noopener" target="_blank">Paper</a><a href="https://candy-crusher.github.io/EAG3R_Proj/" rel="noopener" target="_blank">Project</a><a href="https://github.com/Candy-Crusher/EAG3R" rel="noopener" target="_blank">Code</a><a aria-label="View EAG3R method figure" class="figure-link" data-caption="EAG3R: original reconstruction and optimization pipeline." data-figure="" href="images/research/eag3r-pipeline-full.webp">Method figure</a></nav>
 </div>
-</article>
-<article class="research-entry" id="selected-lifr-seg">
+</article><article class="research-entry" id="selected-lifr-seg">
 <figure class="research-visual">
 <a aria-label="Enlarge Continuous scene perception figure" class="figure-preview" data-caption="LiFR-Seg: original teaser showing event-guided segmentation between RGB observations. The displayed semantic predictions are from the research figure, not generated for this website." data-figure="" href="images/research/lifr-seg-full.webp">
 <img alt="Segmentation between RGB observations" decoding="async" height="432" loading="lazy" src="images/research/lifr-seg-overview.webp" width="720"/>
-<span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+<span aria-hidden="true" class="figure-expand">↗</span>
 </a>
-<figcaption>Segmentation between RGB observations</figcaption>
+<figcaption>Semantic prediction between RGB frames</figcaption>
 </figure>
 <div class="research-copy">
-<p class="research-area">Continuous scene perception</p>
+
 <h3>LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</h3>
 <p class="research-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, et al.</p>
 <p class="research-meta"><span><strong>ICLR 2026</strong></span><span class="research-role">First author</span></p>
-<p class="research-summary">LiFR-Seg updates semantic predictions between RGB frames using asynchronous events. Confidence-aware feature warping and temporal-memory attention preserve previously observed content as the scene evolves, enabling segmentation at a requested time without an RGB frame at that instant.</p>
+<p class="research-summary">Event-guided propagation and temporal memory keep semantic predictions up to date between RGB frames, without requiring an image at each query time.</p>
 <nav aria-label="Continuous scene perception resources" class="research-links"><a href="https://arxiv.org/abs/2603.21115" rel="noopener" target="_blank">Paper</a></nav>
 </div>
 </article>
+  <p class="publication-index" id="publications"><a href="publications.html">View the complete publication list <span aria-hidden="true">→</span></a></p>
 </section>
-<section aria-labelledby="publications">
-<h2 id="publications">Publications &amp; Preprints</h2>
-<p class="section-note">* Equal contribution; † project lead. Author lists are abbreviated; publication and review status are shown for each work.</p>
-<section aria-labelledby="first-author-work">
-<h3 id="first-author-work">First- and Co-first-author Work</h3>
-<ol class="publication-list" start="1">
-<li id="pub-world-action-model">
-<h4 class="pub-title">Verifiable 4D World–Action Model for Robust Robot Control</h4>
-<div class="pub-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou, M. Wang, and Y. Du.</div>
-<div class="pub-detail"><span class="paper-venue">Under review at ICLR 2027</span><span class="pub-role">Co-first author</span><span class="paper-links"><a href="https://demo1-indol-gamma.vercel.app/" target="_blank" rel="noopener">Project</a></span></div>
-</li>
-<li id="pub-game">
-<h4 class="pub-title">GaMe: Geometry as Memory for Multi-View Spatial Reasoning</h4>
-<div class="pub-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, M. Liu, S. Shi, Z. Wang, and X. Qi.</div>
-<div class="pub-detail"><span class="paper-venue">Under review at ICRA 2027</span><span class="pub-role">First author</span></div>
-</li>
-<li id="pub-videossm">
-<h4 class="pub-title">VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory</h4>
-<div class="pub-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup></strong>, X. Hu, et al.</div>
-<div class="pub-detail"><span class="paper-venue">arXiv preprint, 2025</span><span class="pub-role">Co-first author</span><span class="paper-links"><a href="https://arxiv.org/abs/2512.04519" rel="noopener" target="_blank">Paper</a></span></div>
-</li>
-<li id="pub-eag3r">
-<h4 class="pub-title">EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</h4>
-<div class="pub-authors"><strong>X. Wu</strong>, Y. Yu, X. Lyu, et al.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>NeurIPS 2025</strong> · <span class="highlight">Spotlight</span></span><span class="pub-role">First author</span><span class="paper-links"><a href="https://arxiv.org/abs/2512.00771" rel="noopener" target="_blank">Paper</a></span></div>
-</li>
-<li id="pub-lifr-seg">
-<h4 class="pub-title">LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation</h4>
-<div class="pub-authors"><strong>X. Wu</strong>, X. Lyu, Y. Yu, B. Wang, Z. Wang, and X. Qi.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>ICLR 2026</strong></span><span class="pub-role">First author</span><span class="paper-links"><a href="https://arxiv.org/abs/2603.21115" rel="noopener" target="_blank">Paper</a></span></div>
-</li>
-<li id="pub-evsplat">
-<h4 class="pub-title">EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera</h4>
-<div class="pub-authors">Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup><sup>†</sup></strong>, X. Lyu, Z. Wang, and X. Qi.</div>
-<div class="pub-detail"><span class="paper-venue">Under review at AAAI 2027</span><span class="pub-role">Co-first author · Project lead</span></div>
-</li>
-<li id="pub-lifr-v2">
-<h4 class="pub-title">LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction</h4>
-<div class="pub-authors">T. Wan<sup>*</sup>, <strong>X. Wu<sup>*</sup><sup>†</sup></strong>, Y. Yu, et al.</div>
-<div class="pub-detail"><span class="paper-venue">Under review at IEEE TPAMI · arXiv, 2026</span><span class="pub-role">Co-first author · Project lead</span><span class="paper-links"><a href="https://arxiv.org/abs/2609.25803" rel="noopener" target="_blank">Paper</a></span></div>
-</li>
-<li id="pub-spiking-depth">
-<h4 class="pub-title">Event-Based Depth Prediction With Deep Spiking Neural Network</h4>
-<div class="pub-authors"><strong>X. Wu</strong>, W. He, M. Yao, et al.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>IEEE TCDS</strong>, 16(6):2008–2018, 2024</span><span class="pub-role">First author</span></div>
-</li>
-</ol>
-</section>
-<section aria-labelledby="collaborative-work" class="collaborative">
-<h3 id="collaborative-work">Collaborative Work</h3>
-<ol class="publication-list" start="9">
-<li id="pub-neural-field-memory">
-<h4 class="pub-title">Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory</h4>
-<div class="pub-authors">Y. Yu, X. Zhang, S. Wang, …, <strong>X. Wu</strong>, et al.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>Nature</strong>, 654:642–651, 2026</span><span class="paper-links"><a href="https://www.nature.com/articles/s41586-026-10646-w" rel="noopener" target="_blank">Paper</a></span></div>
-</li>
-<li id="pub-foundationgeo">
-<h4 class="pub-title">FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry</h4>
-<div class="pub-authors">M. Liu, X. Lyu, T. Ren, P. Dai, <strong>X. Wu</strong>, et al.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>ECCV 2026</strong></span><span class="paper-links"><a href="https://arxiv.org/abs/2607.11588" rel="noopener" target="_blank">Paper</a></span></div>
-</li>
-<li id="pub-streaming-geometry">
-<h4 class="pub-title">Stabilizing Streaming Video Geometry via Dynamic Feature Normalization</h4>
-<div class="pub-authors">X. Lyu, M. Liu, <strong>X. Wu</strong>, et al.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>CVPR 2026</strong></span><span class="paper-links"><a href="https://arxiv.org/abs/2605.25308" rel="noopener" target="_blank">Paper</a></span></div>
-</li>
-<li id="pub-optigeo">
-<h4 class="pub-title">OptiGeo: Efficient Monocular Geometry for Embodied Perception in Optically Challenging Scenes</h4>
-<div class="pub-authors">M. Liu, T. Liu, J. Xia, X. Lyu, <strong>X. Wu</strong>, et al.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>CoRL 2026</strong></span><span class="paper-links"><a href="https://arxiv.org/abs/2608.29881" rel="noopener" target="_blank">Paper</a></span></div>
-</li>
-<li id="pub-digital-twin">
-<h4 class="pub-title">Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver</h4>
-<div class="pub-authors">H. Chen, J. Yang, J. Chen, …, <strong>X. Wu</strong>, et al.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>Science Advances</strong>, 11(22):eadr7571, 2025</span></div>
-</li>
-<li id="pub-dynamic-snn">
-<h4 class="pub-title">Topology Optimization of Random Memristors for Input-Aware Dynamic SNN</h4>
-<div class="pub-authors">B. Wang, X. Zhang, S. Wang, …, <strong>X. Wu</strong>, et al.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>Science Advances</strong>, 11(16):eads5340, 2025</span></div>
-</li>
-<li id="pub-floating-gate-memory">
-<h4 class="pub-title">Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing</h4>
-<div class="pub-authors">C. Li, X. Chen, Z. Zhang, <strong>X. Wu</strong>, et al.</div>
-<div class="pub-detail"><span class="paper-venue"><strong>Nano Letters</strong>, 24(47):15025–15034, 2024</span></div>
-</li>
-</ol>
-</section>
-</section>
-<section aria-labelledby="news">
-<h2 id="news">News</h2>
+<section aria-labelledby="news" class="news-section">
+<h2 id="news">Recent updates</h2>
 <dl class="news">
-<dt>2026</dt><dd>Current manuscripts explore <a href="#pub-world-action-model">verifiable 4D world–action models</a> and <a href="#pub-game">geometry-based memory</a>, alongside <a href="#pub-lifr-v2">LiFR v2</a> for high-rate dense prediction.</dd>
+<dt>2026</dt><dd>Current manuscripts explore <a href="publications.html#pub-world-action-model">verifiable 4D world–action models</a> and <a href="publications.html#pub-game">geometry-based memory</a>, alongside <a href="publications.html#pub-lifr-v2">LiFR v2</a> for high-rate dense prediction.</dd>
 <dt>2026</dt><dd>OptiGeo at CoRL, FoundationGeo at ECCV, streaming video geometry at CVPR, and LiFR-Seg at ICLR.</dd>
 <dt>2025</dt><dd>EAG3R received a NeurIPS <span class="highlight">Spotlight</span>.</dd>
 </dl>
 </section>
-<section aria-labelledby="background">
+<section aria-labelledby="background" class="background-section">
 <h2 id="background">Background</h2>
-<div class="experience">
+<div class="experience-row">
 <div><strong>Harvard University</strong><p>Visiting Researcher</p><p class="detail">Yilun Du and Mengyu Wang · Embodied AI and 4D world models</p></div>
 <div class="dates">Apr. 2026 – Aug. 2026<br/>Cambridge, MA, USA</div>
 </div>
-<div class="experience">
+<div class="experience-row">
 <div><strong>The University of Hong Kong</strong><p>Ph.D. in Electrical and Computer Engineering</p><p class="detail">Advisor: Prof. Xiaojuan Qi</p></div>
 <div class="dates">Sep. 2023 – Present<br/>Hong Kong</div>
 </div>
-<div class="experience">
+<div class="experience-row">
 <div><strong>Zhejiang University &amp; University of Illinois Urbana-Champaign</strong><p>Dual B.S. in Computer Engineering</p><p class="detail">ZJUI Institute</p></div>
 <div class="dates">Sep. 2019 – Jun. 2023<br/>China &amp; USA</div>
 </div>
-<h3>Selected awards</h3>
+<h3>Selected honors</h3>
 <ul class="awards">
 <li>Hong Kong PhD Fellowship (HKPFS), 2023</li>
 <li>HKU Presidential Scholarship, 2023</li>
@@ -312,14 +160,15 @@
 <li>NeurIPS Travel Award, 2025; ICLR Travel Award, 2026</li>
 </ul>
 </section>
-<footer>
-<span>© 2026 Xiaoshan Wu · Updated October 2026</span>
-<a href="Xiaoshan_Wu_CV.pdf" rel="noopener" target="_blank">Download CV (PDF)</a>
-</footer>
 </main>
-<dialog aria-labelledby="figure-dialog-title" class="figure-dialog" id="research-figure">
-<div class="figure-dialog-bar"><p id="figure-dialog-title">Research figure</p><button aria-label="Close figure" class="figure-close" type="button">Close <span aria-hidden="true">×</span></button></div>
-<img alt="" class="figure-dialog-image"/>
-<p class="figure-dialog-caption"></p>
-</dialog></body>
+<footer class="site-footer wrap">
+  <span>© 2026 Xiaoshan Wu</span>
+  <div><a href="mailto:wuxiaoshan630@gmail.com">Email</a><a href="https://github.com/Candy-Crusher" target="_blank" rel="noopener">GitHub</a><a href="#top">Back to top ↑</a></div>
+</footer>
+<dialog class="figure-dialog" id="research-figure" aria-labelledby="figure-title" aria-describedby="figure-caption">
+  <div class="figure-dialog-bar"><p id="figure-title">Research figure</p><button type="button" class="figure-close" aria-label="Close figure">Close <span aria-hidden="true">×</span></button></div>
+  <img class="figure-dialog-image" alt="">
+  <p class="figure-dialog-caption" id="figure-caption"></p>
+</dialog>
+</body>
 </html>
