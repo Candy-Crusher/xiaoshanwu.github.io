@@ -1,0 +1,61 @@
+name: Review HD hero sources
+on:
+  push:
+    branches: [homepage-hd-hero-20261010]
+    paths: [.github/workflows/hero-source-review.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests Pillow beautifulsoup4
+      - name: Inspect public reference and candidate images
+        run: |
+          python - <<'PY'
+          import requests, json, hashlib
+          from pathlib import Path
+          from io import BytesIO
+          from PIL import Image
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          out = Path('hero-review'); out.mkdir()
+          session = requests.Session()
+          records = []
+          urls = {
+            'wallup-original.jpg': 'https://wallup.net/wp-content/uploads/2018/09/25/571291-Officer_K-blue_hair-finger_pointing-eye_contact-Ana_de_Armas-women-Joi-Blade_Runner_2049-hologram-bridge-neon_glow-coats-futuristic-cyberpunk-Blade_Runner.jpg',
+            'wallpaperflare-original.jpg': 'https://r4.wallpaperflare.com/wallpaper/900/206/324/ana-de-armas-blade-runner-blade-runner-2049-blue-hair-wallpaper-d4a053eb0b5c706e16ddc8a17d9475d5.jpg',
+            'boyuan.html': 'https://www.boyuan.space/',
+            'boyuan.css': 'https://www.boyuan.space/css/style.css',
+            'wallpapercat.html': 'https://wallpapercat.com/blade-runner-2049-wallpapers'
+          }
+          for name,url in urls.items():
+            try:
+              r=session.get(url, timeout=30); r.raise_for_status()
+              (out/name).write_bytes(r.content)
+              rec={'name':name,'url':url,'bytes':len(r.content)}
+              if name.endswith('.jpg'):
+                im=Image.open(BytesIO(r.content)); rec['dimensions']=list(im.size)
+                preview=im.copy();preview.thumbnail((1280,800));preview.save(out/(name+'.preview.png'))
+              records.append(rec)
+            except Exception as e:records.append({'name':name,'error':str(e)})
+          p=out/'wallpapercat.html'
+          if p.exists():
+            soup=BeautifulSoup(p.read_text(),'html.parser')
+            cand=[]
+            for el in soup.find_all(['img','a','source']):
+              d=dict(el.attrs)
+              if 'joi' in str(d).lower() or '3840x1610' in str(d).lower():cand.append(d)
+            (out/'wallpapercat-images.json').write_text(json.dumps(cand,indent=2))
+          (out/'sources.json').write_text(json.dumps(records,indent=2))
+          print(json.dumps(records,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hd-hero-source-review
+          path: hero-review/
+          retention-days: 2
