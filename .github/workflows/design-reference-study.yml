@@ -1,0 +1,59 @@
+name: Homepage design reference study
+on:
+  push:
+    branches: [design-reference-study-20261010]
+    paths: [.github/workflows/design-reference-study.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Capture public design references
+        run: |
+          mkdir -p review/references review/site/images/research review/site/assets
+          cp index.html review/site/
+          cp -r assets/css assets/js review/site/assets/
+          cp images/research/*.webp images/research/manifest.json review/site/images/research/
+          cp Xiaoshan_Wu_CV.pdf cv.tex review/site/
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          from playwright.sync_api import sync_playwright
+          out=Path('review/references')
+          urls={'bowen':'https://bowenyu066.github.io/','boyuan':'https://www.boyuan.space/','before':'https://candy-crusher.github.io/xiaoshanwu.github.io/'}
+          with sync_playwright() as p:
+              browser=p.chromium.launch()
+              for name,url in urls.items():
+                  page=browser.new_page(viewport={'width':1440,'height':1000},device_scale_factor=1)
+                  try:
+                      page.goto(url,wait_until='domcontentloaded',timeout=60000)
+                      page.wait_for_timeout(6000)
+                      page.screenshot(path=str(out/f'{name}-desktop.png'),full_page=True)
+                      (out/f'{name}.html').write_text(page.content(),encoding='utf-8')
+                      styles=page.evaluate('''() => [...document.querySelectorAll('h1,h2,h3,p,nav,body')].slice(0,50).map(el=>{const s=getComputedStyle(el);const r=el.getBoundingClientRect();return {tag:el.tagName,text:el.innerText?.slice(0,100),font:s.fontFamily,size:s.fontSize,weight:s.fontWeight,color:s.color,bg:s.backgroundColor,lineHeight:s.lineHeight,width:r.width,x:r.x}})''')
+                      (out/f'{name}-styles.json').write_text(json.dumps(styles,indent=2),encoding='utf-8')
+                      page.set_viewport_size({'width':390,'height':844})
+                      page.wait_for_timeout(800)
+                      page.screenshot(path=str(out/f'{name}-mobile.png'),full_page=True)
+                  except Exception as exc:
+                      (out/f'{name}-error.txt').write_text(str(exc))
+                  finally:
+                      page.close()
+              browser.close()
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: homepage-design-review
+          path: review/
+          retention-days: 2
