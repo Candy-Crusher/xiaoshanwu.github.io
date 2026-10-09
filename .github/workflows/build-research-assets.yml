@@ -1,0 +1,42 @@
+name: Build research figures
+on:
+  push:
+    branches: [master]
+    paths:
+      - scripts/build_research_assets.py
+      - .github/workflows/build-research-assets.yml
+      - images/research/source/**
+      - images/videossm.pdf
+      - images/SegmentAnytime.pdf
+      - images/1_eag3r.pdf
+      - images/EAG3R_poster.png
+      - images/photo.jpg
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: research-figures
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install figure renderers
+        run: python -m pip install PyMuPDF==1.26.3 Pillow==11.3.0
+      - name: Render original figures
+        run: python scripts/build_research_assets.py
+      - name: Save optimized figures
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add images/research/*.webp images/research/manifest.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Build optimized research figures'
+          git pull --rebase origin master
+          git push origin HEAD:master
