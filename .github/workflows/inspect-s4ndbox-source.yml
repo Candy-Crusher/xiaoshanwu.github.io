@@ -1,29 +1,98 @@
-name: Inspect public S4NDBOX figures
+name: Update S4NDBOX homepage entry
 on:
   push:
     branches: [master]
     paths: [.github/workflows/inspect-s4ndbox-source.yml]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  inspect:
+  update:
     runs-on: ubuntu-latest
     steps:
-      - name: Read supplied public project figures
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install image optimizer
+        run: python -m pip install Pillow==11.3.0
+      - name: Cache the supplied public project figures
         run: |
-          mkdir -p figures
           python - <<'PY'
           from pathlib import Path
-          import urllib.request
-          for name in ('teaser.png', 'method.png'):
-              url = 'https://demo1-indol-gamma.vercel.app/static/images/' + name
-              with urllib.request.urlopen(url, timeout=30) as r:
-                  data = r.read(15_000_000)
-              Path('figures', name).write_bytes(data)
-              print(name, len(data))
+          from PIL import Image
+          import io, urllib.request, json
+          out = Path('images/research')
+          for source, name, width in [('teaser.png','s4ndbox-overview-full.webp',1800),('teaser.png','s4ndbox-overview.webp',900),('method.png','s4ndbox-method-full.webp',2000)]:
+              url='https://demo1-indol-gamma.vercel.app/static/images/'+source
+              with urllib.request.urlopen(url,timeout=30) as r:
+                  data=r.read(15_000_000)
+              image=Image.open(io.BytesIO(data)).convert('RGB')
+              if image.width > width:
+                  image=image.resize((width,round(image.height*width/image.width)),Image.Resampling.LANCZOS)
+              image.save(out/name,'WEBP',quality=93,method=6)
+          metadata={'project_url':'https://demo1-indol-gamma.vercel.app/','figure_sources':['static/images/teaser.png','static/images/method.png'],'content_basis':'User-supplied Spatial_Forcing_WAM__ICLR27__Xiaoshan_s_project_.pdf','content_basis_sha256':'60c3859d1fa7dbda0410da12637c18f51d83673149d8da64cc802e2d825cd34c','note':'Project figures correspond to Figures 1 and 2 in the supplied manuscript. Descriptions and experimental claims follow that PDF.'}
+          (out/'s4ndbox-source.json').write_text(json.dumps(metadata,indent=2)+'\n')
           PY
-      - uses: actions/upload-artifact@v4
-        with:
-          name: public-project-figures
-          path: figures/
-          retention-days: 1
+      - name: Update the S4NDBOX entry only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          path=Path('index.html');html=path.read_text()
+          article='''<article class="research-entry" id="selected-world-action-model">
+          <figure class="research-visual">
+          <a aria-label="Enlarge S4NDBOX overview" class="figure-preview" data-caption="S4NDBOX overview: 4D generation, world–action agreement and robustness under distribution shifts. Project-site figure corresponding to Figure 1 of the supplied manuscript. The regeneration panel is schematic." data-figure="" href="images/research/s4ndbox-overview-full.webp">
+          <img alt="S4NDBOX: predicted RGB, depth and motion, action verification, and simulation-to-real examples" decoding="async" height="458" loading="lazy" src="images/research/s4ndbox-overview.webp" width="900"/>
+          <span aria-hidden="true" class="figure-expand">View figure <span>↗</span></span>
+          </a>
+          <figcaption>4D prediction, action verification &amp; zero-shot transfer</figcaption>
+          <div class="s4ndbox-figure-links"><a data-figure="" data-caption="S4NDBOX method: shared-VAE multimodal prediction and causal 4D-to-action coupling. Project-site figure corresponding to Figure 2 of the supplied manuscript." href="images/research/s4ndbox-method-full.webp">Method figure</a><a href="https://demo1-indol-gamma.vercel.app/static/videos/disco_light_10x.mp4" target="_blank" rel="noopener">Robot demo (10×)</a></div>
+          </figure>
+          <div class="research-copy">
+          <p class="research-area">World–action models</p>
+          <h3>Verifiable 4D World–Action Model for Robust Robot Control</h3>
+          <p class="research-authors"><strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, et al.</p>
+          <p class="research-meta"><span>Under review at ICLR 2027</span><span class="research-role">Co-first author</span></p>
+          <p class="research-summary">S4NDBOX predicts RGB, metric depth, and view-specific motion, then generates actions conditioned on the predicted 4D future. Agreement between fixed-view motion, wrist orientation, and the paired action provides a geometric signal for selecting candidates before execution.</p>
+          <p class="s4ndbox-result"><strong>+13.3 percentage points on RoboTwin Hard</strong> over RGB-only after clean-only task training; zero-shot sim-to-real evaluation on a Franka Research 3.</p>
+          <nav aria-label="S4NDBOX resources" class="research-links"><a href="https://demo1-indol-gamma.vercel.app/" target="_blank" rel="noopener">Project</a><a href="https://demo1-indol-gamma.vercel.app/rdf-viewer.html?case=pose-1" target="_blank" rel="noopener">Interactive 4D</a></nav>
+          </div>
+          </article>'''
+          pattern=r'<article class="research-entry" id="selected-world-action-model">[\s\S]*?</article>'
+          assert len(re.findall(pattern,html))==1
+          html=re.sub(pattern,lambda m:article,html,count=1)
+          start=html.index('<li id="pub-world-action-model">');end=html.index('</li>',start)+5
+          block=html[start:end]
+          old='<span class="pub-role">Co-first author</span></div>'
+          assert block.count(old)==1
+          block=block.replace(old,'<span class="pub-role">Co-first author</span><span class="paper-links"><a href="https://demo1-indol-gamma.vercel.app/" target="_blank" rel="noopener">Project</a></span></div>')
+          html=html[:start]+block+html[end:]
+          html=html.replace('href="assets/css/research.css"','href="assets/css/research.css?v=s4ndbox-20261009"')
+          path.write_text(html)
+          p=Path('assets/css/research.css');css=p.read_text()
+          assert '.s4ndbox-figure-links' not in css
+          css+='''\n/* S4NDBOX: paper-aligned figures and project demonstrations. */
+          .s4ndbox-figure-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px 17px; margin-top: 9px; font-size: 12px; }
+          .s4ndbox-result { font-size: 12.5px; line-height: 1.65; color: #535e68; margin: 0 0 12px; }
+          .s4ndbox-result strong { font-weight: 600; color: #303b45; }
+          @media print { .s4ndbox-figure-links { display: none; } }
+          '''
+          p.write_text(css)
+          PY
+      - name: Verify project demonstration links
+        run: |
+          python - <<'PY'
+          import urllib.request
+          for suffix in ('', 'rdf-viewer.html?case=pose-1', 'static/videos/disco_light_10x.mp4'):
+              url='https://demo1-indol-gamma.vercel.app/'+suffix
+              req=urllib.request.Request(url,method='HEAD',headers={'User-Agent':'Mozilla/5.0'})
+              with urllib.request.urlopen(req,timeout=30) as r: print(r.status,url)
+          PY
+      - name: Save the update and remove one-time workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add images/research/s4ndbox-overview.webp images/research/s4ndbox-overview-full.webp images/research/s4ndbox-method-full.webp images/research/s4ndbox-source.json index.html assets/css/research.css
+          git rm .github/workflows/inspect-s4ndbox-source.yml
+          git commit -m 'Refresh S4NDBOX with supplied manuscript framing and project demonstrations'
+          git pull --rebase origin master
+          git push origin HEAD:master
