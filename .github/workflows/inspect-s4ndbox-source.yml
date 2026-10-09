@@ -1,44 +1,29 @@
-name: Inspect S4NDBOX source
+name: Inspect public S4NDBOX figures
 on:
   push:
     branches: [master]
     paths: [.github/workflows/inspect-s4ndbox-source.yml]
-  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch the supplied public project page
+      - name: Read supplied public project figures
         run: |
-          mkdir -p source-snapshot
+          mkdir -p figures
           python - <<'PY'
-          import json, pathlib, urllib.request, urllib.parse
-          from html.parser import HTMLParser
-          out = pathlib.Path('source-snapshot')
-          base = 'https://demo1-indol-gamma.vercel.app/'
-          report = {'requested_url': base, 'links': []}
-          class Links(HTMLParser):
-              def handle_starttag(self, tag, attrs):
-                  a = dict(attrs)
-                  for key in ('href', 'src', 'poster', 'data-src'):
-                      if key in a and not a[key].startswith('data:'):
-                          report['links'].append({'tag': tag, 'attribute': key, 'url': urllib.parse.urljoin(base, a[key])})
-          try:
-              req = urllib.request.Request(base, headers={'User-Agent': 'Mozilla/5.0'})
-              with urllib.request.urlopen(req, timeout=30) as r:
-                  report.update(status=r.status, final_url=r.url)
-                  raw = r.read(8_000_000)
-              (out / 'project.html').write_bytes(raw)
-              Links().feed(raw.decode('utf-8', errors='replace'))
-          except Exception as e:
-              report['error'] = str(e)
-          (out / 'report.json').write_text(json.dumps(report, indent=2))
-          print(json.dumps(report, indent=2))
+          from pathlib import Path
+          import urllib.request
+          for name in ('teaser.png', 'method.png'):
+              url = 'https://demo1-indol-gamma.vercel.app/static/images/' + name
+              with urllib.request.urlopen(url, timeout=30) as r:
+                  data = r.read(15_000_000)
+              Path('figures', name).write_bytes(data)
+              print(name, len(data))
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: s4ndbox-source-snapshot
-          path: source-snapshot/
+          name: public-project-figures
+          path: figures/
           retention-days: 1
