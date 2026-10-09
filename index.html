@@ -14,11 +14,10 @@
 <meta content="website" property="og:type"/>
 <link href="assets/css/editorial.css?v=20261010" rel="stylesheet"/>
 <script defer="" src="assets/js/editorial.js?v=20261010"></script>
-<link href="assets/css/shared-world.css?v=20261010" rel="stylesheet"/><link as="image" href="images/theme/shared-world.webp" rel="preload"/></head>
+<link href="assets/css/shared-world.css?v=20261010" rel="stylesheet"/><link href="assets/css/hero-hd.css?v=20261010-hd" rel="stylesheet"/><script defer="" src="assets/js/hero-hd.js?v=20261010-hd"></script></head>
 <body data-page="home" id="top">
 <a class="skip-link" href="#main">Skip to content</a>
-
-<div class="cinematic-shell"><header class="site-header wrap">
+<header class="hero-navigation"><div class="header-inner">
 <a aria-label="Xiaoshan Wu, homepage" class="wordmark" href="index.html">Xiaoshan Wu<span aria-hidden="true" lang="zh">小山</span></a>
 <nav aria-label="Main navigation" class="site-nav">
 <a href="#direction">Research</a>
@@ -26,13 +25,13 @@
 <a href="#background">Background</a>
 <a href="Xiaoshan_Wu_CV.pdf" rel="noopener" target="_blank">CV <span aria-hidden="true">↗</span></a>
 </nav>
-</header>
-<img alt="A violet-lit science-fiction scene with a holographic figure and a person sharing the same space." class="cinematic-image" decoding="async" fetchpriority="high" height="450" src="images/theme/shared-world.webp" width="800"/>
+</div></header><div class="cinematic-shell">
+<div aria-hidden="true" class="hero-scrim"></div><picture class="hero-media"><source media="(max-width: 680px)" sizes="100vw" srcset="images/theme/shared-world-mobile-790.webp 790w, images/theme/shared-world-mobile-1580.webp 1580w"/><img alt="A wide, violet-lit scene: a luminous figure reaches toward a person on a walkway." class="cinematic-image" decoding="async" fetchpriority="high" height="1200" sizes="(min-aspect-ratio: 239/100) 100vw, 258svh" src="images/theme/shared-world-1920.webp" srcset="images/theme/shared-world-1440.webp 1440w, images/theme/shared-world-1920.webp 1920w, images/theme/shared-world-2864.webp 2864w" width="2864"/></picture>
 <section aria-labelledby="name" class="cinematic-hero wrap">
 <div class="hero-copy">
 <p class="hero-kicker">Embodied intelligence · World models</p>
 <h1 id="name">Xiaoshan Wu <span lang="zh">吴小山</span></h1>
-<p class="hero-statement">Intelligence for<br/>the world we share.</p>
+<p class="hero-statement">Intelligence for <br/>the world we share.</p>
 <p class="hero-direction">Self-Improving Physical Agents<br/>through Agent–World Model Co-Evolution</p>
 <nav aria-label="Contact and profiles" class="hero-links">
 <a href="mailto:wuxiaoshan630@gmail.com">Email</a>
@@ -42,7 +41,7 @@
 </nav>
 </div>
 </section>
-<div class="hero-foot wrap"><a href="#inspiration">On a shared world <span aria-hidden="true">↗</span></a><a href="#direction">Explore the research <span aria-hidden="true">↓</span></a></div>
+<div class="hero-foot wrap"><a class="scroll-cue" href="#direction"><span aria-hidden="true" class="scroll-chevron"></span>Explore the research</a><a class="inspiration-link" href="#inspiration">On a shared world ↗</a></div>
 </div><main class="wrap" id="main"><section aria-labelledby="direction-title" class="research-direction" id="direction">
 <div class="research-intro-grid">
 <div class="direction-copy">
@@ -58,14 +57,13 @@
 <section aria-labelledby="model-heading"><p class="direction-number">02 / The learning loop</p><h3 id="model-heading">Agent and world model, together.</h3><p>I investigate a reciprocal loop: the agent gathers informative experience to refine an action-conditioned 4D world model; the model helps compare possible futures and guide further exploration. Real outcomes update both the model and the agent’s strategies and memory.</p></section>
 </div>
 </section>
-
 <section aria-labelledby="selected-research" class="selected-section">
 <div class="section-heading"><h2 id="selected-research">Selected research</h2><a href="publications.html">All publications <span aria-hidden="true">→</span></a></div>
 <p class="section-note">Steps toward this research direction. First- and co-first-author work; * equal contribution.</p>
 <article class="research-entry" id="selected-world-action-model">
 <figure class="research-visual">
 <a aria-label="Enlarge S4NDBOX overview" class="figure-preview" data-caption="S4NDBOX overview: 4D generation, world–action agreement and robustness under distribution shifts. Project-site figure corresponding to Figure 1 of the supplied manuscript. The regeneration panel is schematic." data-figure="" href="images/research/s4ndbox-overview-full.webp">
-<img alt="S4NDBOX: predicted RGB, depth and motion, action verification, and simulation-to-real examples" decoding="async" height="458" loading="lazy" src="images/research/s4ndbox-overview.webp" width="900">
+<img alt="S4NDBOX: predicted RGB, depth and motion, action verification, and simulation-to-real examples" decoding="async" height="458" loading="lazy" src="images/research/s4ndbox-overview.webp" width="900"/>
 <span aria-hidden="true" class="figure-expand">↗</span>
 </a>
 <figcaption>4D prediction &amp; geometric verification</figcaption>
@@ -81,9 +79,9 @@
 </article><article class="research-entry" id="selected-game">
 <figure class="research-visual">
 <a aria-label="Enlarge Spatial reasoning &amp; memory figure" class="figure-preview" data-caption="GaMe: conceptual overview from the manuscript. The scenes, point cloud, and example answer illustrate the approach; they are not benchmark inputs or measured model predictions." data-figure="" href="images/research/game-overview.webp">
-<img alt="Geometry-enriched working memory · conceptual overview" decoding="async" height="276" loading="lazy" src="images/research/game-overview.webp" width="600"/>
+<img alt="Geometry-enriched working memory · conceptual overview" decoding="async" height="276" loading="lazy" src="images/research/game-overview.webp" width="600">
 <span aria-hidden="true" class="figure-expand">↗</span>
-</a>
+</img></a>
 <figcaption>Geometric working memory · conceptual overview</figcaption>
 </figure>
 <div class="research-copy">
@@ -153,11 +151,11 @@
 <h2 id="background">Background</h2>
 <div class="experience-row">
 <div><strong>Harvard University</strong><p>Visiting Researcher</p><p class="detail">Yilun Du and Mengyu Wang · Embodied AI and 4D world models</p></div>
-<div class="dates">Apr. 2026 – Aug. 2026<br>Cambridge, MA, USA</div>
+<div class="dates">Apr. 2026 – Aug. 2026<br/>Cambridge, MA, USA</div>
 </div>
 <div class="experience-row">
 <div><strong>The University of Hong Kong</strong><p>Ph.D. in Electrical and Computer Engineering</p><p class="detail">Advisor: Prof. Xiaojuan Qi</p></div>
-<div class="dates">Sep. 2023 – Present<br/>Hong Kong</div>
+<div class="dates">Sep. 2023 – Present<br>Hong Kong</br></div>
 </div>
 <div class="experience-row">
 <div><strong>Zhejiang University &amp; University of Illinois Urbana-Champaign</strong><p>Dual B.S. in Computer Engineering</p><p class="detail">ZJUI Institute</p></div>
@@ -174,7 +172,7 @@
 <aside aria-labelledby="inspiration-heading" class="inspiration-note" id="inspiration">
 <p class="eyebrow" id="inspiration-heading">A personal inspiration</p>
 <p>Joi in <cite>Blade Runner 2049</cite> inspires my interest in AI as a presence in everyday life. For me, the research question is how to ground that presence in an understanding of the world, meaningful action, and the ability to learn from experience.</p>
-<p class="image-credit">Header film still: <cite>Blade Runner 2049</cite> (2017), © Alcon Entertainment. Visual inspiration, not a research result.</p>
+<p class="image-credit">Header film still: <cite>Blade Runner 2049</cite> (2017). All rights belong to the respective rights holders. <a href="images/theme/shared-world-source.json" rel="noopener" target="_blank">Image source</a>. Visual inspiration, not a research result.</p>
 </aside></main>
 <footer class="site-footer wrap">
 <span>© 2026 Xiaoshan Wu</span>
@@ -187,3 +185,4 @@
 </dialog>
 </body>
 </html>
+
