@@ -1,0 +1,181 @@
+% Target: NVIDIA | PhD Research Intern, Generalist Embodied Agents Research - 2027 | JR2025103
+% Job source: https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/PhD-Research-Intern--Generalist-Embodied-Agents-Research---2027_JR2025103
+% Source CV: Candy-Crusher/xiaoshanwu.github.io, master/cv.tex
+% Source Git blob: dda38528d1d6e456b6d68db1cf4d3c1c2d9e6bf5; retrieved 2026-10-10.
+% Standalone file; pdfLaTeX, no project files or bibliography required.
+% Publication status and author order follow the source CV.
+% S4NDBOX: supplied manuscript, abstract and Sections 3--4; project summaries: current homepage.
+% Co-evolution, human-data learning and humanoid extensions are research goals, not completed deployments.
+% Before submitting, confirm internship dates, current student eligibility and authorization.
+\documentclass[a4paper]{article}
+
+\usepackage[a4paper,top=0.36in,bottom=0.36in,left=0.5in,right=0.5in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{etoolbox}
+\input{glyphtounicode}
+\pdfgentounicode=1
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{array,tabularx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{calc}
+
+\definecolor{cvblue}{RGB}{0,0,128}
+\definecolor{cvred}{RGB}{230,0,0}
+\hypersetup{
+  colorlinks=true,
+  urlcolor=black,
+  linkcolor=black,
+  citecolor=black,
+  pdfauthor={Xiaoshan Wu},
+  pdftitle={Xiaoshan Wu - Curriculum Vitae}
+}
+\urlstyle{same}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\tabcolsep}{0pt}
+\linespread{0.965}
+\emergencystretch=3em
+
+\newcommand{\sepbar}{\hspace{9pt}\textbar\hspace{9pt}}
+\newcommand{\cvsection}[1]{%
+  \par\vspace{3.8pt}%
+  {\color{cvblue}\fontsize{11}{12.2}\selectfont\bfseries\MakeUppercase{#1}}\par
+  \vspace{-4pt}{\color{cvblue}\rule{\textwidth}{0.4pt}}\par\vspace{1.4pt}%
+}
+\newcommand{\pubgroup}[1]{%
+  \par\vspace{3.8pt}{\color{cvblue}\fontsize{9.4}{10.4}\selectfont\bfseries #1}\par
+}
+\newcommand{\dashitem}{\makebox[1.15em][l]{--}}
+\newcommand{\indentedblock}[1]{%
+  \hspace{1.35em}\begin{minipage}[t]{\dimexpr\textwidth-1.35em\relax}#1\end{minipage}%
+}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}p{0.19\textwidth}}
+
+
+% Optional, confirmed internship availability, for example "May 2027 -- August 2027".
+% Leave empty until confirmed. ByteDance A105384 requires both start and end dates.
+\newcommand{\InternshipAvailability}{}
+\newcommand{\ExpectedGraduation}{Aug.\ 2027}
+\definecolor{cvgray}{RGB}{66,66,66}
+\newcommand{\pubnote}[1]{\par{\color{cvgray}#1}}
+\begin{document}
+\fontsize{9}{10.25}\selectfont
+
+% ==================== HEADER ====================
+\begin{center}
+  \vspace*{2.0pt}
+  {\fontsize{24.88}{27}\selectfont\bfseries Xiaoshan Wu}\par
+  \vspace{2.0pt}
+  {\fontsize{9}{10.2}\selectfont
+  \href{mailto:wuxiaoshan630@gmail.com}{\underline{wuxiaoshan630@gmail.com}}%
+  \sepbar
+  (+1) 617-894-4567%
+  \sepbar
+  \href{https://candy-crusher.github.io/xiaoshanwu.github.io/}{\underline{Personal Website}}%
+  \sepbar
+  \href{https://scholar.google.com/citations?user=9nsSKpsAAAAJ\&hl=en}{\underline{Google Scholar}}}
+\ifdefempty{\InternshipAvailability}{}{\par\vspace{1pt}{\fontsize{9}{9.65}\selectfont\textbf{Internship availability:} \InternshipAvailability}}
+\end{center}
+\vspace{-6pt}
+
+% ==================== EDUCATION ====================
+\cvsection{Education}
+\begin{tabularx}{\textwidth}{@{\hspace{1.35em}}X@{\hspace{0.8em}}R@{}}
+{\fontsize{10}{11}\selectfont\textbf{Harvard University}} & {\fontsize{10}{11}\selectfont Cambridge, MA, USA}\\[-0.2pt]
+\textit{Visiting Scholar (Embodied AI \& 4D World Models)} & \textit{Apr. 2026 -- Present}
+\end{tabularx}
+\vspace{0.2pt}
+\begin{tabular}{@{\hspace{1.35em}}p{\dimexpr\textwidth-1.35em\relax}@{}}
+\dashitem\textbf{Advisors:} Yilun Du and Mengyu Wang.
+\end{tabular}
+% \vspace{0.7pt}
+
+\begin{tabularx}{\textwidth}{@{\hspace{1.35em}}X@{\hspace{0.8em}}R@{}}
+{\fontsize{10}{11}\selectfont\textbf{The University of Hong Kong (HKU)}} & {\fontsize{10}{11}\selectfont Hong Kong}\\[-0.2pt]
+\textit{Ph.D. in Electrical and Computer Engineering} & \textit{Sep. 2023 -- Present}
+\end{tabularx}
+\vspace{0.4pt}
+\begin{tabular}{@{\hspace{1.35em}}p{\dimexpr\textwidth-1.35em\relax}@{}}
+\dashitem\textbf{Awards:} Hong Kong PhD Fellowship (\textbf{HKPFS, Top Tier}), HKU Presidential Scholarship.\\[-0.35pt]
+\dashitem\textbf{Advisor:} Xiaojuan Qi. \textbf{GPA:} 4.0/4.3. \textbf{Expected graduation:} \ExpectedGraduation.
+\end{tabular}
+
+\vspace{0.7pt}
+\begin{tabularx}{\textwidth}{@{\hspace{1.35em}}X@{\hspace{0.8em}}R@{}}
+{\fontsize{10}{11}\selectfont\textbf{Zhejiang University (ZJU) \& UIUC}} & {\fontsize{10}{11}\selectfont China \& USA}\\[-0.2pt]
+\textit{Dual B.S. in Computer Engineering (ZJUI Institute)} & \textit{Sep. 2019 -- Jun. 2023}
+\end{tabularx}
+\vspace{0.35pt}
+\begin{tabular}{@{\hspace{1.35em}}p{\dimexpr\textwidth-1.35em\relax}@{}}
+\dashitem\textbf{Honors:} Outstanding Graduate (Rank 5), Dean's List. \textbf{GPA:} 3.99/4.0 (ZJU), 3.75/4.0 (UIUC).
+\end{tabular}
+
+% ==================== RESEARCH INTERESTS ====================
+\cvsection{Research Interests}
+\textbf{Self-Improving Physical Agents through Agent--World Model Co-Evolution.}\par
+I study \textbf{world--action models and memory for generalizable embodied behavior}. My work connects multi-view 4D prediction, autoregressive video generation, and spatial reasoning to robot action. I am interested in agents that gather informative experience, improve predictive world models, and use those models to guide exploration and acquire reusable skills.
+
+\cvsection{Publications \& Preprints}
+{\fontsize{9}{9.65}\selectfont
+\textit{* Equal contribution; \textdagger\ project lead. Published, preprint, and under-review work.}\par
+\pubgroup{First- and Co-first-author Work}
+\begin{enumerate}[leftmargin=1.6em,labelsep=0.38em,itemsep=1.5pt,topsep=1.3pt,parsep=0pt,partopsep=0pt]
+\item \textbf{Verifiable 4D World--Action Model for Robust Robot Control.}\par
+\textbf{X. Wu*}, R. Cai*, Y. Bao, Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou, M. Wang, and Y. Du.\par
+Under review at ICLR 2027.\quad\href{https://demo1-indol-gamma.vercel.app/}{\textcolor{cvblue}{[Project]}}\hfill\textcolor{cvblue}{\textit{Co-first author}}
+\pubnote{RoboTwin Hard: \textbf{+13.3 pp} success vs.\ RGB-only after clean-only training; zero-shot Franka Research 3 deployment.}
+\item \textbf{VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory.}\par
+Y. Yu*, \textbf{X. Wu*}, X. Hu, et al.\par
+arXiv:2512.04519, 2025.\quad\href{https://arxiv.org/abs/2512.04519}{\textcolor{cvblue}{[Paper]}}\hfill\textcolor{cvblue}{\textit{Co-first author}}
+\pubnote{Local attention and recurrent state-space memory retain short- and long-range context for video generation.}
+\item \textbf{GaMe: Geometry as Memory for Multi-View Spatial Reasoning.}\par
+\textbf{X. Wu}, X. Lyu, Y. Yu, M. Liu, S. Shi, Z. Wang, and X. Qi.\par
+Under review at ICRA 2027.\quad\href{https://candy-crusher.github.io/xiaoshanwu.github.io/publications.html#pub-game}{\textcolor{cvblue}{[Details]}}\hfill\textcolor{cvblue}{\textit{First author}}
+\pubnote{Geometric working memory aggregates multi-view evidence for spatial question answering.}
+\item \textbf{EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes.}\par
+\textbf{X. Wu}, Y. Yu, X. Lyu, et al.\par
+\textbf{NeurIPS 2025} \textcolor{cvred}{\textbf{\textperiodcentered\ Spotlight}}.\quad\href{https://candy-crusher.github.io/EAG3R_Proj/}{\textcolor{cvblue}{[Project]}}\hfill\textcolor{cvblue}{\textit{First author}}
+\item \textbf{LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation.}\par
+\textbf{X. Wu}, X. Lyu, Y. Yu, B. Wang, Z. Wang, and X. Qi.\par
+\textbf{ICLR 2026}.\quad\href{https://arxiv.org/abs/2603.21115}{\textcolor{cvblue}{[Paper]}}\hfill\textcolor{cvblue}{\textit{First author}}
+\item \textbf{EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera.}\par
+Y. Yu*, \textbf{X. Wu*\textdagger}, X. Lyu, Z. Wang, and X. Qi.\par
+Under review at AAAI 2027.\hfill\textcolor{cvblue}{\textit{Co-first author; project lead}}
+\item \textbf{LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction.}\par
+T. Wan*, \textbf{X. Wu*\textdagger}, Y. Yu, et al.\par
+Under review at IEEE TPAMI; arXiv:2609.25803, 2026.\quad\href{https://arxiv.org/abs/2609.25803}{\textcolor{cvblue}{[Paper]}}\hfill\textcolor{cvblue}{\textit{Co-first author; project lead}}
+\item \textbf{Event-Based Depth Prediction With Deep Spiking Neural Network.}\par
+\textbf{X. Wu}, W. He, M. Yao, et al. \hfill \textbf{IEEE TCDS}, 16(6):2008--2018, 2024.\hfill\textcolor{cvblue}{\textit{First author}}
+\end{enumerate}
+\pubgroup{Collaborative Work}
+\begin{enumerate}[resume,leftmargin=1.6em,labelsep=0.38em,itemsep=1.5pt,topsep=1.3pt,parsep=0pt,partopsep=0pt]
+\item \textbf{Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory.}\par
+Y. Yu, X. Zhang, S. Wang, \ldots, \textbf{X. Wu}, et al. \hfill \textbf{Nature}, 654:642--651, 2026.
+\item \textbf{OptiGeo: Efficient Monocular Geometry for Embodied Perception in Optically Challenging Scenes.}\par
+M. Liu, T. Liu, J. Xia, X. Lyu, \textbf{X. Wu}, et al. \hfill \textbf{CoRL 2026}.
+\item \textbf{FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry.}\par
+M. Liu, X. Lyu, T. Ren, P. Dai, \textbf{X. Wu}, et al. \hfill \textbf{ECCV 2026}.
+\item \textbf{Stabilizing Streaming Video Geometry via Dynamic Feature Normalization.}\par
+X. Lyu, M. Liu, \textbf{X. Wu}, et al. \hfill \textbf{CVPR 2026}, pp.\ 7577--7587.
+\item \textbf{Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver.}\par
+H. Chen, J. Yang, J. Chen, \ldots, \textbf{X. Wu}, et al. \hfill \textbf{Science Advances}, 11(22):eadr7571, 2025.
+\item \textbf{Topology Optimization of Random Memristors for Input-Aware Dynamic SNN.}\par
+B. Wang, X. Zhang, S. Wang, \ldots, \textbf{X. Wu}, et al. \hfill \textbf{Science Advances}, 11(16):eads5340, 2025.
+\item \textbf{Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing.}\par
+C. Li, X. Chen, Z. Zhang, \textbf{X. Wu}, et al. \hfill \textbf{Nano Letters}, 24(47):15025--15034, 2024.
+\end{enumerate}}
+
+% ==================== SKILLS ====================
+\cvsection{Technical Skills}
+PyTorch, Diffusers, CUDA, Open3D, OpenCV.
+
+% ==================== AWARDS ====================
+\cvsection{Selected Awards}
+Hong Kong PhD Fellowship (HKPFS, 2023); HKU Presidential Scholarship (2023).\par
+Outstanding Graduate of Zhejiang University (2023); NeurIPS (2025) and ICLR (2026) Travel Awards.
+
+\end{document}
