@@ -2,7 +2,9 @@
 
 13 份针对不同岗位准备的独立 LaTeX 简历：NVIDIA 10 份，ByteDance Seed、Google、Amazon 各 1 份。
 
-本目录的 `.tex` 与 2026-10-10 对话中交付的版本逐字节一致。导入时已逐份核对 SHA-256，没有重新改写研究内容或署名。
+初始版本于 2026-10-10 逐份校验后导入。本次按作者反馈更新了贡献标签、TCDS 条目排版和研究兴趣；以下文件是修订版，不再与最初交付的附件逐字节一致。
+
+**修订约定：** 第一署名显示 `First author`，但保留共同一作的 `*` 与 equal-contribution 说明；非第一署名的共同一作仍显示 `Co-first author`。TCDS 的标题、作者、期刊与贡献分三行。研究兴趣先介绍已有工作，最后一句将 self-improving agents / agent–world model co-evolution 明确作为新兴趣。
 
 ## 选择对应版本
 
