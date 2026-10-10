@@ -1,0 +1,24 @@
+name: Import approved standalone CV sources
+on:
+  push:
+    branches: [upload-tailored-cvs-20261010]
+    paths:
+      - _cv_upload/**
+      - .github/workflows/import-tailored-cvs.yml
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore and verify all 13 approved TeX files
+        run: python3 _cv_upload/import.py
+      - name: Save standalone files on the staging branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cv/2027-internships/*.tex
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Import 13 byte-verified standalone CV variants'
+          git push origin HEAD:upload-tailored-cvs-20261010
