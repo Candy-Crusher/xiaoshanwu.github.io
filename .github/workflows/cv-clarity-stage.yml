@@ -1,0 +1,24 @@
+name: Stage reviewed CV clarity fixes
+on:
+  push:
+    branches: [cv-clarity-fixes-20261010]
+    paths:
+      - '.cv-clarity/**'
+      - '.github/workflows/cv-clarity-stage.yml'
+permissions:
+  contents: write
+jobs:
+  revise:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply exact locally compiled revisions
+        run: python3 .cv-clarity/revise.py
+      - name: Commit CV files to review branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cv.tex cv/2027-internships/*.tex cv/2027-internships/README.md
+          git diff --cached --stat
+          git commit -m 'Refine author roles, TCDS layout and evidence-first research interests'
+          git push origin HEAD:cv-clarity-fixes-20261010
