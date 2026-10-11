@@ -6,6 +6,10 @@
 
 **修订约定：** 第一署名显示 `First author`，但保留共同一作的 `*` 与 equal-contribution 说明；非第一署名的共同一作仍显示 `Co-first author`。TCDS 的标题、作者、期刊与贡献分三行。研究兴趣先介绍已有工作，最后一句将 self-improving agents / agent–world model co-evolution 明确作为新兴趣。
 
+## Research Interests — 2026-10-12
+
+主 CV 与全部 13 份岗位版统一采用作者确认的研究主线：**spatial intelligence for physical agents**。先讲支持陌生环境中可靠行动的世界理解，再讲从获取、保留空间证据到预测未来与执行前检查的研究基础；**agent–world model co-evolution** 明确作为未来兴趣。各版本的论文顺序、署名、项目说明和岗位对应关系保持不变。
+
 ## 选择对应版本
 
 | 编号 | 公司 / 岗位 | 岗位编号 | 独立 TeX |
