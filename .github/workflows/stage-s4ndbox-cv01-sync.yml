@@ -1,0 +1,87 @@
+name: Stage S4NDBOX CV01 synchronization
+on:
+  push:
+    branches: [sync-s4ndbox-from-cv01-20261012]
+    paths: [.github/workflows/stage-s4ndbox-cv01-sync.yml]
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy the current CV01 description without rewriting
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, re
+          source = Path('cv/2027-internships/01_Xiaoshan_Wu_NVIDIA_Spatial_Intelligence_JR2027305.tex')
+          expected = {
+            '01': ('44abff2d3db851802cba84a4a9705358e65431bc', '44abff2d3db851802cba84a4a9705358e65431bc'),
+            '02': ('1fa0bfb314b1ba73dc7d846bea0f03344b9d7179', 'f62448a4f01a16b3ccc097306aa801691917cd21'),
+            '03': ('c4df4c46a654325d856b867f91b8be375d1f1931', '3751fd24904597af2084511c61a38d6f663b9767'),
+            '04': ('6d1a2e215bc4e3bd67af5577c8141a6100c1b70e', 'd3cf93c23112db8794fc8a275ce559aa41716e5f'),
+            '05': ('f2b73feef9cdb61e6e5119d56f368148121640f0', '81a987e4ebbfc207146c233b817f047e66d4deac'),
+            '06': ('107cd7e02985bd169f36ecc8190c5a060a82d8a0', 'fa6419cb25849540c73a5ed15ea54c929cd54144'),
+            '07': ('ed597ca0057ae9e22533002929d235195adbe774', 'ed8788ff383cd2ceee5c237f30bb505fe856363e'),
+            '08': ('1def788b41b06e40bccabdc743e99e4e423b21de', 'bf5fa231de473d141e07be8dfbf0e5683e0c03c7'),
+            '09': ('95e535f2b57466de64272c518f423d877401f8e2', '017d7c78ee4cb79c9d53ff1f083206b2ae5645b3'),
+            '10': ('9e747d1bb9de1051750cfaa81dd19a32b2994b51', 'c3d5aab2f32c9294d15ed1f959ab8b86a07282a2'),
+            '11': ('08d19f052271c6aafba227c4c4b2bbe0fca88ea6', '3d8031e1fda32bf7ab8c69f4fa00ec4e49b4c163'),
+            '12': ('aa032d05e487661c8b8c632c8686c9049195eaf0', 'a16da7250968f235b44635619cb9d1f408d39255'),
+            '13': ('e841df75a37ee3f87d193a2c706eafad2296bf04', 'f1aabb1b5213afcb6dc2583c9761a34ef873b613'),
+            'cv': ('89b64153cb00cc5c4c6763eb649e29793f649815', '4b5443c5448b44cb2b34289ba6bcc76b6a8cedf4'),
+          }
+          def blob(text):
+              data = text.encode('utf-8')
+              return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+          def span(text):
+              matches = list(re.finditer(r'(?ms)^\\item \\textbf\{Verifiable 4D World--Action Model for Robust Robot Control\.\}.*?(?=^\\item |^\\end\{enumerate\})', text))
+              assert len(matches) == 1, 'Expected exactly one S4NDBOX entry'
+              entry = matches[0]
+              start = re.search(r'(?m)^\\pubnote\{', entry.group())
+              assert start, 'Missing active S4NDBOX note'
+              return entry.start() + start.start(), entry.end()
+          files = [Path('cv.tex')] + sorted(Path('cv/2027-internships').glob('*.tex'))
+          assert len(files) == 14
+          original = {p: p.read_text(encoding='utf-8') for p in files}
+          for p, text in original.items():
+              key = 'cv' if p == Path('cv.tex') else p.name[:2]
+              assert blob(text) == expected[key][0], f'Unexpected source change: {p}'
+          a, b = span(original[source])
+          note = original[source][a:b]
+          assert note.count('\\pubnote{') == 1
+          assert all(token in note for token in ['physical plausibility', '11.2', '7.9', 'OOD generalization', '13.3', '40.0'])
+          changed = 0
+          for p, text in original.items():
+              if p == source:
+                  continue
+              a, b = span(text)
+              result = text[:a] + note + text[b:]
+              if p == Path('cv.tex'):
+                  # Keep the main CV on one page; text and font sizes stay unchanged.
+                  for old in ['itemsep=2.4pt', 'itemsep=2.6pt']:
+                      assert result.count(old) == 1
+                      result = result.replace(old, 'itemsep=1.5pt')
+              key = 'cv' if p == Path('cv.tex') else p.name[:2]
+              assert blob(result) == expected[key][1], f'Output differs from locally compiled file: {p}'
+              p.write_text(result, encoding='utf-8')
+              changed += 1
+              print(f'Updated {p}: {blob(result)}')
+          assert changed == 13
+          assert source.read_text(encoding='utf-8') == original[source]
+          for p in files:
+              text = p.read_text(encoding='utf-8')
+              a, b = span(text)
+              assert text[a:b] == note
+          print('Verified: 14 identical active S4NDBOX descriptions; CV01 unchanged.')
+          PY
+      - name: Save checked TeX changes on staging branch only
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cv.tex cv/2027-internships/*.tex
+          git commit -m 'Sync current CV01 S4NDBOX description to all other CVs'
+          git push origin HEAD:sync-s4ndbox-from-cv01-20261012
