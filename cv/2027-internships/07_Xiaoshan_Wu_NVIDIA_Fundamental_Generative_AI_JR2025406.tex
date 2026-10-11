@@ -38,17 +38,17 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt}
 \setlength{\tabcolsep}{0pt}
-\linespread{0.965}
+\linespread{0.95}
 \emergencystretch=3em
 
 \newcommand{\sepbar}{\hspace{9pt}\textbar\hspace{9pt}}
 \newcommand{\cvsection}[1]{%
-  \par\vspace{3.8pt}%
+  \par\vspace{3.0pt}%
   {\color{cvblue}\fontsize{11}{12.2}\selectfont\bfseries\MakeUppercase{#1}}\par
   \vspace{-4pt}{\color{cvblue}\rule{\textwidth}{0.4pt}}\par\vspace{1.4pt}%
 }
 \newcommand{\pubgroup}[1]{%
-  \par\vspace{3.8pt}{\color{cvblue}\fontsize{9.4}{10.4}\selectfont\bfseries #1}\par
+  \par\vspace{3.0pt}{\color{cvblue}\fontsize{9.4}{10.4}\selectfont\bfseries #1}\par
 }
 \newcommand{\dashitem}{\makebox[1.15em][l]{--}}
 \newcommand{\indentedblock}[1]{%
@@ -117,13 +117,13 @@
 
 % ==================== RESEARCH INTERESTS ====================
 \cvsection{Research Interests}
-I study \textbf{autoregressive video generation, hybrid state-space memory, and multimodal world models}. My work spans temporal memory for long-video generation and joint appearance, geometry, and motion prediction for robot control. I am now interested in self-improving physical agents through agent--world model co-evolution.
+I study \textbf{spatial intelligence for physical agents}: how to build a coherent understanding of the physical world that supports reliable action in unfamiliar environments. My work develops the perceptual and predictive foundations for this goal, from recovering and retaining spatial evidence to imagining physically plausible futures that guide actions and support pre-execution consistency checks. I am now interested in extending these foundations toward \textbf{agent--world model co-evolution}, where agents gather informative experience to improve world models, while improved models support long-horizon planning and action evaluation.
 
 \cvsection{Publications \& Preprints}
 {\fontsize{9}{9.65}\selectfont
 \textit{* Equal contribution; \textdagger\ project lead. Published, preprint, and under-review work.}\par
 \pubgroup{First- and Co-first-author Work}
-\begin{enumerate}[leftmargin=1.6em,labelsep=0.38em,itemsep=1.5pt,topsep=1.3pt,parsep=0pt,partopsep=0pt]
+\begin{enumerate}[leftmargin=1.6em,labelsep=0.38em,itemsep=1.0pt,topsep=1.3pt,parsep=0pt,partopsep=0pt]
 \item \textbf{VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory.}\par
 Y. Yu*, \textbf{X. Wu*}, X. Hu, et al.\par
 arXiv:2512.04519, 2025.\quad\href{https://arxiv.org/abs/2512.04519}{\textcolor{cvblue}{[Paper]}}\hfill\textcolor{cvblue}{\textit{Co-first author}}
@@ -153,7 +153,7 @@ Under review at IEEE TPAMI; arXiv:2609.25803, 2026.\quad\href{https://arxiv.org/
 \textbf{IEEE TCDS}, 16(6):2008--2018, 2024.\hfill\textcolor{cvblue}{\textit{First author}}
 \end{enumerate}
 \pubgroup{Collaborative Work}
-\begin{enumerate}[resume,leftmargin=1.6em,labelsep=0.38em,itemsep=1.5pt,topsep=1.3pt,parsep=0pt,partopsep=0pt]
+\begin{enumerate}[resume,leftmargin=1.6em,labelsep=0.38em,itemsep=1.0pt,topsep=1.3pt,parsep=0pt,partopsep=0pt]
 \item \textbf{Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory.}\par
 Y. Yu, X. Zhang, S. Wang, \ldots, \textbf{X. Wu}, et al. \hfill \textbf{Nature}, 654:642--651, 2026.
 \item \textbf{FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry.}\par
