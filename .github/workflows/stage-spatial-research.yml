@@ -1,0 +1,90 @@
+name: Stage spatial research statement
+on:
+  push:
+    branches: [research-spatial-intelligence-20261012]
+    paths: [.github/workflows/stage-spatial-research.yml]
+permissions:
+  contents: write
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply reviewed text and layout changes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, hashlib
+          root = Path('.')
+          text = r'''I study \textbf{spatial intelligence for physical agents}: how to build a coherent understanding of the physical world that supports reliable action in unfamiliar environments. My work develops the perceptual and predictive foundations for this goal, from recovering and retaining spatial evidence to imagining physically plausible futures that guide actions and support pre-execution consistency checks. I am now interested in extending these foundations toward \textbf{agent--world model co-evolution}, where agents gather informative experience to improve world models, while improved models support long-horizon planning and action evaluation.'''
+          paths = [root/'cv.tex', *sorted((root/'cv/2027-internships').glob('*.tex'))]
+          assert len(paths) == 14
+          for p in paths:
+              s=p.read_text(encoding='utf-8')
+              s,n=re.subn(r'(\\cvsection\{Research Interests\}\n)(.*?)(\n\n(?=%|\\cvsection))',lambda m:m[1]+text+m[3],s,count=1,flags=re.S)
+              assert n==1,p
+              s=s.replace(r'\linespread{0.965}',r'\linespread{0.95}').replace('itemsep=1.5pt','itemsep=1.0pt')
+              s=re.sub(r'(\\newcommand\{\\cvsection\}\[1\]\{%\n  \\par\\vspace)\{[0-9.]+pt\}',lambda m:m[1]+'{3.0pt}',s)
+              s=re.sub(r'(\\newcommand\{\\pubgroup\}\[1\]\{%\n  \\par\\vspace)\{[0-9.]+pt\}',lambda m:m[1]+'{3.0pt}',s)
+              p.write_text(s,encoding='utf-8')
+          def replace(old,new,s):
+              assert s.count(old)==1,(old[:90],s.count(old))
+              return s.replace(old,new,1)
+          p=root/'index.html';s=p.read_text(encoding='utf-8')
+          for old,new in [
+              ('Xiaoshan Wu — self-improving physical agents through agent–world model co-evolution. Research in 4D world models, spatial reasoning, and memory.','Xiaoshan Wu — spatial intelligence for physical agents: building a coherent understanding of the physical world to support reliable action in unfamiliar environments.'),
+              ('<title>Xiaoshan Wu | Self-Improving Physical Agents</title>','<title>Xiaoshan Wu | Spatial Intelligence for Physical Agents</title>'),
+              ('content="Xiaoshan Wu | Self-Improving Physical Agents"','content="Xiaoshan Wu | Spatial Intelligence for Physical Agents"'),
+              ('Intelligence for the world we share. Self-improving physical agents through agent–world model co-evolution.','Intelligence for the world we share. Spatial understanding that supports reliable action in unfamiliar environments.'),
+              ('<p class="hero-kicker">Embodied intelligence · World models</p>','<p class="hero-kicker">Spatial intelligence · Physical agents</p>'),
+              ('<p class="hero-direction">Self-Improving Physical Agents<br/>through Agent–World Model Co-Evolution</p>','<p class="hero-direction">Spatial intelligence for physical agents<br/>World understanding for reliable action</p>'),
+              ('<h2 id="direction-title">Self-Improving Physical Agents<br/><span>through Agent–World Model Co-Evolution</span></h2>','<h2 id="direction-title">Spatial intelligence<br/><span>for physical agents</span></h2>'),
+              ('<p class="direction-intro">I aim to build AI that understands the physical world, acts within it, and grows more capable through experience. My work connects 3D/4D perception, generative world modeling, and memory toward this goal.</p>','<p class="direction-intro">I study <strong>spatial intelligence for physical agents</strong>: how to build a coherent understanding of the physical world that supports reliable action in unfamiliar environments.</p>'),
+              ('<section aria-labelledby="agent-heading"><p class="direction-number">01 / The agent</p><h3 id="agent-heading">Learning through interaction.</h3><p>Self-improving physical agents perceive, reason, and act in the world. I study how purposeful interaction, successes, and failures can become reusable skills and knowledge—so improvement persists across tasks, rather than ending with a single attempt.</p></section>','<section aria-labelledby="agent-heading"><p class="direction-number">01 / Research foundations</p><h3 id="agent-heading">From spatial evidence to action.</h3><p>My work develops the perceptual and predictive foundations for this goal, from recovering and retaining spatial evidence to imagining physically plausible futures that guide actions and support pre-execution consistency checks.</p></section>'),
+              ('<section aria-labelledby="model-heading"><p class="direction-number">02 / The learning loop</p><h3 id="model-heading">Agent and world model, together.</h3><p>I investigate a reciprocal loop: the agent gathers informative experience to refine an action-conditioned 4D world model; the model helps compare possible futures and guide further exploration. Real outcomes update both the model and the agent’s strategies and memory.</p></section>','<section aria-labelledby="model-heading"><p class="direction-number">02 / Future direction</p><h3 id="model-heading">Agent–world model co-evolution.</h3><p>I am now interested in extending these foundations toward <strong>agent–world model co-evolution</strong>, where agents gather informative experience to improve world models, while improved models support long-horizon planning and action evaluation.</p></section>'),
+          ]:s=replace(old,new,s)
+          p.write_text(s,encoding='utf-8')
+          p=root/'publications.html';s=p.read_text(encoding='utf-8')
+          for old,new in [
+              ('Xiaoshan Wu — world models and memory for embodied intelligence. Research in 3D/4D vision, video generation, and spatial reasoning.','Xiaoshan Wu — spatial intelligence for physical agents: perceptual and predictive foundations for reliable action in unfamiliar environments.'),
+              ('content="World models and memory for embodied intelligence."','content="Spatial intelligence for physical agents: from spatial evidence to reliable action."'),
+              ('<p>World models, spatial reasoning, and visual perception.</p>','<p>Spatial intelligence for physical agents: from spatial evidence to reliable action.</p>'),
+          ]:s=replace(old,new,s)
+          p.write_text(s,encoding='utf-8')
+          p=root/'cv/2027-internships/README.md';s=p.read_text(encoding='utf-8')
+          header='## 选择对应版本'
+          s=replace(header,'## Research Interests — 2026-10-12\n\n主 CV 与全部 13 份岗位版统一采用作者确认的研究主线：**spatial intelligence for physical agents**。先讲支持陌生环境中可靠行动的世界理解，再讲从获取、保留空间证据到预测未来与执行前检查的研究基础；**agent–world model co-evolution** 明确作为未来兴趣。各版本的论文顺序、署名、项目说明和岗位对应关系保持不变。\n\n'+header,s)
+          p.write_text(s,encoding='utf-8')
+          expected={
+              '01':'8c6817fbb4d5c166f6387e73fe6f916d4adbdcb7',
+              '02':'e397dac97e0028cc784de0ec2774cb5b72a3688d',
+              '03':'31e820da76693cdfdda8f639a242a4ee58d786af',
+              '04':'b2c039ad41b50a5ae8b4e3751a9988d6f52f9eaf',
+              '05':'69a09017df0c085d4b6fff3a2d2280f9a4b6d686',
+              '06':'7aaaaeb8f38acc0a90daa46238650f4e84dfe52a',
+              '07':'25fc74d675705751df382b76578bf518c5ced29f',
+              '08':'24d2005a8cd9e6dbfdbc31944560aed9deecfb37',
+              '09':'7226d760d0019856e06751fb77109c5557d2e203',
+              '10':'c74e6b7d0a9d73f55af1f3486430abf061ec8a94',
+              '11':'49e256374bc6cd3e72d6a4b2600f4ba163e40dd7',
+              '12':'da060522ffd2ca8403d9fbb8b922c0a1ee7a2169',
+              '13':'3078cfa45149c3a4806e823c74041bd363bcf3fc',
+              'cv.tex':'f340b3b1e2ccdc9bdde33c9d928a341de02b3817',
+              'index.html':'f7ba8747900bd24becc38e536b9f22637300d0fe',
+              'publications.html':'c9e4d0d0604f9d3c06b13871eb0039877198a6de',
+              'README.md':'f246340e08099754dce6f6a6e2217baca9f255c3',
+          }
+          for p in [*paths,root/'index.html',root/'publications.html',root/'cv/2027-internships/README.md']:
+              b=p.read_bytes();actual=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+              key=p.name if p.name in expected else p.name[:2]
+              assert actual==expected[key],(str(p),actual,expected[key])
+              print(actual,p)
+          PY
+      - name: Commit verified source files to the review branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cv.tex cv/2027-internships/*.tex cv/2027-internships/README.md index.html publications.html
+          git commit -m 'Apply byte-verified spatial-intelligence research narrative'
+          git push origin HEAD:research-spatial-intelligence-20261012
