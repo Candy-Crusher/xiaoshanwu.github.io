@@ -1,0 +1,109 @@
+name: Build four-page personal website
+on:
+  push:
+    branches: [master]
+    paths:
+      - scripts/build-personal-site.py
+      - scripts/test-personal-site.py
+      - _site_content/**
+      - .github/workflows/build-personal-site.yml
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Build research project pages, Mirror original project sites, Render original GaMe figures]
+    types: [completed]
+    branches: [master]
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: research-project-pages-master
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser-test dependencies
+        run: |
+          python -m pip install beautifulsoup4 playwright
+          python -m playwright install --with-deps chromium
+      - name: Build Home, About, Resume and Research
+        run: |
+          sha256sum Xiaoshan_Wu_CV.pdf cv.tex > /tmp/original-cv.sha256
+          python -m py_compile scripts/build-personal-site.py scripts/test-personal-site.py
+          python scripts/build-personal-site.py
+          sha256sum --check /tmp/original-cv.sha256
+      - name: Check navigation, layout, project links and compatibility
+        run: python scripts/test-personal-site.py
+      - name: Check that regeneration is repeatable
+        run: |
+          sha256sum index.html about.html resume.html research.html publications.html > /tmp/site-first-build.sha256
+          python scripts/build-personal-site.py
+          sha256sum --check /tmp/site-first-build.sha256
+      - name: Save generated pages and visual checks
+        if: always()
+        run: |
+          mkdir -p personal-site-review/site/assets/css personal-site-review/site/assets/js personal-site-review/source
+          for file in index.html about.html resume.html research.html publications.html; do
+            if [ -f "$file" ]; then cp "$file" personal-site-review/site/; fi
+          done
+          if [ -f assets/css/site-pages.css ]; then cp assets/css/site-pages.css personal-site-review/site/assets/css/; fi
+          if [ -f assets/js/site-pages.js ]; then cp assets/js/site-pages.js personal-site-review/site/assets/js/; fi
+          if [ -d _site_content ]; then cp -R _site_content personal-site-review/source/; fi
+          if [ -d personal-site-qa ]; then cp -R personal-site-qa personal-site-review/; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: four-page-website-review
+          path: personal-site-review/
+          retention-days: 7
+      - name: Commit validated pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html about.html resume.html research.html publications.html assets/css/site-pages.css assets/js/site-pages.js _site_content projects/index.html projects/sandbox/index.html projects/eag3r/index.html projects/game/index.html projects/videossm/index.html projects/lifr-seg/index.html projects/lifr-v2/index.html projects/evsplat/index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish Home, About, Resume and Research with preserved project URLs"
+            git pull --rebase origin master
+            git push origin HEAD:master
+          fi
+      - name: Publish through the existing GitHub Pages configuration
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl --fail-with-body --silent --show-error --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pages/builds"
+      - name: Verify the public four-page website
+        run: |
+          python - <<'PY'
+          from urllib.request import Request,urlopen
+          from bs4 import BeautifulSoup
+          import time,json
+          base='https://candy-crusher.github.io/xiaoshanwu.github.io/'
+          reports=[]
+          for attempt in range(42):
+              reports=[]
+              for name in ['index.html','about.html','resume.html','research.html']:
+                  try:
+                      url=base+name+'?layout-check='+str(int(time.time()))
+                      with urlopen(Request(url,headers={'User-Agent':'PersonalSiteValidation/1.0'}),timeout=12) as response:
+                          text=response.read().decode();status=response.status
+                      doc=BeautifulSoup(text,'html.parser')
+                      nav=[a.get_text(strip=True) for a in doc.select('nav[aria-label="Main navigation"] a')]
+                      reports.append({'page':name,'status':status,'navigation':nav,'updated':'20261012-four-pages' in text})
+                  except Exception as exc:reports.append({'page':name,'error':str(exc)})
+              if all(r.get('updated') and r.get('navigation')==['Home','About','Resume','Research'] for r in reports):
+                  print(json.dumps({'live_pages':reports,'status':'PASS'},indent=2));break
+              time.sleep(5)
+          else:raise SystemExit(json.dumps({'live_verification':'Updated pages not yet observed','last_checks':reports},indent=2))
+          PY
