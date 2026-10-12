@@ -1,0 +1,80 @@
+name: Verify UGG project presentation
+on:
+  workflow_run:
+    workflows: [Apply UGG project template]
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Check public project layout and capture stable views
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request,urlopen
+          from playwright.sync_api import sync_playwright
+          import time,json
+          base='https://candy-crusher.github.io/xiaoshanwu.github.io/projects/'
+          slugs=['sandbox','eag3r','videossm','game','lifr-seg','lifr-v2','evsplat']
+          out=Path('ugg-live-qa');out.mkdir(exist_ok=True);checks=[];errors=[]
+          for attempt in range(36):
+              try:
+                  with urlopen(Request(base+'sandbox/?verify='+str(int(time.time())),headers={'User-Agent':'ResearchProjectQA/1.0'}),timeout=12) as r:raw=r.read().decode()
+                  if 'data-project-template="ugg"' in raw:break
+              except Exception:pass
+              time.sleep(5)
+          else:raise SystemExit('UGG template has not appeared on the public site yet.')
+          try:
+              with sync_playwright() as pw:
+                  browser=pw.chromium.launch(headless=True,args=['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
+                  for slug in slugs:
+                      context=browser.new_context(viewport={'width':1440,'height':1000},color_scheme='light')
+                      page=context.new_page()
+                      response=page.goto(base+slug+'/',wait_until='domcontentloaded',timeout=45000)
+                      page.add_style_tag(content='html,body{scroll-behavior:auto!important}*{animation:none!important;transition:none!important}')
+                      page.evaluate('async()=>{await document.fonts.ready;for(let y=0;y<document.body.scrollHeight;y+=650){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,90));}await Promise.all([...document.images].filter(i=>i.src).map(i=>i.decode().catch(()=>{})));window.scrollTo(0,0)}')
+                      page.wait_for_timeout(700)
+                      state=page.evaluate('''()=>({template:document.documentElement.dataset.projectTemplate,overflow:document.documentElement.scrollWidth>innerWidth,images:[...document.images].filter(i=>i.src).map(i=>({src:i.getAttribute('src'),width:i.naturalWidth,complete:i.complete})),headings:[...document.querySelectorAll('h1')].map(h=>h.textContent)})''')
+                      checks.append({'project':slug,'status':response.status,**state})
+                      if response.status!=200 or state['template']!='ugg' or state['overflow'] or any(not im['width'] for im in state['images']):errors.append(checks[-1])
+                      page.screenshot(path=str(out/(slug+'-hero-light.png')))
+                      page.screenshot(path=str(out/(slug+'-full-light.png')),full_page=True)
+                      for ident in ['method','results']:
+                          node=page.locator('#'+ident)
+                          if node.count() and slug in ['sandbox','lifr-seg','lifr-v2']:
+                              node.evaluate("e=>e.scrollIntoView({block:'start',behavior:'instant'})")
+                              page.wait_for_timeout(500)
+                              page.screenshot(path=str(out/(slug+'-'+ident+'.png')))
+                      page.evaluate('window.scrollTo(0,0)');page.locator('.theme-toggle').click();page.wait_for_timeout(250)
+                      assert page.locator('html').get_attribute('data-theme')=='dark'
+                      page.screenshot(path=str(out/(slug+'-hero-dark.png')))
+                      page.locator('.theme-toggle').click()
+                      page.set_viewport_size({'width':390,'height':844});page.evaluate('window.scrollTo(0,0)');page.wait_for_timeout(250)
+                      mobile=page.evaluate('()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth})');checks.append({'mobile':slug,**mobile})
+                      if mobile['scrollWidth']>mobile['width']:errors.append(checks[-1])
+                      page.screenshot(path=str(out/(slug+'-mobile.png')))
+                      context.close()
+                  browser.close()
+          finally:
+              (out/'report.json').write_text(json.dumps({'checks':checks,'errors':errors},indent=2))
+          if errors:raise SystemExit(json.dumps(errors,indent=2))
+          print('PASS: seven deployed UGG layouts, complete research images, theme controls and mobile containment.')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ugg-live-presentation
+          path: ugg-live-qa/
+          retention-days: 7
