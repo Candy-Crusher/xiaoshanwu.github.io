@@ -7,6 +7,8 @@ on:
       - scripts/build-project-site.py
       - scripts/finalize-project-pages.py
       - scripts/refine_project_mirrors.py
+      - scripts/build-ugg-projects.py
+      - scripts/test-ugg-projects.py
       - scripts/test-project-pages.py
       - scripts/test-project-mirrors.py
       - .github/workflows/build-project-pages.yml
