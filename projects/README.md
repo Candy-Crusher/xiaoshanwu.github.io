@@ -1,35 +1,61 @@
 # Research project pages
 
-Five independent static project pages, hosted in the existing personal-site repository.
+Seven project websites in the existing personal-site repository.
 
-| Work | Project page | Current coverage |
+Directory: https://candy-crusher.github.io/xiaoshanwu.github.io/projects/
+
+| Work | Website | Coverage |
 | --- | --- | --- |
-| VideoSSM | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/videossm/ | Overview, original figures, selected paper results, paper/PDF and BibTeX |
-| GaMe | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/game/ | Public project identity and conceptual overview; manuscript and evaluated examples pending |
-| LiFR-Seg | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/lifr-seg/ | Overview, original figures, selected paper results, paper/PDF and BibTeX |
-| LiFR v2 | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/lifr-v2/ | Overview, original figures, selected paper results, paper/PDF, BibTeX and repository link |
-| EVSplat | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/evsplat/ | Project identity and research focus; technical manuscript and experimental media pending |
+| S4NDBOX | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/sandbox/ | Copy of the original deployed website, including 14 MP4 files and six interactive 4D cases. |
+| EAG3R | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/eag3r/ | Original project HTML, CSS and research figures, including comparison sliders; the concept figure uses its original PDF at higher resolution. |
+| VideoSSM | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/videossm/ | Paper overview, original figures, selected results and citation. |
+| GaMe | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/game/ | Conceptual overview and original method diagram. Full public manuscript and evaluated examples remain pending. |
+| LiFR-Seg | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/lifr-seg/ | Original teaser, method, paper results and citation. |
+| LiFR v2 | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/lifr-v2/ | Original repository teaser, architecture, results, citation and repository link. |
+| EVSplat | https://candy-crusher.github.io/xiaoshanwu.github.io/projects/evsplat/ | Project identity and research focus. Manuscript and experimental media remain pending. |
 
-Project directory: https://candy-crusher.github.io/xiaoshanwu.github.io/projects/
+## Original sites remain unchanged
 
-## Updating the sites
+The copied S4NDBOX site comes from `https://demo1-indol-gamma.vercel.app/`; EAG3R comes from `Candy-Crusher/EAG3R_Proj`. Their original deployments and source repositories have not been replaced or redirected. The new copies retain the original designs and include directory/home navigation.
 
-- Edit project metadata, prose, figure definitions and reported tables in `scripts/build-project-pages.py`.
-- Use `python scripts/build-project-site.py --download-assets` to regenerate. The site entry point also maintains homepage/publication links and responsive table layout.
-- Generated HTML is under `projects/<slug>/index.html`; shared presentation code is under `projects/assets/`. Direct changes to generated files can be overwritten on the next build.
-- The `Build research project pages` workflow regenerates pages, checks desktop/mobile layout and local links in Chromium, saves screenshots, commits generated content, and requests a fresh build of the existing GitHub Pages site.
-- Figure assets are stored locally in the repository. Existing figures are reused; only verified public paper-image URLs are downloaded. No private manuscript or code repository is made public by this workflow.
+S4NDBOX research media, viewer scripts, Three.js modules, case manifests and compressed point-cloud frames are stored under `projects/sandbox/`, not embedded as an iframe pointing at the old deployment. Six cases are available: pose-1, pose-2, lighting-1, lighting-2, clutter-1 and clutter-2. Some presentation dependencies, such as remote fonts and MathJax, still use their original public CDNs.
 
-## Outstanding content
+## Higher-resolution source figures
 
-See [CONTENT_CHECKLIST.md](CONTENT_CHECKLIST.md) for the per-project list. The highest-priority additions are approved GaMe/EVSplat manuscripts and genuine experimental MP4s. Unavailable paper/code/video buttons are intentionally omitted. Conceptual figures are labelled separately from evaluated outputs.
+These images were rendered from original PDF figures, not AI-upscaled or redrawn. Responsive pages use smaller previews and provide larger images and/or the original PDFs.
 
-LiFR v2 links to a **repository**, not to a completed code release: its current README says code and pretrained models are being prepared.
+| Project | Original source | Large render |
+| --- | --- | --- |
+| VideoSSM | `images/videossm.pdf` | 3600 × 1185 |
+| GaMe teaser | Selected manuscript figure `fig_01_teaser.pdf` | 3600 × 1256 |
+| GaMe method | Selected manuscript figure `fig02_method.pdf` | 3600 × 1450 |
+| LiFR-Seg | `images/SegmentAnytime.pdf` | 3200 × 1919 |
+| LiFR v2 | `TaoWan0610/LiFR-v2/assets/teaser.pdf` | 3600 × 1138 |
+| EAG3R concept | `images/1_eag3r.pdf`, matching the original concept figure | 3600 × 799 |
 
-## LiFR-Seg legacy URL
+The public GaMe page includes only the two selected figure PDFs and their renders; the full private manuscript and author notes were not imported. The teaser remains labelled as conceptual, not as measured predictions. Figure hashes are in `game/assets/sources.json`.
 
-The public LiFR-Seg manuscript names `https://candy-crusher.github.io/LiFR_Seg_Proj/`. This is outside this repository's GitHub Pages path. The new canonical page is the `/xiaoshanwu.github.io/projects/lifr-seg/` route above. The manuscript link should be updated, or a separately configured `LiFR_Seg_Proj` Pages repository should redirect to the new page. This change does not claim to configure that separate legacy URL.
+The larger `assets/` images in the VideoSSM code checkout belong to the inherited **LongLive** README and are not used as VideoSSM outputs. The promotional cover found in the EAG3R code repository is likewise not substituted for a measured reconstruction comparison.
 
-## Design reference
+## Maintenance
 
-The old SANDBOX preview URL was not accessible during this build. These pages use a restrained academic-project layout with paper figures, concise summaries, labelled results and source links; they are not represented as an exact visual copy of that inaccessible deployment.
+1. Edit the five generated projects' data and prose in `scripts/build-project-pages.py`.
+2. Run `python scripts/build-project-site.py --download-assets`, followed by `python scripts/finalize-project-pages.py`. The latter preserves mirror links, source-based HD figures, and compatibility fixes.
+3. Run `python scripts/test-project-pages.py` and `python scripts/test-project-mirrors.py` with Playwright/Chromium installed.
+4. The `Build research project pages` workflow performs these steps, saves screenshots/reports, commits generated pages, and requests an existing GitHub Pages rebuild.
+
+`Mirror original project sites` is a separate manual/source-update workflow for re-copying the original public sites. `scripts/sync-project-mirrors.py` records source hashes and download provenance. No repository visibility is changed.
+
+## Validation and template repairs
+
+Browser checks cover desktop and 390-/320-pixel mobile mirror layouts, image loading, all six 4D viewer routes, later time samples, and MP4 metadata decoding. The other five pages are checked for local links, image dialogs, citation controls and desktop/mobile containment.
+
+Compatibility fixes only affect the local copies: EAG3R fixed-width figures become responsive; SANDBOX tables and long inline equations stay in local horizontal-scroll regions. An unused Nerfies interpolation preloader is guarded when its target is absent, preventing 240 requests to nonexistent source-template frames. These missing template files were never research results.
+
+## Remaining inputs
+
+EVSplat still needs its exact repository or source-material location. VideoSSM and LiFR projects would benefit from genuine experimental MP4s with prompts/timestamps and matched baselines. GaMe still needs a public manuscript/version decision, author affiliation details and evaluated question-answer examples. See `CONTENT_CHECKLIST.md` for release-related items.
+
+LiFR v2 uses a **Repository** button, not a claim that code/checkpoints have been released; its repository README still describes those as being prepared.
+
+The legacy LiFR-Seg manuscript address `/LiFR_Seg_Proj/` is outside this repository's Pages path and has not been redirected.
