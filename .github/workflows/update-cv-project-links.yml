@@ -1,0 +1,115 @@
+name: Update CV project links
+on:
+  push:
+    branches: [master]
+    paths:
+      - scripts/update-cv-project-links.py
+      - .github/workflows/update-cv-project-links.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: research-project-pages-master
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install LaTeX and PDF validation tools
+        run: |
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends texlive-latex-extra texlive-fonts-recommended cm-super
+          python -m pip install --disable-pip-version-check pymupdf
+      - name: Update links and compare every compiled CV
+        run: |
+          git rev-parse HEAD > /tmp/cv-link-source-commit
+          python -m py_compile scripts/update-cv-project-links.py
+          python scripts/update-cv-project-links.py --compile
+      - name: Verify the seven public project destinations
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request,urlopen
+          import json,time,concurrent.futures
+          path=Path('cv-link-review/report.json');report=json.loads(path.read_text())
+          def check(item):
+              slug,url=item
+              expected={'sandbox':'S4NDBOX','lifr-v2':'LiFR v2'}.get(slug,slug)
+              for attempt in range(3):
+                  try:
+                      with urlopen(Request(url,headers={'User-Agent':'CVProjectLinkCheck/1.0'}),timeout=25) as response:
+                          status=response.status;content=response.read().decode()
+                      if status!=200 or expected.lower() not in content.lower():raise ValueError('Unexpected project response: '+slug)
+                      return {'project':slug,'url':url,'http_status':status}
+                  except Exception:
+                      if attempt==2:raise
+                      time.sleep(2)
+          with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+              report['public_destinations']=list(pool.map(check,report['project_urls'].items()))
+          path.write_text(json.dumps(report,indent=2))
+          print(json.dumps(report['public_destinations'],indent=2))
+          PY
+      - name: Save updated PDFs, sources and validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-project-links-updated
+          path: cv-link-review/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Publish only CV sources and stable PDF copies
+        run: |
+          git fetch origin master
+          old="$(cat /tmp/cv-link-source-commit)"
+          if ! git diff --quiet "$old" origin/master -- cv.tex cv/2027-internships; then
+            echo 'CV sources changed during compilation. Rerun on the updated sources; no CV changes have been pushed.' >&2
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add cv.tex cv/2027-internships/*.tex Xiaoshan_Wu_CV.pdf ia8eshfzfsvn.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Update all CV project links to the seven unified research websites"
+            git pull --rebase origin master
+            git push origin HEAD:master
+          fi
+      - name: Refresh the published CV
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl --fail-with-body --silent --show-error --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pages/builds"
+      - name: Verify the publicly downloaded PDF contains the new links
+        run: |
+          python - <<'PY'
+          from urllib.request import Request,urlopen
+          from pathlib import Path
+          import hashlib,json,time,fitz
+          expected=hashlib.sha256(Path('Xiaoshan_Wu_CV.pdf').read_bytes()).hexdigest()
+          urls=set(json.loads(Path('cv-link-review/report.json').read_text())['project_urls'].values())
+          for attempt in range(48):
+              try:
+                  url='https://candy-crusher.github.io/xiaoshanwu.github.io/Xiaoshan_Wu_CV.pdf?cv-links='+str(int(time.time()))
+                  with urlopen(Request(url,headers={'User-Agent':'CVProjectLinkCheck/1.0'}),timeout=15) as response:raw=response.read()
+                  if hashlib.sha256(raw).hexdigest()==expected:
+                      with fitz.open(stream=raw,filetype='pdf') as doc:
+                          found={l['uri'] for p in doc for l in p.get_links() if l.get('uri')}
+                          if not urls.issubset(found):raise ValueError('Published PDF lacks an expected project link')
+                      print('PASS: public CV is the newly compiled PDF, with all seven canonical project links.')
+                      break
+              except Exception as error:
+                  if attempt==47:raise
+              time.sleep(5)
+          else:raise SystemExit('The repository is updated but the new PDF has not appeared on Pages during this check.')
+          PY
