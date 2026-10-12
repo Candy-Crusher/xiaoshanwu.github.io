@@ -14,9 +14,23 @@ if spec is None or spec.loader is None:
 pages = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(pages)
 
-# Grid children must be allowed to shrink below a table's min-content width.
-# The table itself stays legible and scrolls inside its labelled container.
-pages.CSS += '\n.section > *{min-width:0}.table-wrap{max-width:100%;min-width:0}\n'
+# Keep grid children within the viewport. On phones, wrap table headers so
+# the proposed method's scores remain visible instead of falling off-screen.
+pages.CSS += '''
+.section > *{min-width:0}.table-wrap{max-width:100%;min-width:0}
+@media(max-width:600px){
+  .results{font-size:12px}
+  .results th,.results td{padding:12px 7px;white-space:normal}
+  .results thead th{font-size:11px}
+}
+'''
+OVERVIEW_HEADINGS = {
+    'videossm': 'A finite cache, a longer history.',
+    'game': 'A geometric reference across views.',
+    'lifr-seg': 'An up-to-date scene between frames.',
+    'lifr-v2': 'When motion alone is not enough.',
+    'evsplat': 'Event-based 3D reconstruction.',
+}
 
 def sync_links():
     """Make narrowly scoped text edits without reformatting the existing site."""
@@ -33,7 +47,6 @@ def sync_links():
             link = f'<a href="projects/{slug}/">Project</a>'
             def patch(match):
                 inner = match.group(2)
-                # Clean up an earlier generator's outside-the-grid link, if present.
                 inner = inner.replace('<div class="paper-links">' + link + '</div>', '')
                 if f'projects/{slug}/' in inner:
                     return match.group(1) + inner + match.group(3)
@@ -60,6 +73,11 @@ def sync_links():
 pages.sync_links = sync_links
 if __name__ == '__main__':
     pages.main()
+    for project in pages.PROJECTS:
+        path = ROOT / 'projects' / project['slug'] / 'index.html'
+        old = '<h2>' + pages.e(project['statement']) + '</h2>'
+        new = '<h2>' + pages.e(OVERVIEW_HEADINGS[project['slug']]) + '</h2>'
+        path.write_text(path.read_text().replace(old, new, 1))
     checklist = ROOT / 'projects/CONTENT_CHECKLIST.md'
     if checklist.is_file():
         checklist.write_text(checklist.read_text().replace('python scripts/build-project-pages.py --download-assets', 'python scripts/build-project-site.py --download-assets'))
