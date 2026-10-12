@@ -1,0 +1,23 @@
+{
+  "source": "Selected project figures exported from the GaMe manuscript repository on 2026-10-12. No full manuscript or author notes are included.",
+  "figures": [
+    {
+      "source_file": "teaser.pdf",
+      "sha256": "5fd6188468be110b51ea7a5675282242a5e8b18a28c8b6988647149ead153150",
+      "pixels": [
+        3600,
+        1256
+      ],
+      "vector_paths": 51
+    },
+    {
+      "source_file": "method.pdf",
+      "sha256": "9a8b55340401968850161ac6e6f533dedcf1cdb24161c0cbe8959f7dedfe322f",
+      "pixels": [
+        3600,
+        1450
+      ],
+      "vector_paths": 157
+    }
+  ]
+}
