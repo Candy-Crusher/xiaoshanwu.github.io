@@ -1,0 +1,70 @@
+name: Build research project pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - scripts/build-project-pages.py
+      - scripts/test-project-pages.py
+      - .github/workflows/build-project-pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-project-pages-master
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install build and browser dependencies
+        run: |
+          python -m pip install --disable-pip-version-check pillow beautifulsoup4 playwright
+          python -m playwright install --with-deps chromium
+      - name: Generate static pages and download public paper figures
+        run: |
+          python -m py_compile scripts/build-project-pages.py scripts/test-project-pages.py
+          python scripts/build-project-pages.py --download-assets
+      - name: Test desktop and mobile pages
+        run: python scripts/test-project-pages.py
+      - name: Prepare review package
+        if: always()
+        run: |
+          mkdir -p .project-pages-delivery/site/scripts .project-pages-delivery/site/images/research
+          if [ -d projects ]; then cp -R projects .project-pages-delivery/site/; fi
+          cp scripts/build-project-pages.py scripts/test-project-pages.py .project-pages-delivery/site/scripts/
+          for image in game-overview.webp videossm-full.webp; do
+            if [ -f "images/research/$image" ]; then cp "images/research/$image" .project-pages-delivery/site/images/research/; fi
+          done
+          if [ -d project-pages-qa ]; then cp -R project-pages-qa .project-pages-delivery/; fi
+      - name: Save screenshots, validation report, and static source
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-project-pages-preview
+          path: .project-pages-delivery/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Commit generated pages and project links
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects index.html publications.html
+          if git diff --cached --quiet; then
+            echo "Generated pages are already up to date."
+          else
+            git commit -m "Publish VideoSSM, GaMe, LiFR-Seg, LiFR v2 and EVSplat project pages"
+            git pull --rebase origin master
+            git push origin HEAD:master
+          fi
