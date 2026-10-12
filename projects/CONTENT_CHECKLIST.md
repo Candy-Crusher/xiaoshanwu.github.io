@@ -16,7 +16,7 @@ Page: https://candy-crusher.github.io/xiaoshanwu.github.io/projects/game/
 
 - [ ] Publication-ready PDF or public preprint URL; confirm that public release is appropriate during review.
 - [ ] Full author spelling for S. Shi and author–affiliation mapping.
-- [ ] Approved method figure, benchmark table and real question–answer examples.
+- [ ] Benchmark table and real evaluated question–answer examples. The original teaser and method figure have been imported.
 - [ ] Public code/model URL when ready.
 
 ## LiFR-Seg

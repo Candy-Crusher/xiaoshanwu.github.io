@@ -7891,7 +7891,8 @@
   ],
   "copy_repairs": [
     "Kept original layouts; made EAG3R fixed-width figures responsive.",
-    "Wrapped SANDBOX result tables in labelled horizontal-scroll regions.",
+    "Contained SANDBOX long inline equations and result tables within horizontal-scroll regions.",
     "Disabled the unused Nerfies interpolation preloader when its target element is absent; this prevents 240 requests to files that do not exist on the original source site."
-  ]
+  ],
+  "game_figures": "See projects/game/assets/sources.json for hashes and original-source render dimensions."
 }
