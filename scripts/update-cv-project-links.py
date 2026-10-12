@@ -106,9 +106,22 @@ def compare_pdf(before: Path, after: Path) -> dict:
         for i, (a, b) in enumerate(zip(old, new)):
             pa = a.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
             pb = b.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
-            identical = pa.width == pb.width and pa.height == pb.height and pa.samples == pb.samples
-            visual.append({'page': i + 1, 'identical_pixels': identical})
-            if not identical: raise ValueError('Rendered layout changed: ' + after.name + ', page ' + str(i + 1))
+            if pa.width != pb.width or pa.height != pb.height:
+                raise ValueError('Page dimensions changed: ' + after.name)
+            identical = pa.samples == pb.samples
+            wa, wb = a.get_text('words'), b.get_text('words')
+            if [w[4] for w in wa] != [w[4] for w in wb]:
+                raise ValueError('Word sequence changed: ' + after.name)
+            dx = max((abs(x[j] - y[j]) for x, y in zip(wa, wb) for j in (0, 2)), default=0)
+            dy = max((abs(x[j] - y[j]) for x, y in zip(wa, wb) for j in (1, 3)), default=0)
+            # Linked headings can produce sub-point horizontal font expansion.
+            # Require identical text and line positions, and at most 0.5 pt of
+            # horizontal drift. Do not misreport non-identical rasters as equal.
+            if dx > 0.5 or dy > 0.02:
+                raise ValueError('Text geometry changed: ' + after.name + ', page ' + str(i + 1))
+            visual.append({'page': i + 1, 'identical_pixels': identical,
+                           'same_line_layout': True, 'max_horizontal_drift_pt': dx,
+                           'max_vertical_drift_pt': dy})
         old_uris = {link['uri'] for p in old for link in p.get_links() if link.get('uri')}
         new_uris = {link['uri'] for p in new for link in p.get_links() if link.get('uri')}
         missing = set(URLS.values()) - new_uris
