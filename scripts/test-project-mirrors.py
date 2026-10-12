@@ -54,18 +54,19 @@ try:
      if check['canvas_count']!=2 or check['error'].strip():errors.append(check)
     except Exception as exc:errors.append({'case':case,'error':str(exc)})
    errors.extend(failed)
-   # Retain the website's origin for local media probes. about:blank has an opaque
-   # origin and Chromium local-network checks can block it independently of codecs.
    page.goto(BASE+'sandbox/',wait_until='domcontentloaded')
    for path in sorted((ROOT/'projects/sandbox').rglob('*.mp4')):
     try:
-     url=BASE+'sandbox/'+str(path.relative_to(ROOT/'projects/sandbox'))
+     url=BASE+'sandbox/'+str(path.relative_to(ROOT/'projects/sandbox'))+'?metadata-probe=1'
      page.set_content('<video id="probe" muted preload="metadata"></video>')
-     page.locator('#probe').evaluate('(v,url)=>{v.src=url;v.load()}',url)
+     # SimpleHTTPRequestHandler does not implement byte-range requests. Decode a
+     # complete, unchanged response blob so metadata-at-end MP4s are checked fairly.
+     page.locator('#probe').evaluate('''async(v,url)=>{const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const data=await r.blob();v.src=URL.createObjectURL(data);v.load();}''',url)
      page.wait_for_function("document.querySelector('video').readyState>=1 || document.querySelector('video').error",timeout=20000)
      state=page.locator('#probe').evaluate('(v)=>({width:v.videoWidth,height:v.videoHeight,duration:v.duration,error:v.error?.code||null})')
      checks.append({'video':str(path.relative_to(ROOT)),**state})
      if state['error'] or not state['width']:errors.append({'video':str(path.relative_to(ROOT)),**state})
+     page.locator('#probe').evaluate('(v)=>{const url=v.src;v.removeAttribute("src");v.load();URL.revokeObjectURL(url)}')
     except Exception as exc:errors.append({'video':str(path.relative_to(ROOT)),'error':str(exc)})
    page.close()
   browser.close()
