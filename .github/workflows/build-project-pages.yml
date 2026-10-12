@@ -6,7 +6,9 @@ on:
       - scripts/build-project-pages.py
       - scripts/build-project-site.py
       - scripts/finalize-project-pages.py
+      - scripts/refine_project_mirrors.py
       - scripts/test-project-pages.py
+      - scripts/test-project-mirrors.py
       - .github/workflows/build-project-pages.yml
   workflow_dispatch:
 permissions:
@@ -33,22 +35,25 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Generate static pages and integrate mirrors and HD media
         run: |
-          python -m py_compile scripts/build-project-pages.py scripts/build-project-site.py scripts/finalize-project-pages.py scripts/test-project-pages.py
+          python -m py_compile scripts/build-project-pages.py scripts/build-project-site.py scripts/finalize-project-pages.py scripts/refine_project_mirrors.py scripts/test-project-pages.py scripts/test-project-mirrors.py
           python scripts/build-project-site.py --download-assets
           python scripts/finalize-project-pages.py
       - name: Test desktop and mobile pages
         run: python scripts/test-project-pages.py
+      - name: Test original-site mirrors and real media
+        run: python scripts/test-project-mirrors.py
       - name: Prepare review package
         if: always()
         run: |
           mkdir -p project-pages-delivery/site/scripts project-pages-delivery/site/images/research
           if [ -d projects ]; then cp -R projects project-pages-delivery/site/; fi
           find project-pages-delivery -type f \( -name '*.mp4' -o -name '*.bin' -o -name '*.gz' -o -name '*.npz' -o -name '*.npy' \) -delete
-          cp scripts/build-project-pages.py scripts/build-project-site.py scripts/finalize-project-pages.py scripts/test-project-pages.py project-pages-delivery/site/scripts/
+          cp scripts/build-project-pages.py scripts/build-project-site.py scripts/finalize-project-pages.py scripts/refine_project_mirrors.py scripts/test-project-pages.py scripts/test-project-mirrors.py project-pages-delivery/site/scripts/
           for image in game-overview.webp videossm-full.webp; do
             if [ -f "images/research/$image" ]; then cp "images/research/$image" project-pages-delivery/site/images/research/; fi
           done
           if [ -d project-pages-qa ]; then cp -R project-pages-qa project-pages-delivery/; fi
+          if [ -d mirror-qa ]; then cp -R mirror-qa project-pages-delivery/; fi
       - name: Save screenshots and validation report
         if: always()
         uses: actions/upload-artifact@v4
@@ -65,7 +70,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Generated pages are already up to date."
           else
-            git commit -m "Refresh project pages while preserving mirrors and original-source HD figures"
+            git commit -m "Refresh seven project pages and validate mirrored research media"
             git pull --rebase origin master
             git push origin HEAD:master
           fi
