@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Link the seven CV research titles to their canonical project pages.
+"""Put each project link in a single [Project] label immediately after its title.
 
-Only hyperlink destinations/wrappers change. Visible text, author roles, paper
-links, contact information and layout settings are preserved. --compile also
-builds all before/after PDFs, checks their links, and compares rendered pages.
+Titles remain ordinary bold text. Existing Project/Details duplicates are moved,
+not retained on venue lines. Paper and other unrelated links remain unchanged.
+--compile verifies all PDFs, including the exact clickable text of each link.
 """
 from __future__ import annotations
 import argparse, concurrent.futures, hashlib, json, re, shutil, subprocess
+from collections import Counter
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BASE = 'https://candy-crusher.github.io/xiaoshanwu.github.io/'
@@ -27,8 +28,11 @@ ALIASES = {
 }
 for slug in PROJECTS:
     anchor = 'world-action-model' if slug == 'sandbox' else slug
-    ALIASES[BASE + 'publications.html#pub-' + anchor] = URLS[slug]
-    ALIASES[BASE + 'research.html#pub-' + anchor] = URLS[slug]
+    for name in ('publications', 'research'):
+        ALIASES[BASE + name + '.html#pub-' + anchor] = URLS[slug]
+LABEL = r'\textcolor{cvblue}{[Project]}'
+TITLES = {r'\textbf{' + title + '}' for title in PROJECTS.values()}
+LINK_START = re.compile(r'\\href\s*\{')
 
 
 def group(text: str, start: int) -> tuple[str, int]:
@@ -46,38 +50,58 @@ def group(text: str, start: int) -> tuple[str, int]:
     raise ValueError('Unclosed LaTeX argument')
 
 
-def transform_hrefs(text: str, visible_only: bool = False) -> str:
-    output, cursor = [], 0
-    for_match = re.compile(r'\\href\s*\{')
-    while match := for_match.search(text, cursor):
-        output.append(text[cursor:match.start()])
+def hrefs(text: str):
+    cursor = 0
+    while match := LINK_START.search(text, cursor):
         url, end_url = group(text, match.end() - 1)
-        body_start = end_url
-        while body_start < len(text) and text[body_start].isspace(): body_start += 1
-        body, end_body = group(text, body_start)
-        body = transform_hrefs(body, visible_only)
-        if visible_only:
-            output.append(body)
+        start_body = end_url
+        while start_body < len(text) and text[start_body].isspace():
+            start_body += 1
+        body, end = group(text, start_body)
+        yield match.start(), end, url, body
+        cursor = end
+
+
+def strip_project_links(text: str) -> str:
+    """Remove only project-title wrappers and their old/new resource labels."""
+    output, cursor = [], 0
+    for start, end, url, body in hrefs(text):
+        prefix = text[cursor:start]
+        destination = ALIASES.get(url.replace(r'\#', '#'), url)
+        if body in TITLES:
+            replacement = body
+        elif destination in URLS.values() and re.fullmatch(
+            r'(?:\\textcolor\{cvblue\}\{)?\[(?:Project|Porject|Details)\]\}?', body
+        ):
+            # Remove only the spacing directly attached to a deleted label.
+            prefix = re.sub(r'(?:\\quad|\\enspace|\\,|~|[ \t])+$', '', prefix)
+            replacement = ''
         else:
-            destination = ALIASES.get(url.replace('\\#', '#'), url)
-            for slug, title in PROJECTS.items():
-                if body == '\\textbf{' + title + '}': destination = URLS[slug]
-            output.append('\\href{' + destination + '}{' + body + '}')
-        cursor = end_body
+            replacement = text[start:end]
+        output.extend((prefix, replacement))
+        cursor = end
     output.append(text[cursor:])
     return ''.join(output)
 
 
 def update(text: str) -> str:
-    revised = transform_hrefs(text)
+    base = strip_project_links(text)
+    revised = base
     for slug, title in PROJECTS.items():
-        title_tex = '\\textbf{' + title + '}'
+        title_tex = r'\textbf{' + title + '}'
         if revised.count(title_tex) != 1:
             raise ValueError('Expected exactly one publication title: ' + title)
-        linked = '\\href{' + URLS[slug] + '}{' + title_tex + '}'
-        if linked not in revised: revised = revised.replace(title_tex, linked, 1)
-    if transform_hrefs(text, True) != transform_hrefs(revised, True):
-        raise ValueError('A non-link source change was detected')
+        label = r'~\href{' + URLS[slug] + '}{' + LABEL + '}'
+        revised = revised.replace(title_tex, title_tex + label, 1)
+    if strip_project_links(revised) != base:
+        raise ValueError('An unrelated source change was detected')
+    found = [(url, body) for _, _, url, body in hrefs(revised) if url in URLS.values()]
+    if Counter(url for url, _ in found) != Counter(URLS.values()):
+        raise ValueError('Expected exactly one project link per publication')
+    if any(body != LABEL for _, body in found):
+        raise ValueError('A project link still wraps a title or another label')
+    if any(body in TITLES for _, _, _, body in hrefs(revised)):
+        raise ValueError('A publication title is still clickable')
     return revised
 
 
@@ -95,85 +119,115 @@ def compile_one(path: Path) -> Path:
     return path.with_suffix('.pdf')
 
 
+def normalized_text(doc) -> str:
+    text = '\n'.join(page.get_text() for page in doc)
+    text = re.sub(r'\[(?:Project|Porject|Details)\]', '', text)
+    return ''.join(text.split())
+
+
 def compare_pdf(before: Path, after: Path) -> dict:
     import fitz
     with fitz.open(before) as old, fitz.open(after) as new:
-        if len(old) != len(new): raise ValueError('Page count changed: ' + after.name)
-        old_text = '\n'.join(p.get_text() for p in old)
-        new_text = '\n'.join(p.get_text() for p in new)
-        if old_text != new_text: raise ValueError('PDF text changed: ' + after.name)
-        visual = []
-        for i, (a, b) in enumerate(zip(old, new)):
-            pa = a.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
-            pb = b.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
-            if pa.width != pb.width or pa.height != pb.height:
-                raise ValueError('Page dimensions changed: ' + after.name)
-            identical = pa.samples == pb.samples
-            wa, wb = a.get_text('words'), b.get_text('words')
-            if [w[4] for w in wa] != [w[4] for w in wb]:
-                raise ValueError('Word sequence changed: ' + after.name)
-            dx = max((abs(x[j] - y[j]) for x, y in zip(wa, wb) for j in (0, 2)), default=0)
-            dy = max((abs(x[j] - y[j]) for x, y in zip(wa, wb) for j in (1, 3)), default=0)
-            # Linked headings can produce sub-point horizontal font expansion.
-            # Require identical text and line positions, and at most 0.5 pt of
-            # horizontal drift. Do not misreport non-identical rasters as equal.
-            if dx > 0.5 or dy > 0.02:
-                raise ValueError('Text geometry changed: ' + after.name + ', page ' + str(i + 1))
-            visual.append({'page': i + 1, 'identical_pixels': identical,
-                           'same_line_layout': True, 'max_horizontal_drift_pt': dx,
-                           'max_vertical_drift_pt': dy})
-        old_uris = {link['uri'] for p in old for link in p.get_links() if link.get('uri')}
-        new_uris = {link['uri'] for p in new for link in p.get_links() if link.get('uri')}
-        missing = set(URLS.values()) - new_uris
-        if missing: raise ValueError('Missing project PDF links: ' + repr(missing))
-        bad = set(ALIASES).intersection(new_uris)
-        if bad: raise ValueError('Legacy project links remain: ' + repr(bad))
-        preserved = old_uris - set(ALIASES)
-        if not preserved.issubset(new_uris): raise ValueError('An unrelated PDF link was removed')
-        return {'pdf': after.name, 'pages': len(new), 'project_urls': sorted(set(URLS.values())),
-                'preserved_other_links': sorted(preserved), 'visual_comparison': visual,
+        if len(old) != len(new):
+            raise ValueError('Page count changed: ' + after.name)
+        if normalized_text(old) != normalized_text(new):
+            raise ValueError('PDF content changed beyond project labels: ' + after.name)
+        old_links = {l['uri'] for p in old for l in p.get_links() if l.get('uri')}
+        new_links = {l['uri'] for p in new for l in p.get_links() if l.get('uri')}
+        preserved = old_links - set(ALIASES) - set(URLS.values())
+        if not preserved.issubset(new_links):
+            raise ValueError('An unrelated link was removed: ' + after.name)
+        if set(ALIASES).intersection(new_links):
+            raise ValueError('Legacy project destinations remain: ' + after.name)
+        labels, seen = [], Counter()
+        for page_no, page in enumerate(new):
+            for link in page.get_links():
+                uri = link.get('uri')
+                if uri not in URLS.values(): continue
+                rect = fitz.Rect(link['from'])
+                # Hyperref pads annotations by about 1 pt. Select word centres
+                # rather than touching glyph boxes from the tightly set next line.
+                covered = [w for w in page.get_text('words') if rect.contains(
+                    fitz.Point((w[0] + w[2]) / 2, (w[1] + w[3]) / 2))]
+                text = ''.join(w[4] for w in covered)
+                if text != '[Project]':
+                    raise ValueError('Project link must cover only [Project]: ' + after.name + ': ' + repr(text))
+                seen[uri] += 1
+                labels.append({'page': page_no + 1, 'url': uri, 'clickable_text': text,
+                               'rectangle_pt': list(rect)})
+            for word in page.get_text('words'):
+                if word[0] < 0 or word[1] < 0 or word[2] > page.rect.width or word[3] > page.rect.height:
+                    raise ValueError('Text exceeds page bounds: ' + after.name)
+        if seen != Counter(URLS.values()):
+            raise ValueError('Missing or duplicated PDF project links: ' + after.name)
+        if sum(p.get_text().count('[Project]') for p in new) != len(PROJECTS):
+            raise ValueError('Incorrect number of visible project labels: ' + after.name)
+        return {'pdf': after.name, 'pages': len(new), 'project_links': labels,
+                'content_preserved_except_project_labels': True,
+                'preserved_other_links': sorted(preserved),
                 'sha256': hashlib.sha256(after.read_bytes()).hexdigest()}
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--compile', action='store_true', help='Build and compare all before/after PDFs')
+    parser.add_argument('--compile', action='store_true', help='Build and compare before/after PDFs')
     args = parser.parse_args()
     sources = [ROOT / 'cv.tex', *sorted((ROOT / 'cv/2027-internships').glob('*.tex'))]
     if not sources[0].is_file(): raise FileNotFoundError('Primary CV source not found')
     review = ROOT / 'cv-link-review'
-    report = {'project_urls': URLS, 'sources': [], 'pdf_checks': []}
+    review.mkdir(exist_ok=True)
+    report = {'project_urls': URLS, 'placement': 'One [Project] immediately after each plain title',
+              'sources': [], 'pdf_checks': []}
     pairs = []
+    # Stage every source first. No source or stable PDF is published on failure.
     for source in sources:
         original = source.read_text()
         revised = update(original)
+        if update(revised) != revised: raise ValueError('Update is not idempotent')
         relative = source.relative_to(ROOT)
         old_path, new_path = review / 'before' / relative, review / 'after' / relative
         old_path.parent.mkdir(parents=True, exist_ok=True)
         new_path.parent.mkdir(parents=True, exist_ok=True)
         old_path.write_text(original); new_path.write_text(revised)
-        source.write_text(revised)
         report['sources'].append({'path': str(relative), 'changed': original != revised,
-                                  'visible_content_unchanged': True,
+                                  'titles_are_plain_text': True, 'project_labels_after_titles': 7,
+                                  'non_link_source_preserved': True,
                                   'before_sha256': hashlib.sha256(original.encode()).hexdigest(),
                                   'after_sha256': hashlib.sha256(revised.encode()).hexdigest()})
         pairs.append((old_path, new_path))
-    if args.compile:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
-            list(pool.map(compile_one, [path for pair in pairs for path in pair]))
-        for old_path, new_path in pairs:
-            report['pdf_checks'].append(compare_pdf(old_path.with_suffix('.pdf'), new_path.with_suffix('.pdf')))
-        shutil.copy2(review / 'after/cv.pdf', ROOT / 'Xiaoshan_Wu_CV.pdf')
-        shutil.copy2(review / 'after/cv.pdf', ROOT / 'ia8eshfzfsvn.pdf')
-        delivery = review / 'updated-cvs'
-        delivery.mkdir(exist_ok=True)
-        shutil.copy2(review / 'after/cv.pdf', delivery / 'Xiaoshan_Wu_CV.pdf')
-        shutil.copy2(ROOT / 'cv.tex', delivery / 'cv.tex')
-        for source in sources[1:]:
-            built = review / 'after' / source.relative_to(ROOT)
-            shutil.copy2(built, delivery / source.name)
-            shutil.copy2(built.with_suffix('.pdf'), delivery / built.with_suffix('.pdf').name)
-    (review / 'report.json').write_text(json.dumps(report, indent=2))
+    try:
+        if args.compile:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+                list(pool.map(compile_one, [path for pair in pairs for path in pair]))
+            for old_path, new_path in pairs:
+                report['pdf_checks'].append(compare_pdf(old_path.with_suffix('.pdf'), new_path.with_suffix('.pdf')))
+        for source, (_, new_path) in zip(sources, pairs):
+            source.write_text(new_path.read_text())
+        if args.compile:
+            shutil.copy2(review / 'after/cv.pdf', ROOT / 'Xiaoshan_Wu_CV.pdf')
+            shutil.copy2(review / 'after/cv.pdf', ROOT / 'ia8eshfzfsvn.pdf')
+            delivery = review / 'updated-cvs'
+            delivery.mkdir(exist_ok=True)
+            shutil.copy2(review / 'after/cv.pdf', delivery / 'Xiaoshan_Wu_CV.pdf')
+            shutil.copy2(ROOT / 'cv.tex', delivery / 'cv.tex')
+            for source in sources[1:]:
+                built = review / 'after' / source.relative_to(ROOT)
+                shutil.copy2(built, delivery / source.name)
+                shutil.copy2(built.with_suffix('.pdf'), delivery / built.with_suffix('.pdf').name)
+            # Keep visual previews beside the checks, outside the delivered CV folder.
+            import fitz
+            previews = review / 'previews'; previews.mkdir(exist_ok=True)
+            for _, new_path in pairs:
+                with fitz.open(new_path.with_suffix('.pdf')) as doc:
+                    for number, page in enumerate(doc):
+                        page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False).save(
+                            previews / (new_path.stem + '-' + str(number + 1) + '.png'))
+        report['status'] = 'passed'
+    except Exception as exc:
+        report['status'] = 'failed'; report['error'] = str(exc)
+        raise
+    finally:
+        (review / 'report.json').write_text(json.dumps(report, indent=2))
     print(json.dumps(report, indent=2))
 
 
