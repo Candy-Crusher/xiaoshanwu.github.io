@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Put each project link in a single [Project] label immediately after its title.
+"""Use only one [Project] link immediately after each plain research title.
 
-Titles remain ordinary bold text. Existing Project/Details duplicates are moved,
-not retained on venue lines. Paper and other unrelated links remain unchanged.
---compile verifies all PDFs, including the exact clickable text of each link.
+Remove [Paper] links consistently across the main and tailored CVs. Preserve
+publication metadata, ordinary text and unrelated links. --compile validates
+all before/after PDFs and checks exactly which text each project link covers.
 """
 from __future__ import annotations
 import argparse, concurrent.futures, hashlib, json, re, shutil, subprocess
@@ -62,8 +62,32 @@ def hrefs(text: str):
         cursor = end
 
 
+def is_paper_label(body: str) -> bool:
+    # Match the label, not the destination: unrelated arXiv links or metadata
+    # are not removed simply because they refer to a paper.
+    plain = re.sub(r'\\textcolor\{[^{}]+\}', '', body)
+    plain = re.sub(r'\\(?:textbf|textit|textrm|textsf|texttt|underline|mbox)', '', plain)
+    plain = plain.replace('{', '').replace('}', '').strip()
+    return plain.casefold() == '[paper]'
+
+
+def strip_paper_links(text: str) -> str:
+    output, cursor = [], 0
+    for start, end, _, body in hrefs(text):
+        prefix = text[cursor:start]
+        if is_paper_label(body):
+            prefix = re.sub(r'(?:\\quad|\\enspace|\\,|~|[ \t])+$', '', prefix)
+            replacement = ''
+        else:
+            replacement = text[start:end]
+        output.extend((prefix, replacement))
+        cursor = end
+    output.append(text[cursor:])
+    return ''.join(output)
+
+
 def strip_project_links(text: str) -> str:
-    """Remove only project-title wrappers and their old/new resource labels."""
+    """Remove only project-title wrappers and old/new project labels."""
     output, cursor = [], 0
     for start, end, url, body in hrefs(text):
         prefix = text[cursor:start]
@@ -73,7 +97,6 @@ def strip_project_links(text: str) -> str:
         elif destination in URLS.values() and re.fullmatch(
             r'(?:\\textcolor\{cvblue\}\{)?\[(?:Project|Porject|Details)\]\}?', body
         ):
-            # Remove only the spacing directly attached to a deleted label.
             prefix = re.sub(r'(?:\\quad|\\enspace|\\,|~|[ \t])+$', '', prefix)
             replacement = ''
         else:
@@ -85,7 +108,7 @@ def strip_project_links(text: str) -> str:
 
 
 def update(text: str) -> str:
-    base = strip_project_links(text)
+    base = strip_project_links(strip_paper_links(text))
     revised = base
     for slug, title in PROJECTS.items():
         title_tex = r'\textbf{' + title + '}'
@@ -95,6 +118,8 @@ def update(text: str) -> str:
         revised = revised.replace(title_tex, title_tex + label, 1)
     if strip_project_links(revised) != base:
         raise ValueError('An unrelated source change was detected')
+    if re.search(r'\[paper\]', revised, re.IGNORECASE):
+        raise ValueError('A [Paper] label remains in the source')
     found = [(url, body) for _, _, url, body in hrefs(revised) if url in URLS.values()]
     if Counter(url for url, _ in found) != Counter(URLS.values()):
         raise ValueError('Expected exactly one project link per publication')
@@ -121,8 +146,17 @@ def compile_one(path: Path) -> Path:
 
 def normalized_text(doc) -> str:
     text = '\n'.join(page.get_text() for page in doc)
-    text = re.sub(r'\[(?:Project|Porject|Details)\]', '', text)
+    text = re.sub(r'\[(?:Project|Porject|Details|Paper)\]', '', text, flags=re.IGNORECASE)
     return ''.join(text.split())
+
+
+def link_text(page, link) -> str:
+    import fitz
+    rect = fitz.Rect(link['from'])
+    # Hyperref pads its annotations: word centres avoid adjacent-line glyphs.
+    covered = [w for w in page.get_text('words') if rect.contains(
+        fitz.Point((w[0] + w[2]) / 2, (w[1] + w[3]) / 2))]
+    return ''.join(w[4] for w in covered)
 
 
 def compare_pdf(before: Path, after: Path) -> dict:
@@ -131,30 +165,29 @@ def compare_pdf(before: Path, after: Path) -> dict:
         if len(old) != len(new):
             raise ValueError('Page count changed: ' + after.name)
         if normalized_text(old) != normalized_text(new):
-            raise ValueError('PDF content changed beyond project labels: ' + after.name)
+            raise ValueError('PDF content changed beyond resource labels: ' + after.name)
         old_links = {l['uri'] for p in old for l in p.get_links() if l.get('uri')}
         new_links = {l['uri'] for p in new for l in p.get_links() if l.get('uri')}
-        preserved = old_links - set(ALIASES) - set(URLS.values())
+        paper_links = {l['uri'] for p in old for l in p.get_links()
+                       if l.get('uri') and link_text(p, l).casefold() == '[paper]'}
+        preserved = old_links - set(ALIASES) - set(URLS.values()) - paper_links
         if not preserved.issubset(new_links):
             raise ValueError('An unrelated link was removed: ' + after.name)
         if set(ALIASES).intersection(new_links):
             raise ValueError('Legacy project destinations remain: ' + after.name)
+        if any(re.search(r'\[paper\]', p.get_text(), re.IGNORECASE) for p in new):
+            raise ValueError('A [Paper] label remains in the PDF: ' + after.name)
         labels, seen = [], Counter()
         for page_no, page in enumerate(new):
             for link in page.get_links():
                 uri = link.get('uri')
                 if uri not in URLS.values(): continue
-                rect = fitz.Rect(link['from'])
-                # Hyperref pads annotations by about 1 pt. Select word centres
-                # rather than touching glyph boxes from the tightly set next line.
-                covered = [w for w in page.get_text('words') if rect.contains(
-                    fitz.Point((w[0] + w[2]) / 2, (w[1] + w[3]) / 2))]
-                text = ''.join(w[4] for w in covered)
+                text = link_text(page, link)
                 if text != '[Project]':
                     raise ValueError('Project link must cover only [Project]: ' + after.name + ': ' + repr(text))
                 seen[uri] += 1
                 labels.append({'page': page_no + 1, 'url': uri, 'clickable_text': text,
-                               'rectangle_pt': list(rect)})
+                               'rectangle_pt': list(link['from'])})
             for word in page.get_text('words'):
                 if word[0] < 0 or word[1] < 0 or word[2] > page.rect.width or word[3] > page.rect.height:
                     raise ValueError('Text exceeds page bounds: ' + after.name)
@@ -163,7 +196,8 @@ def compare_pdf(before: Path, after: Path) -> dict:
         if sum(p.get_text().count('[Project]') for p in new) != len(PROJECTS):
             raise ValueError('Incorrect number of visible project labels: ' + after.name)
         return {'pdf': after.name, 'pages': len(new), 'project_links': labels,
-                'content_preserved_except_project_labels': True,
+                'content_preserved_except_resource_labels': True, 'paper_labels_remaining': 0,
+                'removed_paper_destinations': sorted(paper_links - new_links),
                 'preserved_other_links': sorted(preserved),
                 'sha256': hashlib.sha256(after.read_bytes()).hexdigest()}
 
@@ -176,7 +210,7 @@ def main() -> None:
     if not sources[0].is_file(): raise FileNotFoundError('Primary CV source not found')
     review = ROOT / 'cv-link-review'
     review.mkdir(exist_ok=True)
-    report = {'project_urls': URLS, 'placement': 'One [Project] immediately after each plain title',
+    report = {'project_urls': URLS, 'placement': 'One [Project] immediately after each plain title; no [Paper] labels',
               'sources': [], 'pdf_checks': []}
     pairs = []
     # Stage every source first. No source or stable PDF is published on failure.
@@ -191,6 +225,7 @@ def main() -> None:
         old_path.write_text(original); new_path.write_text(revised)
         report['sources'].append({'path': str(relative), 'changed': original != revised,
                                   'titles_are_plain_text': True, 'project_labels_after_titles': 7,
+                                  'paper_labels_removed': sum(is_paper_label(body) for _, _, _, body in hrefs(original)),
                                   'non_link_source_preserved': True,
                                   'before_sha256': hashlib.sha256(original.encode()).hexdigest(),
                                   'after_sha256': hashlib.sha256(revised.encode()).hexdigest()})
@@ -214,7 +249,6 @@ def main() -> None:
                 built = review / 'after' / source.relative_to(ROOT)
                 shutil.copy2(built, delivery / source.name)
                 shutil.copy2(built.with_suffix('.pdf'), delivery / built.with_suffix('.pdf').name)
-            # Keep visual previews beside the checks, outside the delivered CV folder.
             import fitz
             previews = review / 'previews'; previews.mkdir(exist_ok=True)
             for _, new_path in pairs:
