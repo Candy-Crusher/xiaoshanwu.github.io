@@ -1,0 +1,32 @@
+[
+  {
+    "project": "videossm",
+    "asset": "https://arxiv.org/html/2512.04519v1/memory_module.png",
+    "status": "downloaded",
+    "path": "projects/videossm/assets/memory.webp"
+  },
+  {
+    "project": "lifr-seg",
+    "asset": "https://arxiv.org/html/2603.21115v1/figs/main_results.png",
+    "status": "downloaded",
+    "path": "projects/lifr-seg/assets/results.webp"
+  },
+  {
+    "project": "lifr-seg",
+    "asset": "https://arxiv.org/html/2603.21115v1/net.png",
+    "status": "downloaded",
+    "path": "projects/lifr-seg/assets/method.webp"
+  },
+  {
+    "project": "lifr-v2",
+    "asset": "https://arxiv.org/html/2609.25803v2/framework-v2.png",
+    "status": "downloaded",
+    "path": "projects/lifr-v2/assets/method.webp"
+  },
+  {
+    "project": "lifr-v2",
+    "asset": "https://arxiv.org/html/2609.25803v2/qualitative_comparison.png",
+    "status": "downloaded",
+    "path": "projects/lifr-v2/assets/results.webp"
+  }
+]
