@@ -14,75 +14,73 @@ jobs:
         with:
           ref: stage-cv-skills-pagination-20261012
           sparse-checkout: cv/2027-internships
-      - name: Apply only the locally compiled and reviewed text changes
+      - name: Restore independent Awards with byte-checked local PDF sources
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
           import hashlib, re
-          expected = {
-              '01': ('8c6817fbb4d5c166f6387e73fe6f916d4adbdcb7', 'fb392e82cb06bbfe47dd523c78d4b39ee4cbdf4f'),
-              '02': ('fb2a3ea8544811c4f17d5afb0e2f94b3dfba9e4c', 'd0ef8973c51ec131eb80822c52f34b57c4e72e4a'),
-              '03': ('4b760065964358b3577e9176d77c197f68665ce8', 'd1a63ff05de37b3367d9bfdf252570b400d500f6'),
-              '04': ('d0d766b606e76921f3b2adccc74e06fe0801e770', '8a66ca322a8f3469496559c8783698e1f4bf6504'),
-              '05': ('9989462e68f714c11c88fa18a412cbf99bdc5815', '35df3710283e96ddb3c136ee86d7560711d04728'),
-              '06': ('fd68c352484796b67aaf7a751f31215e34cae8d2', 'adf60f025f2ac70f7966565865b23b4604d4871d'),
-              '07': ('c48f5ecafe78cfad8edcb7c971752840f3f6101f', '993206fea3d927b66f39cb6fc147bf8b0f30585d'),
-              '08': ('c3e5678411ce9e4b9524b84e5915081080d6500c', '4ea1bcc096d74a8c08ca3df34af71e5294225096'),
-              '09': ('fe98be71fda5de1c94418eb23692393d5eb890ce', 'f0d809e61bf18eb690873fc988af5f19aab62aa4'),
-              '10': ('6cf2e92af193ba6571f1f73277353dc24316784a', 'e9fa13bed0a8b36efd058b7a4591170d53a200f5'),
-              '11': ('2df905f51ff6dadd0469993a1b9995f23c2e22ad', '099dfefba6c6ac05e9ef9acb1ae49901eb503a09'),
-              '12': ('aa5181563c92f47f1ed35ec8906ba58c9962824e', 'e42ec4eba6b73d4acb6d355a24dc9477c21aff0d'),
-              '13': ('22639ad05f72f0d15a30511d2871eb27813866ca', '8c33a5e12f3d8fa56d59689531982e73530a408a'),
-          }
-          methods = {
-              '01': 'Multi-view geometry; geometric working memory; 4D prediction; spatial reasoning.',
-              '02': 'World--action modeling; geometric action checks; sim-to-real evaluation on Franka Research 3.',
-              '03': 'Video diffusion; flow matching; 4D world--action models; geometric memory.',
-              '04': 'Multimodal flow matching; latent video representations; RGB/depth/motion generation.',
-              '05': 'VLM spatial reasoning; geometric working memory; world--action consistency checks.',
-              '06': 'Depth and motion estimation; video generation; geometry-grounded action prediction.',
-              '07': 'Autoregressive video diffusion; hybrid state-space memory; multimodal generation.',
-              '08': 'RGB--event fusion; dense scene prediction; OOD and sim-to-real policy evaluation.',
-              '09': 'Dynamic 3D geometry; multi-view spatial reasoning; spatiotemporal video modeling.',
-              '10': '4D world--action models; RoboTwin evaluation; sim-to-real evaluation on Franka Research 3.',
-              '11': 'Vision--language spatial reasoning; structured 3D/4D representations; video generation.',
-              '12': '3D/4D vision; multimodal dense prediction; video generation; controlled ablations.',
-              '13': '4D world--action models; latent video representations; sim-to-real policy evaluation.',
-          }
-          old_award = r'\dashitem\textbf{Awards:} Hong Kong PhD Fellowship (\textbf{HKPFS, Top Tier}), HKU Presidential Scholarship.\\[-0.35pt]'
-          new_award = r'\dashitem\textbf{Awards:} Hong Kong PhD Fellowship (\textbf{HKPFS, Top Tier}, 2023), HKU Presidential Scholarship (2023).\\[-0.35pt]' + '\n' + r'\dashitem\textbf{Travel awards:} NeurIPS (2025), ICLR (2026).\\[-0.35pt]'
-          old_tail = '% ==================== AWARDS ====================\n' + r'\cvsection{Selected Awards}' + '\n' + r'Hong Kong PhD Fellowship (HKPFS, 2023); HKU Presidential Scholarship (2023).\par' + '\n' + 'Outstanding Graduate of Zhejiang University (2023); NeurIPS (2025) and ICLR (2026) Travel Awards.\n'
-          vision = {'01', '05', '08', '09', '12'}
+          old_shas = [
+              'fb392e82cb06bbfe47dd523c78d4b39ee4cbdf4f',
+              'd0ef8973c51ec131eb80822c52f34b57c4e72e4a',
+              'd1a63ff05de37b3367d9bfdf252570b400d500f6',
+              '8a66ca322a8f3469496559c8783698e1f4bf6504',
+              '35df3710283e96ddb3c136ee86d7560711d04728',
+              'adf60f025f2ac70f7966565865b23b4604d4871d',
+              '993206fea3d927b66f39cb6fc147bf8b0f30585d',
+              '4ea1bcc096d74a8c08ca3df34af71e5294225096',
+              'f0d809e61bf18eb690873fc988af5f19aab62aa4',
+              'e9fa13bed0a8b36efd058b7a4591170d53a200f5',
+              '099dfefba6c6ac05e9ef9acb1ae49901eb503a09',
+              'e42ec4eba6b73d4acb6d355a24dc9477c21aff0d',
+              '8c33a5e12f3d8fa56d59689531982e73530a408a',
+          ]
+          new_shas = [
+              'ef74bdd5b33606a4a3a5c6acae851a7cbbce1af3',
+              '41a108f131c092a7afe0e1d925f3cf380bcbcfc7',
+              '8d07f164ff1c9b5288c907a6d6ea5566b6a2b1e2',
+              'c12c52e4aecce8bd3c5410e8d95865eace48619b',
+              'a03c053bfa8b476b6d6430de5064d5db80dabf52',
+              '2c51ed1a015f5ef420103d11b829ea5a3bf53a49',
+              '4c383a88294bbe451e99a362b1989d892ab72a1f',
+              'e273fb4da60586a1a6ae5e47ef97bbb6ebe4b430',
+              'ecd3ff5aa2a76000295facb788d0828fbef886ec',
+              'c25a29e027fe9da42ce80075dcb85d7493a21ee1',
+              '5bf954585a08c3cdc0d83b9094478dc41d3c407b',
+              '4af3ad8e7e97900d62f272eab1bbdd6ab84c2fe4',
+              '8b517366b3e9e5f53eb5f642a0f46eeec3d95d46',
+          ]
+          awards = '% ==================== AWARDS ====================\n' + r'\cvsection{Selected Awards}' + '\n' + r'Hong Kong PhD Fellowship (HKPFS, 2023); HKU Presidential Scholarship (2023).\par' + '\n' + 'Outstanding Graduate of Zhejiang University (2023); NeurIPS (2025) and ICLR (2026) Travel Awards.\n'
+          edu_old = r'\dashitem\textbf{Awards:} Hong Kong PhD Fellowship (\textbf{HKPFS, Top Tier}, 2023), HKU Presidential Scholarship (2023).\\[-0.35pt]'
+          edu_new = r'\dashitem\textbf{Awards:} Hong Kong PhD Fellowship (\textbf{HKPFS, Top Tier}), HKU Presidential Scholarship.\\[-0.35pt]'
+          travel = r'\dashitem\textbf{Travel awards:} NeurIPS (2025), ICLR (2026).\\[-0.35pt]' + '\n'
           def blob(data):
               return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
           files = sorted(Path('cv/2027-internships').glob('*.tex'))
           assert len(files) == 13
-          staged = []
-          for path in files:
-              key = path.name[:2]
+          edits = []
+          for i, path in enumerate(files):
               data = path.read_bytes()
-              assert blob(data) == expected[key][0], ('Source changed; refusing overwrite', path)
+              assert blob(data) == old_shas[i], ('Source changed; refusing overwrite', path)
               old = data.decode('utf-8')
-              new = old
-              for source, target in [(old_award, new_award), ('Outstanding Graduate (Rank 5),', 'Outstanding Graduate (Rank 5, 2023),'), (old_tail, '')]:
-                  assert new.count(source) == 1, path
-                  new = new.replace(source, target)
-              tools = 'Python, PyTorch (CUDA), Open3D, OpenCV, Diffusers.' if key in vision else 'Python, PyTorch (CUDA), Diffusers, Open3D, OpenCV.'
-              skills = r'\textbf{Tools:} ' + tools + r'\par' + '\n' + r'\textbf{Methods:} ' + methods[key]
-              new, count = re.subn(r'(\\cvsection\{Technical Skills\}\n).*?(?=\n\n)', lambda match: match[1] + skills, new, count=1, flags=re.S)
-              assert count == 1
-              region = lambda s: s[s.index('% ==================== RESEARCH INTERESTS'):s.index('% ==================== SKILLS')]
-              assert region(old) == region(new), path
-              for pattern in [r'\\fontsize\{[^}]+\}\{[^}]+\}', r'\\linespread\{[^}]+\}', r'\\usepackage\[[^]]+\]\{geometry\}', r'itemsep=[0-9.]+pt']:
-                  assert re.findall(pattern, old) == re.findall(pattern, new), path
-              assert blob(new.encode()) == expected[key][1], ('Does not match compiled local source', path)
-              staged.append((path, new))
-          for path, new in staged:
-              path.write_text(new, encoding='utf-8')
-              print(path, blob(new.encode()))
+              assert old.count(edu_old) == 1 and old.count(travel) == 1
+              assert r'\cvsection{Selected Awards}' not in old
+              text = old.replace(edu_old, edu_new).replace(travel, '')
+              text = text.replace('Outstanding Graduate (Rank 5, 2023),', 'Outstanding Graduate (Rank 5),')
+              text = text.replace(r'\end{document}', awards + '\n' + r'\end{document}')
+              text = text.replace(r'\par\vspace{3.0pt}', r'\par\vspace{2.0pt}')
+              text = text.replace(r'\par\vspace{1.4pt}', r'\par\vspace{1.0pt}')
+              text = text.replace('itemsep=1.0pt', 'itemsep=0.4pt')
+              text = text.replace(r'\vspace*{2.0pt}', r'\vspace*{0pt}')
+              for pattern in [r'\\fontsize\{[^}]+\}\{[^}]+\}', r'\\linespread\{[^}]+\}', r'\\usepackage\[[^]]+\]\{geometry\}']:
+                  assert re.findall(pattern, old) == re.findall(pattern, text), path
+              assert blob(text.encode()) == new_shas[i], ('Does not match compiled local source', path)
+              edits.append((path, text))
+          for path, text in edits:
+              path.write_text(text, encoding='utf-8')
+              print(path.name, blob(text.encode()))
           PY
-      - name: Commit the thirteen reviewed files on this staging branch only
+      - name: Commit only thirteen CV files on the staging branch
         shell: bash
         run: |
           git diff --check
@@ -90,5 +88,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add cv/2027-internships/*.tex
-          git commit -m 'Tailor evidenced skills and consolidate awards for single-page CVs'
+          git commit -m 'Restore standalone Selected Awards and retain tailored Skills in all 13 CVs'
           git push origin HEAD:stage-cv-skills-pagination-20261012
