@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - scripts/build-project-pages.py
+      - scripts/build-project-site.py
       - scripts/test-project-pages.py
       - .github/workflows/build-project-pages.yml
   workflow_dispatch:
@@ -34,28 +35,28 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Generate static pages and download public paper figures
         run: |
-          python -m py_compile scripts/build-project-pages.py scripts/test-project-pages.py
-          python scripts/build-project-pages.py --download-assets
+          python -m py_compile scripts/build-project-pages.py scripts/build-project-site.py scripts/test-project-pages.py
+          python scripts/build-project-site.py --download-assets
       - name: Test desktop and mobile pages
         run: python scripts/test-project-pages.py
       - name: Prepare review package
         if: always()
         run: |
-          mkdir -p .project-pages-delivery/site/scripts .project-pages-delivery/site/images/research
-          if [ -d projects ]; then cp -R projects .project-pages-delivery/site/; fi
-          cp scripts/build-project-pages.py scripts/test-project-pages.py .project-pages-delivery/site/scripts/
+          mkdir -p project-pages-delivery/site/scripts project-pages-delivery/site/images/research
+          if [ -d projects ]; then cp -R projects project-pages-delivery/site/; fi
+          cp scripts/build-project-pages.py scripts/build-project-site.py scripts/test-project-pages.py project-pages-delivery/site/scripts/
           for image in game-overview.webp videossm-full.webp; do
-            if [ -f "images/research/$image" ]; then cp "images/research/$image" .project-pages-delivery/site/images/research/; fi
+            if [ -f "images/research/$image" ]; then cp "images/research/$image" project-pages-delivery/site/images/research/; fi
           done
-          if [ -d project-pages-qa ]; then cp -R project-pages-qa .project-pages-delivery/; fi
+          if [ -d project-pages-qa ]; then cp -R project-pages-qa project-pages-delivery/; fi
       - name: Save screenshots, validation report, and static source
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: research-project-pages-preview
-          path: .project-pages-delivery/
+          path: project-pages-delivery/
           retention-days: 14
-          if-no-files-found: warn
+          if-no-files-found: error
       - name: Commit generated pages and project links
         run: |
           git config user.name "github-actions[bot]"
