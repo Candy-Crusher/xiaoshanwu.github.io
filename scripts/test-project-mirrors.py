@@ -2,7 +2,6 @@
 """Check original-site copies using their real local media at the Pages subpath."""
 from pathlib import Path
 from http.server import ThreadingHTTPServer,SimpleHTTPRequestHandler
-from urllib.parse import urlsplit,unquote
 import functools,threading,json
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
@@ -48,7 +47,6 @@ try:
      page.wait_for_function("document.querySelector('#loading') && document.querySelector('#loading').textContent.includes('time samples')",timeout=30000)
      initial=page.locator('body').inner_text()
      if case=='pose-1':page.screenshot(path=str(OUT/'sandbox-viewer.png'),full_page=True)
-     # Explicitly open a late sample: the copy must include more than initial frames.
      page.locator('#seek').evaluate("e=>{e.value=e.max;e.dispatchEvent(new Event('input',{bubbles:true}));}")
      page.wait_for_timeout(2500)
      check={'case':case,'canvas_count':page.locator('canvas').count(),'initial':initial[:750],'last_sample':page.locator('body').inner_text()[:750],'error':page.locator('#error').inner_text()}
@@ -56,11 +54,13 @@ try:
      if check['canvas_count']!=2 or check['error'].strip():errors.append(check)
     except Exception as exc:errors.append({'case':case,'error':str(exc)})
    errors.extend(failed)
-   # MP4 metadata is decoded by Chromium, not inferred from filenames.
+   # Retain the website's origin for local media probes. about:blank has an opaque
+   # origin and Chromium local-network checks can block it independently of codecs.
+   page.goto(BASE+'sandbox/',wait_until='domcontentloaded')
    for path in sorted((ROOT/'projects/sandbox').rglob('*.mp4')):
     try:
      url=BASE+'sandbox/'+str(path.relative_to(ROOT/'projects/sandbox'))
-     page.goto('about:blank');page.set_content('<video id="probe" muted preload="metadata"></video>')
+     page.set_content('<video id="probe" muted preload="metadata"></video>')
      page.locator('#probe').evaluate('(v,url)=>{v.src=url;v.load()}',url)
      page.wait_for_function("document.querySelector('video').readyState>=1 || document.querySelector('video').error",timeout=20000)
      state=page.locator('#probe').evaluate('(v)=>({width:v.videoWidth,height:v.videoHeight,duration:v.duration,error:v.error?.code||null})')
