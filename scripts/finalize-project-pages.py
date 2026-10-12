@@ -43,14 +43,11 @@ def main():
             img=soup.find('img',src='assets/fig1_concept.png') or soup.find('img',src='assets/concept.webp')
             if img:responsive(soup,img,'eag3r','concept')
         path.write_text(str(soup))
-    # VideoSSM: the same original overview, re-rendered from its vector PDF.
     path=P/'videossm/index.html'
     if path.is_file():
         soup=BeautifulSoup(path.read_text(),'html.parser');img=soup.select_one('.hero-figure img')
         if img:responsive(soup,img,'videossm','overview')
         path.write_text(str(soup))
-    # LiFR-Seg: show the original high-resolution teaser before the existing results.
-    # Both are retained, rather than swapping unrelated figures under an old caption.
     for slug,name,caption in [('lifr-seg','teaser','Original LiFR-Seg teaser: semantic predictions at interframe query times.'),('lifr-v2','teaser','Original project teaser from the official LiFR v2 repository.')]:
         path=P/slug/'index.html'
         if not path.is_file() or not (P/slug/'assets'/f'{name}-hd.webp').is_file():continue
@@ -63,15 +60,12 @@ def main():
             cap=soup.new_tag('figcaption');cap.string=caption;figure.append(cap)
             tldr=soup.select_one('.tldr');tldr.insert_after(figure)
         responsive(soup,figure.find('img'),slug,name)
-        # Place the original result / architecture figure inside its relevant section
-        # so the first viewport is not followed by two back-to-back overview figures.
         other=soup.select_one('.hero-figure:not(#repository-hd-teaser)')
         if other:
             target=soup.find(id='results' if slug=='lifr-seg' else 'method')
             if target:
                 other['class']='figure full';target.append(other.extract())
         path.write_text(str(soup))
-    # Refresh all seven-page navigation after the original five-page generator runs.
     for path in [P/'index.html',*[P/slug/'index.html' for slug in ['videossm','game','lifr-seg','lifr-v2','evsplat']]]:
         if not path.is_file():continue
         soup=BeautifulSoup(path.read_text(),'html.parser');is_hub=path==P/'index.html'
@@ -105,5 +99,7 @@ def main():
                     return m.group(1)+inner+m.group(3)
                 text=re.sub(pattern,fix,text,flags=re.S)
         path.write_text(text)
+    from refine_project_mirrors import main as refine
+    refine()
     print('Integrated available mirrors and original-source high-resolution figures.')
 if __name__=='__main__':main()
