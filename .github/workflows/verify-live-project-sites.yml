@@ -1,0 +1,83 @@
+name: Verify live project websites
+on:
+  push:
+    branches: [master]
+    paths: [.github/workflows/verify-live-project-sites.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Verify the public Pages URLs and original viewer data
+        run: |
+          python - <<'PY'
+          from urllib.request import Request,urlopen
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          import time,json
+          base='https://candy-crusher.github.io/xiaoshanwu.github.io/projects/'
+          out=Path('live-site-qa');out.mkdir(exist_ok=True)
+          checks=[];errors=[]
+          def html(slug):
+              with urlopen(Request(base+slug+'/?verify='+str(int(time.time())),headers={'User-Agent':'ProjectSiteValidation/1.0'}),timeout=20) as r:return r.read().decode()
+          ready=False
+          for attempt in range(24):
+              try:
+                  if 'game-original-method' in html('game') and 'mjx-container:not' in html('sandbox'):
+                      ready=True;break
+              except Exception:pass
+              time.sleep(5)
+          if not ready:raise SystemExit('Updated public Pages content has not appeared within the verification window.')
+          try:
+              with sync_playwright() as pw:
+                  browser=pw.chromium.launch(headless=True,args=['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
+                  page=browser.new_page(viewport={'width':1440,'height':950})
+                  for slug in ['sandbox','eag3r','videossm','game','lifr-seg','lifr-v2','evsplat']:
+                      try:
+                          response=page.goto(base+slug+'/',wait_until='domcontentloaded',timeout=40000)
+                          page.wait_for_timeout(1700)
+                          page.evaluate('async()=>{for(let y=0;y<document.body.scrollHeight;y+=1000){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,60));}window.scrollTo(0,0)}')
+                          page.wait_for_timeout(900)
+                          state=page.evaluate('()=>({overflow:document.documentElement.scrollWidth>innerWidth,brokenImages:[...document.images].filter(i=>!i.naturalWidth&&i.getBoundingClientRect().width>0).map(i=>i.src)})')
+                          checks.append({'page':slug,'status':response.status,**state})
+                          if response.status!=200 or state['overflow'] or state['brokenImages']:errors.append(checks[-1])
+                          if slug in ['sandbox','eag3r','game']:page.screenshot(path=str(out/(slug+'-desktop.png')),full_page=True)
+                      except Exception as exc:errors.append({'page':slug,'error':str(exc)})
+                  page.set_viewport_size({'width':390,'height':844})
+                  for slug in ['sandbox','eag3r','game']:
+                      page.goto(base+slug+'/',wait_until='domcontentloaded');page.wait_for_timeout(2000)
+                      state=page.evaluate('()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth})')
+                      checks.append({'mobile_page':slug,**state})
+                      if state['scrollWidth']>state['width']:errors.append(checks[-1])
+                      page.screenshot(path=str(out/(slug+'-mobile.png')),full_page=True)
+                  page.set_viewport_size({'width':1280,'height':900})
+                  for case in ['pose-1','pose-2','lighting-1','lighting-2','clutter-1','clutter-2']:
+                      try:
+                          page.goto(base+'sandbox/rdf-viewer.html?case='+case+'&view=compare',wait_until='domcontentloaded')
+                          page.wait_for_function("document.querySelector('#loading')?.textContent.includes('time samples') || document.querySelector('#error')?.textContent.trim()",timeout=30000)
+                          state={'case':case,'error':page.locator('#error').inner_text(),'body':page.locator('body').inner_text()[:1000],'canvases':page.locator('canvas').count()}
+                          checks.append(state)
+                          if state['error'].strip() or state['canvases']!=2:errors.append(state)
+                          if case=='pose-1':page.screenshot(path=str(out/'sandbox-live-viewer.png'),full_page=True)
+                      except Exception as exc:errors.append({'case':case,'error':str(exc)})
+                  browser.close()
+          finally:
+              (out/'report.json').write_text(json.dumps({'checks':checks,'errors':errors},indent=2))
+          if errors:raise SystemExit(json.dumps(errors,indent=2))
+          print('PASS: seven live public pages, mobile mirrors, and all six live 4D viewers.')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-project-sites-validation
+          path: live-site-qa/
+          retention-days: 7
