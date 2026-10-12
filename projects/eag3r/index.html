@@ -1,81 +1,35 @@
 <!DOCTYPE html>
-
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>EAG3R: Event-Augmented 3D Geometry Estimation</title>
-<link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<link href="style.css" rel="stylesheet"/>
-<link href="https://candy-crusher.github.io/xiaoshanwu.github.io/projects/eag3r/" rel="canonical"/><style id="mirror-compatibility">
-.content-image.half-width{max-width:min(600px,100%);box-sizing:border-box}
-.content-image.full-width{box-sizing:border-box}
-.method-grid>*{min-width:0}
-.video-compare-container,.vis-comparison-container,pre{max-width:100%;box-sizing:border-box}
-@media(max-width:650px){.content-block{padding:1.3rem}.teaser-grid{min-width:0}.teaser-grid>*{min-width:0}}
-</style></head>
-<body><nav aria-label="Research project directory" id="project-directory-nav" style="font-family:system-ui,sans-serif;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 24px;font-size:12px;background:#f7f8f9;border-bottom:1px solid #e2e5e8;position:relative;z-index:30;"><a href="../../research.html#projects">← Research</a><a href="../../">Xiaoshan Wu · Homepage</a></nav>
-<div class="container">
-<header class="hero-section">
-<h1 class="title">EAG3R: Event-Augmented 3D Geometry Estimation<br/>for Dynamic and Extreme-Lighting Scenes</h1>
-<div class="venue">
-<span class="badge">NeurIPS 2025 Spotlight</span>
-</div>
-<div class="authors">
+<html data-project-template="ugg" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>EAG3R: Event-Augmented 3D Geometry Estimation</title><meta content="light dark" name="color-scheme"/><meta content="ugg-20261012-v1" name="project-template"/><link href="https://candy-crusher.github.io/xiaoshanwu.github.io/projects/eag3r/" rel="canonical"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/><link href="style.css" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/><link href="../assets/ugg-template.css?v=ugg-20261012-v1" rel="stylesheet"/><script>try{const t=localStorage.getItem('research-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(_){}</script></head><body class="ugg-page" data-project="eag3r" id="top"><a class="skip-link" href="#main">Skip to content</a><nav aria-label="Project navigation" class="ugg-top"><div class="ugg-wrap"><a class="brand" href="#top">EAG3R</a><div class="navlinks"><a href="#abstract">Abstract</a><a href="#method">Method</a><a href="#results">Results</a><a href="#citation">BibTeX</a></div><a class="nav-back" href="../../research.html#projects">← Research</a><button aria-label="Switch color theme" class="theme-toggle" type="button">◐</button></div></nav><header class="ugg-header" id="paper"><div class="ugg-wrap"><h1><span class="m">EAG3R</span>: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes</h1><div class="authors">
 <span class="author-block">
-<a href="#">Xiaoshan Wu</a><sup>1</sup>*,
+<a href="../../about.html">Xiaoshan Wu</a><sup>1</sup>*,
         </span>
 <span class="author-block">
-<a href="#">Yifei Yu</a><sup>1</sup>*,
+Yifei Yu<sup>1</sup>*,
         </span>
 <span class="author-block">
-<a href="#">Xiaoyang Lyu</a><sup>1</sup>,
+Xiaoyang Lyu<sup>1</sup>,
         </span>
 <span class="author-block">
-<a href="#">Yi-Hua Huang</a><sup>1</sup>,
+Yi-Hua Huang<sup>1</sup>,
         </span>
 <span class="author-block">
-<a href="#">Bo Wang</a><sup>1</sup>,
+Bo Wang<sup>1</sup>,
         </span>
 <span class="author-block">
-<a href="#">Baoheng Zhang</a><sup>1</sup>,
+Baoheng Zhang<sup>1</sup>,
         </span>
 <span class="author-block">
-<a href="#">Zhongrui Wang</a><sup>2‡</sup>,
+Zhongrui Wang<sup>2‡</sup>,
         </span>
 <span class="author-block">
-<a href="#">Xiaojuan Qi</a><sup>1‡</sup>
+Xiaojuan Qi<sup>1‡</sup>
 </span>
-</div>
-<div class="affiliations">
+</div><div class="affil">
 <span class="author-block"><sup>1</sup>The University of Hong Kong</span>
 <span class="author-block"><sup>2</sup>The Southern University of Science and Technology</span>
-</div>
-<div class="equal-contribution">
+</div><div class="equal">
 <small>* Equal contribution, name alphabetically.</small>
-</div>
-<div class="links">
-<a class="btn btn-purple" href="https://openreview.net/pdf?id=Lf0W2gmNBg">
-<span class="icon"><i class="fas fa-file-pdf"></i></span>
-<span>Paper</span>
-</a>
-<a class="btn btn-dark" href="https://arxiv.org/abs/2512.00771">
-<span class="icon"><i class="fab fa-arxiv"></i></span>
-<span>arXiv</span>
-</a>
-<a class="btn btn-dark" href="https://github.com/Candy-Crusher/EAG3R">
-<span class="icon"><i class="fab fa-github"></i></span>
-<span>Code</span>
-</a>
-<a class="btn btn-dark" href="#">
-<span class="icon"><i class="fas fa-database"></i></span>
-<span>Data</span>
-</a>
-</div>
-</header>
-<section class="section">
-<div class="teaser-container">
+</div><p class="venue">NeurIPS 2025 Spotlight</p><div class="links"><a href="https://openreview.net/pdf?id=Lf0W2gmNBg" rel="noopener" target="_blank">Paper</a><a href="https://arxiv.org/abs/2512.00771" rel="noopener" target="_blank">arXiv</a><a href="https://github.com/Candy-Crusher/EAG3R" rel="noopener" target="_blank">Code</a></div><p class="tldr"><span class="k">TL;DR</span>Event-augmented geometry estimation for dynamic scenes and challenging illumination.</p></div></header><main id="main"><section class="ugg-section hero-teaser" id="teaser"><div class="ugg-wrap"><div class="legacy-content"><div class="teaser-container">
 <div class="teaser-grid">
 <div class="video-compare-wrapper">
 <h3>Inputs: The Invisible &amp; The Visible</h3>
@@ -110,11 +64,7 @@
 </div> <div class="caption-below" style="margin-top: 1.5rem;">
 <strong>Seeing in the Dark.</strong> Left: Standard RGB cameras are blind in extreme darkness, capturing mostly noise. Event cameras, however, capture distinct motion signals with high SNR. Right: Consequently, RGB-only methods like MonST3R fail completely, while our event-augmented EAG3R successfully reconstructs the geometry.
                 </div>
-</div>
-</section>
-<section class="section">
-<h2 class="section-title">Abstract</h2>
-<div class="content-block">
+</div></div></div></section><section class="ugg-section legacy-section" id="abstract"><div class="ugg-wrap"><div class="legacy-content"><h2 class="">Abstract</h2><div class="content-block">
 <a aria-label="Open original figure in high resolution" href="assets/concept-hd.webp" rel="noopener" target="_blank"><img alt="EAG3R Concept: Event vs RGB" class="content-image full-width" height="799" sizes="(max-width: 800px) calc(100vw - 40px), 1120px" src="assets/concept.webp" srcset="assets/concept.webp 1440w, assets/concept-hd.webp 3600w" style="width:100%;height:auto;object-fit:contain" width="3600"/></a>
 <div class="caption-below">
 <strong>Figure 1: The core idea.</strong> Standard RGB methods (left) fail in extreme conditions. EAG3R utilizes the high temporal resolution and dynamic range of event cameras (middle) to reconstruct sharp 3D geometry (right).
@@ -127,11 +77,7 @@
                         In this paper, we propose <strong>EAG3R</strong>, a novel geometry estimation framework that augments pointmap-based reconstruction with asynchronous event streams. Built upon the MonST3R backbone, EAG3R introduces: (1) a <strong>Retinex-inspired enhancement module</strong> and a lightweight event adapter with <strong>SNR-aware fusion</strong> mechanism; and (2) a novel <strong>event-based photometric consistency loss</strong>. Our method enables robust geometry estimation in challenging dynamic low-light scenes without requiring retraining on night-time data (<strong>Zero-Shot Generalization</strong>).
                     </p>
 </div>
-</div>
-</section>
-<section class="section">
-<h2 class="section-title">Methodology</h2>
-<div class="content-block">
+</div></div></div></section><section class="ugg-section legacy-section" id="method"><div class="ugg-wrap"><div class="legacy-content"><h2 class="">Methodology</h2><div class="content-block">
 <h3>Overall Architecture</h3>
 <img alt="EAG3R Architecture Pipeline" class="content-image full-width" src="assets/fig2_pipeline.png"/>
 <div class="caption-below">
@@ -151,22 +97,16 @@
 <p>Features are fused adaptively using cross-attention. The network learns to trust RGB in well-lit areas and leverage Event signals in the dark, guided by the SNR map.</p>
 </div>
 </div>
-</div>
-<div class="content-block" style="margin-top: 2rem;">
+</div><div class="content-block" style="margin-top: 2rem;">
 <h3>Event-Based Photometric Consistency Loss</h3>
 <p>To supervise dynamic motion without ground truth, we propose a novel loss function derived from the physical event generation model.</p>
 <img alt="Event-Based Consistency Loss" class="content-image half-width" src="assets/fig3_loss.png"/>
 <div class="caption-below">
 <strong>Figure 3: Event Consistency Loss.</strong> We enforce consistency between the observed brightness change (from integrated events) and the predicted brightness change (from estimated depth, pose, and image gradients).
                 </div>
-</div>
-</section>
-<section class="section">
-<h2 class="section-title">Robustness in the Dark</h2>
-<div class="highlight-box">
+</div></div></div></section><section class="ugg-section legacy-section" id="results"><div class="ugg-wrap"><div class="legacy-content"><h2 class="">Robustness in the Dark</h2><div class="highlight-box">
 <i class="fas fa-moon"></i> <strong>Zero-Shot Performance:</strong> Trained <em>only</em> on Day scenes (MVSEC day2), tested <em>directly</em> on Night scenes.
-            </div>
-<div class="content-block">
+            </div><div class="content-block">
 <h3>Qualitative Comparison</h3>
 <p>Comparison against State-of-the-Art methods in dynamic night scenes.</p>
 <div class="vis-comparison-container">
@@ -175,28 +115,17 @@
 <div class="caption-below">
 <strong>Visual Comparisons.</strong> EAG3R (Ours) successfully reconstructs dynamic objects (e.g., moving cars) and distant geometry in extreme low light, where baselines like MonST3R and Easi3R suffer from severe degradation.
                 </div>
-</div>
-<div class="content-block" style="margin-top: 2rem;">
+</div><div class="content-block" style="margin-top: 2rem;">
 <h3>Trajectory Estimation Accuracy</h3>
 <img alt="Trajectory Comparison Plot" class="content-image half-width" src="assets/fig4_trajectory.png"/>
 <div class="caption-below">
 <strong>Figure 4: Zero-shot Camera Trajectory.</strong> Our method significantly reduces rotation error and drift compared to the baseline MonST3R in unseen night sequences.
                 </div>
-</div>
-</section>
-<section class="section">
-<h2 class="section-title">BibTeX</h2>
-<pre><code>@inproceedings{wueag3r,
+</div></div></div></section><section class="ugg-section legacy-section" id="citation"><div class="ugg-wrap"><div class="legacy-content"><h2 class="">BibTeX</h2><div class="citation-tools"><button class="copy-button" data-copy="bibtex" type="button">Copy BibTeX</button><span aria-live="polite" class="copy-status" id="copy-status" role="status"></span></div><pre><code id="bibtex">@inproceedings{wueag3r,
   title={EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes},
   author={Wu, Xiaoshan and Yu, Yifei and Lyu, Xiaoyang and Huang, Yi-Hua and Wang, Bo and Zhang, Baoheng and Wang, Zhongrui and Qi, Xiaojuan},
   booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems}
-}</code></pre>
-</section>
-<footer class="footer">
-<p>Project page template based on <a href="https://nerfies.github.io/">Nerfies</a>.</p>
-</footer>
-</div>
-<script>
+}</code></pre></div></div></section></main><footer class="ugg-footer"><div class="ugg-wrap"><p>EAG3R · Research project</p><nav aria-label="Other research projects" class="project-links"><a href="../sandbox/">S4NDBOX</a><a aria-current="page" href="../eag3r/">EAG3R</a><a href="../videossm/">VideoSSM</a><a href="../game/">GaMe</a><a href="../lifr-seg/">LiFR-Seg</a><a href="../lifr-v2/">LiFR v2</a><a href="../evsplat/">EVSplat</a></nav><p><a href="../../">Home</a> · <a href="../../about.html">About</a> · <a href="../../resume.html">Resume</a> · <a href="../../research.html">Research</a></p><p class="fine">Layout adapted from <a href="https://github.com/sky-lzy/UGG-website">UGG</a> and <a href="https://github.com/mose3-tracker/mose3-tracker.github.io">MoSE3</a>. Figures and results belong to their respective authors.</p></div></footer><dialog aria-label="Enlarged original research figure" id="figure-dialog"><button class="close" type="button">Close ×</button><img alt=""/><p class="dialog-caption"></p></dialog><script>
         // Select all slider containers on the page
         const sliders = document.querySelectorAll('.video-compare-container');
 
@@ -225,6 +154,4 @@
                 trackLocation(e.touches[0]);
             }, { passive: false });
         });
-    </script>
-</body>
-</html>
+    </script><script defer="" src="../assets/ugg-template.js?v=ugg-20261012-v1"></script></body></html>

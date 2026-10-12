@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="S4NDBOX is a 4D world-action model that jointly predicts RGB, metric depth, and a view-dependent motion stream together with robot actions, exposing explicit geometry to action generation." name="description"/>
+<meta content="world-action model, 4D prediction, robot manipulation, RoboTwin, Franka Research 3" name="keywords"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Verifiable 4D World-Action Model for Robust Robot Control</title>
+<link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet"/>
+<link href="./static/css/bulma.min.css" rel="stylesheet"/>
+<link href="./static/css/bulma-carousel.min.css" rel="stylesheet"/>
+<link href="./static/css/bulma-slider.min.css" rel="stylesheet"/>
+<link href="./static/css/fontawesome.all.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" rel="stylesheet"/>
+<link href="./static/css/index.css" rel="stylesheet"/>
+<link href="./static/css/project.css" rel="stylesheet"/>
+<link href="data:," rel="icon"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer="" src="./static/js/fontawesome.all.min.js"></script>
+<script src="./static/js/bulma-carousel.min.js"></script>
+<script src="./static/js/bulma-slider.min.js"></script>
+<script src="./static/js/index.js"></script>
+<script>
+    window.MathJax = {tex: {inlineMath: [['$', '$']]}, svg: {fontCache: 'global'}};
+  </script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<meta content="noindex,nofollow,noarchive" name="robots"/>
+<meta content="no-referrer" name="referrer"/>
+<link href="./static/rdf/gallery.css" rel="stylesheet"/>
+<script defer="" src="./static/rdf/gallery.js"></script>
+<link href="https://candy-crusher.github.io/xiaoshanwu.github.io/projects/sandbox/" rel="canonical"/><style id="mirror-compatibility">
+.mirror-table-scroll{max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.rdf-frame{box-sizing:border-box;max-width:100%}
+mjx-container:not([display="true"]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:.2em 0;vertical-align:middle}
+@media(max-width:768px){
+  .container,.columns,.column,.rdf-panel,.rdf-panel-body{min-width:0}
+  .cover-content,.cover-title,.cover-subtitle{max-width:100%;box-sizing:border-box}
+  .button{max-width:100%}
+  pre{max-width:100%;box-sizing:border-box}
+}
+</style></head>
+<body><nav aria-label="Research project directory" id="project-directory-nav" style="font-family:system-ui,sans-serif;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 24px;font-size:12px;background:#f7f8f9;border-bottom:1px solid #e2e5e8;position:relative;z-index:30;"><a href="../../research.html#projects">← Research</a><a href="../../">Xiaoshan Wu · Homepage</a></nav>
+<section aria-label="Demo video cover" class="cover" id="cover">
+<video aria-label="Stack Cups on a Franka arm under moving coloured lighting, played at 10x speed" autoplay="" class="cover-video" id="cover-video" loop="" muted="" playsinline="" poster="./static/images/poster_disco_light.jpg" preload="auto">
+<source src="./static/videos/disco_light_10x.mp4" type="video/mp4"/>
+</video>
+<div aria-hidden="true" class="cover-shade"></div>
+<div class="cover-title">
+<div class="cover-wordmark">S4NDBOX</div>
+<p class="cover-sub">Verifiable 4D World-Action Model for Robust Robot Control</p>
+</div>
+<span class="cover-tag">10× speed</span>
+<a class="scroll-cue" href="#paper">Scroll to explore</a>
+</section>
+<section class="hero" id="paper">
+<div class="hero-body">
+<div class="container is-max-desktop">
+<div class="columns is-centered">
+<div class="column has-text-centered">
+<h1 class="title is-1 publication-title">Verifiable 4D World-Action Model<br/>for Robust Robot Control</h1>
+<div class="is-size-5 publication-authors">
+<span class="author-block">Anonymous Authors</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="hero teaser">
+<div class="container is-max-desktop">
+<div class="hero-body">
+<img alt="Explicit geometry as a bridge from visual futures to control." src="./static/images/teaser.png"/>
+<p class="figure-caption">
+<strong>Explicit geometry as a bridge from visual futures to control.</strong>
+        We test the same representation under RoboTwin scene shifts and under controlled
+        real-world perturbations after teleoperation training.
+        <em>The drawings are conceptual schematics, not model outputs or measured results.
+        Dashed extensions are not part of the completed generation implementation.</em>
+</p>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="container is-max-desktop">
+<div class="columns is-centered has-text-centered">
+<div class="column is-four-fifths">
+<h2 class="title is-3">Abstract</h2>
+<div class="content has-text-justified">
+<p>
+            World-action models couple imagined visual futures with robot actions, but
+            RGB-only imagination leaves geometry and motion implicit, limiting robust robot
+            control under distribution shifts. We propose <strong>S4NDBOX</strong>, a 4D
+            world-action model that jointly predicts RGB, depth, view-specific geometric
+            motion fields, and robot actions, explicitly connecting visual evolution to 3D
+            robot motion. The explicit 4D future supports action generation and makes
+            world–action agreement measurable before execution.
+          </p>
+<p>
+            Across both simulated and real-world distribution shifts, S4NDBOX improves
+            robustness over RGB-only control. On RoboTwin, after training only on clean
+            scenes, S4NDBOX improves success in the hard (domain-randomized) setting by
+            <strong>13.3 percentage points</strong> over the RGB-only baseline. We further
+            evaluate zero-shot simulation-to-real transfer on Stack Cups, training on simulated
+            demonstrations and deploying on a physical robot without real-world task
+            demonstrations or fine-tuning. Under additional shifts in object pose, lighting,
+            and clutter, with camera-pose shifts additionally evaluated in the single-view
+            setting, our 4D model improves the mean task score over RGB-only by
+            <strong>41.7</strong> and <strong>40.0</strong> points in three-view and
+            single-view settings, respectively.
+          </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="container is-max-desktop">
+<div class="columns is-centered">
+<div class="column is-full-width">
+<h2 class="title is-3">Method</h2>
+<div class="content has-text-justified">
+<p>
+            Most world-action models represent the imagined future primarily through RGB.
+            Appearance can implicitly encode geometry and motion, but these quantities stay
+            entangled in pixel space. A visually plausible future need not preserve the geometry
+            implied by the predicted action, and appearance can change substantially across
+            domains even when the underlying spatial relations and robot motion do not.
+            S4NDBOX instead makes geometry and motion <em>explicit</em>.
+          </p>
+</div>
+<img alt="Autoregressive 4D world-action modeling: RGB, depth and motion context and a task prompt enter a shared joint DiT that predicts the future RGB, depth, motion and action chunk; a causal attention mask lets the action stage see the same-stage 4D prediction." src="./static/images/method.png"/>
+<p class="figure-caption">
+<strong>Autoregressive 4D world–action modeling.</strong>
+          RGB, depth, and motion streams jointly form a future 4D stage. These modalities
+          attend to one another and to the observed history; the subsequent action stage can
+          additionally attend to the complete future 4D prediction, while future 4D tokens
+          cannot access future actions. All modalities share a single Transformer with
+          modality-specific I/O projections.
+        </p>
+<div class="content has-text-justified" style="margin-top: 2rem;">
+<h3 class="title is-4">Factorized 4D prediction</h3>
+<p>
+            Given an observation history $H_k$, S4NDBOX predicts a future 4D chunk
+            $Z_k=\{I_k^v,D_k^v,M_k^v\}_{v=1}^{V}$ — RGB, metric depth, and a
+            view-dependent motion stream — followed by its aligned action chunk $A_k$:
+          </p>
+<p style="text-align: center;">
+            $p_\theta(Z_k,A_k\mid H_k) = p_\theta(Z_k\mid H_k)\,p_\theta(A_k\mid H_k,Z_k).$
+          </p>
+<p>
+            The three visual modalities first mutually constrain the same imagined future;
+            that future then serves as the basis for action inference. Future 4D tokens are
+            predicted independently of future actions.
+          </p>
+<h3 class="title is-4">View-dependent motion</h3>
+<p>
+            The motion stream is instantiated differently per camera. <strong>Fixed cameras</strong>
+            use endpoint optical flow: source pixels are lifted to 3D with metric depth and
+            camera geometry, propagated between the two endpoints, and reprojected with the
+            target camera, which accounts for camera motion without accumulating adjacent
+            flow estimates. <strong>Moving wrist cameras</strong> instead use world-frame ray
+            directions $r_t(u) = R_{wc,t}K^{-1}\bar u / \|K^{-1}\bar u\|_2$, which directly
+            expose camera orientation. The RDR variant therefore combines head-camera endpoint
+            flow with wrist rotation-ray maps.
+          </p>
+<p>
+            All three streams are encoded with a shared frozen Wan 2.2 VAE into a common
+            three-channel visual space, with multi-view latents packed into one T-shaped
+            canvas so that cross-modal correspondence is preserved and view identity is
+            encoded spatially. Aligned tokens share 3D RoPE coordinates; action vectors are
+            embedded into the same token space at temporal positions between consecutive
+            visual timestamps.
+          </p>
+</div>
+<div class="content has-text-justified" style="margin-top: 2rem;">
+<h3 class="title is-4">World–action agreement</h3>
+<p>
+            A predicted 4D future and its paired action describe the same robot evolution in
+            complementary representations, so they should agree geometrically. We exploit this
+            redundancy by rotating the observed wrist rays according to the predicted action to
+            obtain action-implied rays $\tilde r$, and comparing them against the predicted
+            future rays $\hat r$. A high angular residual indicates disagreement between the
+            imagined future and its paired action, rather than an error attributable to either
+            prediction alone. Multiple world–action hypotheses sampled from the same state
+            can then be ranked before execution, with the lowest-residual candidate committed.
+          </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="container is-max-desktop">
+<div class="columns is-centered">
+<div class="column is-full-width">
+<h2 class="title is-3">Generalization under Scene Distribution Shifts</h2>
+<div class="content has-text-justified">
+<p>
+            We train on 50 clean demonstrations per task (2,500 total over 50 tasks) and
+            evaluate in both clean and domain-randomized scenes, following RoboTwin's hard
+            protocol, with 50 trials per task and setting across all 50 tasks. The clean
+            setting (Easy) uses fixed white backgrounds, lighting, and table height with no
+            distractors. The domain-randomized setting (Hard) varies textures, lighting, and
+            table height and introduces clutter.
+          </p>
+</div>
+<div class="view-toggle" id="rt-view" role="tablist" style="margin-bottom:.9rem">
+<button aria-selected="true" data-view="table" role="tab">Table</button>
+<button aria-selected="false" data-view="chart" role="tab">Chart</button>
+</div>
+<div id="rt-table-view">
+<div class="lb-controls">
+<div class="lb-segment" id="lb-mode" role="tablist">
+<button aria-selected="true" data-mode="group" role="tab">By paradigm</button>
+<button aria-selected="false" data-mode="easy" role="tab">Rank by Easy</button>
+<button aria-selected="false" data-mode="hard" role="tab">Rank by Hard</button>
+<button aria-selected="false" data-mode="mean" role="tab">Rank by Mean</button>
+</div>
+<span class="lb-hint" id="lb-hint">Grouped as in the paper — bars are scaled per column</span>
+</div>
+<div class="lb-card">
+<div aria-label="Research result table, scroll horizontally on small screens" class="mirror-table-scroll" role="region" tabindex="0"><table class="lb-table" data-mode="group" id="lb-robotwin">
+<thead>
+<tr>
+<th class="rank-h"></th>
+<th>Method</th>
+<th class="fourd-h">4D</th>
+<th class="sortable" data-col="0">Easy<span class="arrow">▼</span></th>
+<th class="sortable" data-col="1">Hard<span class="arrow">▼</span></th>
+<th class="sortable" data-col="2">Mean<span class="arrow">▼</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="grouprow" data-group="sft"><td colspan="6">Single-task supervised fine-tuning</td></tr>
+<tr data-group="sft" data-name="π&lt;sub&gt;0&lt;/sub&gt;"><td class="rank"></td><td class="method">π<sub>0</sub> <span class="pill pill-sft">Single-task SFT</span></td><td class="fourd"></td><td class="lb-num" data-v="46.4"><span class="val">46.4</span><span class="track"><span class="bar" style="width:46.4%"></span></span></td><td class="lb-num" data-v="16.3"><span class="val">16.3</span><span class="track"><span class="bar" style="width:16.3%"></span></span></td><td class="lb-num" data-v="31.4"><span class="val">31.4</span><span class="track"><span class="bar" style="width:31.4%"></span></span></td></tr>
+<tr data-group="sft" data-name="Robotics Diffusion Transformer"><td class="rank"></td><td class="method">Robotics Diffusion Transformer <span class="pill pill-sft">Single-task SFT</span></td><td class="fourd"></td><td class="lb-num" data-v="34.5"><span class="val">34.5</span><span class="track"><span class="bar" style="width:34.5%"></span></span></td><td class="lb-num" data-v="13.7"><span class="val">13.7</span><span class="track"><span class="bar" style="width:13.7%"></span></span></td><td class="lb-num" data-v="24.1"><span class="val">24.1</span><span class="track"><span class="bar" style="width:24.1%"></span></span></td></tr>
+<tr data-group="sft" data-name="3D Diffusion Policy"><td class="rank"></td><td class="method">3D Diffusion Policy <span class="pill pill-sft">Single-task SFT</span></td><td class="fourd"></td><td class="lb-num" data-v="55.2"><span class="val">55.2</span><span class="track"><span class="bar" style="width:55.2%"></span></span></td><td class="lb-num" data-v="5.0"><span class="val">5.0</span><span class="track"><span class="bar" style="width:5.0%"></span></span></td><td class="lb-num" data-v="30.1"><span class="val">30.1</span><span class="track"><span class="bar" style="width:30.1%"></span></span></td></tr>
+<tr data-group="sft" data-name="Action Chunking Transformer"><td class="rank"></td><td class="method">Action Chunking Transformer <span class="pill pill-sft">Single-task SFT</span></td><td class="fourd"></td><td class="lb-num" data-v="29.7"><span class="val">29.7</span><span class="track"><span class="bar" style="width:29.7%"></span></span></td><td class="lb-num" data-v="1.7"><span class="val">1.7</span><span class="track"><span class="bar" style="width:1.7%"></span></span></td><td class="lb-num" data-v="15.7"><span class="val">15.7</span><span class="track"><span class="bar" style="width:15.7%"></span></span></td></tr>
+<tr data-group="sft" data-name="Diffusion Policy"><td class="rank"></td><td class="method">Diffusion Policy <span class="pill pill-sft">Single-task SFT</span></td><td class="fourd"></td><td class="lb-num" data-v="28.0"><span class="val">28.0</span><span class="track"><span class="bar" style="width:28.0%"></span></span></td><td class="lb-num" data-v="0.6"><span class="val">0.6</span><span class="track"><span class="bar" style="width:0.6%"></span></span></td><td class="lb-num" data-v="14.3"><span class="val">14.3</span><span class="track"><span class="bar" style="width:14.3%"></span></span></td></tr>
+<tr class="grouprow" data-group="vla"><td colspan="6">Vision–language–action models</td></tr>
+<tr data-group="vla" data-name="GigaBrain-0.7"><td class="rank"></td><td class="method">GigaBrain-0.7* <span class="pill pill-vla">VLA</span></td><td class="fourd"></td><td class="lb-num" data-v="66.8"><span class="val">66.8</span><span class="track"><span class="bar" style="width:66.8%"></span></span></td><td class="lb-num best" data-v="67.9"><span class="val">67.9</span><span class="track"><span class="bar" style="width:67.9%"></span></span></td><td class="lb-num best" data-v="67.3"><span class="val">67.3</span><span class="track"><span class="bar" style="width:67.3%"></span></span></td></tr>
+<tr data-group="vla" data-name="π&lt;sub&gt;0.5&lt;/sub&gt;"><td class="rank"></td><td class="method">π<sub>0.5</sub> <span class="pill pill-vla">VLA</span></td><td class="fourd"></td><td class="lb-num" data-v="70.7"><span class="val">70.7</span><span class="track"><span class="bar" style="width:70.7%"></span></span></td><td class="lb-num" data-v="46.0"><span class="val">46.0</span><span class="track"><span class="bar" style="width:46.0%"></span></span></td><td class="lb-num" data-v="58.4"><span class="val">58.4</span><span class="track"><span class="bar" style="width:58.4%"></span></span></td></tr>
+<tr data-group="vla" data-name="X-VLA"><td class="rank"></td><td class="method">X-VLA <span class="pill pill-vla">VLA</span></td><td class="fourd"></td><td class="lb-num" data-v="68.0"><span class="val">68.0</span><span class="track"><span class="bar" style="width:68.0%"></span></span></td><td class="lb-num" data-v="20.9"><span class="val">20.9</span><span class="track"><span class="bar" style="width:20.9%"></span></span></td><td class="lb-num" data-v="44.5"><span class="val">44.5</span><span class="track"><span class="bar" style="width:44.5%"></span></span></td></tr>
+<tr class="grouprow" data-group="wam"><td colspan="6">World–action models</td></tr>
+<tr data-group="wam" data-name="AHA-WAM"><td class="rank"></td><td class="method">AHA-WAM <span class="pill pill-wam">WAM</span></td><td class="fourd"></td><td class="lb-num" data-v="64.3"><span class="val">64.3</span><span class="track"><span class="bar" style="width:64.3%"></span></span></td><td class="lb-num" data-v="3.2"><span class="val">3.2</span><span class="track"><span class="bar" style="width:3.2%"></span></span></td><td class="lb-num" data-v="33.8"><span class="val">33.8</span><span class="track"><span class="bar" style="width:33.8%"></span></span></td></tr>
+<tr data-group="wam" data-name="FastWAM"><td class="rank"></td><td class="method">FastWAM <span class="pill pill-wam">WAM</span></td><td class="fourd"></td><td class="lb-num" data-v="77.8"><span class="val">77.8</span><span class="track"><span class="bar" style="width:77.8%"></span></span></td><td class="lb-num" data-v="1.9"><span class="val">1.9</span><span class="track"><span class="bar" style="width:1.9%"></span></span></td><td class="lb-num" data-v="39.9"><span class="val">39.9</span><span class="track"><span class="bar" style="width:39.9%"></span></span></td></tr>
+<tr data-group="wam" data-name="X-WAM"><td class="rank"></td><td class="method">X-WAM* <span class="pill pill-wam">WAM</span></td><td class="fourd">✓</td><td class="lb-num" data-v="70.0"><span class="val">70.0</span><span class="track"><span class="bar" style="width:70.0%"></span></span></td><td class="lb-num" data-v="25.8"><span class="val">25.8</span><span class="track"><span class="bar" style="width:25.8%"></span></span></td><td class="lb-num" data-v="47.9"><span class="val">47.9</span><span class="track"><span class="bar" style="width:47.9%"></span></span></td></tr>
+<tr data-group="wam" data-name="LingBot-VA"><td class="rank"></td><td class="method">LingBot-VA◆ <span class="pill pill-wam">WAM</span></td><td class="fourd"></td><td class="lb-num" data-v="80.7"><span class="val">80.7</span><span class="track"><span class="bar" style="width:80.7%"></span></span></td><td class="lb-num" data-v="34.6"><span class="val">34.6</span><span class="track"><span class="bar" style="width:34.6%"></span></span></td><td class="lb-num" data-v="57.7"><span class="val">57.7</span><span class="track"><span class="bar" style="width:57.7%"></span></span></td></tr>
+<tr data-group="wam" data-name="4D-WAM"><td class="rank"></td><td class="method">4D-WAM◆ <span class="pill pill-wam">WAM</span></td><td class="fourd">✓</td><td class="lb-num" data-v="81.5"><span class="val">81.5</span><span class="track"><span class="bar" style="width:81.5%"></span></span><span class="gain">+0.8</span></td><td class="lb-num" data-v="41.8"><span class="val">41.8</span><span class="track"><span class="bar" style="width:41.8%"></span></span><span class="gain">+7.2</span></td><td class="lb-num" data-v="61.6"><span class="val">61.6</span><span class="track"><span class="bar" style="width:61.6%"></span></span><span class="gain">+3.9</span></td></tr>
+<tr class="ours" data-group="wam" data-name="Ours: S4NDBOX (RGB + depth + motion)"><td class="rank"></td><td class="method">Ours: S4NDBOX (RGB + depth + motion)◆ <span class="pill pill-wam">WAM</span></td><td class="fourd">✓</td><td class="lb-num best" data-v="86.8"><span class="val">86.8</span><span class="track"><span class="bar" style="width:86.8%"></span></span><span class="gain">+6.1</span></td><td class="lb-num second" data-v="47.9"><span class="val">47.9</span><span class="track"><span class="bar" style="width:47.9%"></span></span><span class="gain">+13.3</span></td><td class="lb-num best" data-v="67.3"><span class="val">67.3</span><span class="track"><span class="bar" style="width:67.3%"></span></span><span class="gain">+9.6</span></td></tr>
+</tbody>
+</table></div>
+</div>
+<p class="table-note">
+          Average success rate (%). Easy and Hard evaluate clean and domain-randomized scenes
+          after clean-only task training; 50 trials per task and setting across all 50 tasks.
+          Green figures are gains over LingBot-VA, the shared backbone
+          (◆). <sup>*</sup> RoboTwin 2.0 trajectories appear in the pretraining corpus;
+          GigaBrain-0.7 additionally pretrains on 37.3K embodied hours against LingBot-VA's 16K.
+          Bold marks the best value in a column, underline the second best.
+        </p>
+</div>
+<div class="viz-root" hidden="" id="rt-chart-view">
+<div class="viz-legend">
+<span><i class="viz-key c2c"></i>Easy — clean scenes</span>
+<span><i class="viz-key c2r"></i>Hard — domain-randomized scenes</span>
+</div>
+<div class="viz-rows">
+<div class="crow" data-easy="66.8" data-hard="67.9" data-m="GigaBrain-0.7" data-mean="67.3" data-p="VLA">
+<div class="clabel"><span class="cname">GigaBrain-0.7</span><span class="cpara">VLA</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:66.8%"></div>
+<div class="cbar c2r" style="width:67.9%"><span class="tip">67.9</span></div>
+</div>
+</div>
+<div class="crow ours" data-easy="86.8" data-hard="47.9" data-m="Ours: S4NDBOX" data-mean="67.3" data-p="WAM">
+<div class="clabel"><span class="cname">Ours: S4NDBOX</span><span class="cpara">WAM</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:86.8%"><span class="tip">86.8</span></div>
+<div class="cbar c2r" style="width:47.9%"><span class="tip">47.9</span></div>
+</div>
+</div>
+<div class="crow" data-easy="70.7" data-hard="46.0" data-m="π&lt;sub&gt;0.5&lt;/sub&gt;" data-mean="58.4" data-p="VLA">
+<div class="clabel"><span class="cname">π<sub>0.5</sub></span><span class="cpara">VLA</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:70.7%"></div>
+<div class="cbar c2r" style="width:46.0%"></div>
+</div>
+</div>
+<div class="crow" data-easy="81.5" data-hard="41.8" data-m="4D-WAM" data-mean="61.6" data-p="WAM">
+<div class="clabel"><span class="cname">4D-WAM</span><span class="cpara">WAM</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:81.5%"></div>
+<div class="cbar c2r" style="width:41.8%"></div>
+</div>
+</div>
+<div class="crow" data-easy="80.7" data-hard="34.6" data-m="LingBot-VA" data-mean="57.7" data-p="WAM">
+<div class="clabel"><span class="cname">LingBot-VA</span><span class="cpara">WAM</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:80.7%"></div>
+<div class="cbar c2r" style="width:34.6%"></div>
+</div>
+</div>
+<div class="crow" data-easy="70.0" data-hard="25.8" data-m="X-WAM" data-mean="47.9" data-p="WAM">
+<div class="clabel"><span class="cname">X-WAM</span><span class="cpara">WAM</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:70.0%"></div>
+<div class="cbar c2r" style="width:25.8%"></div>
+</div>
+</div>
+<div class="crow" data-easy="68.0" data-hard="20.9" data-m="X-VLA" data-mean="44.5" data-p="VLA">
+<div class="clabel"><span class="cname">X-VLA</span><span class="cpara">VLA</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:68.0%"></div>
+<div class="cbar c2r" style="width:20.9%"></div>
+</div>
+</div>
+<div class="crow" data-easy="46.4" data-hard="16.3" data-m="π&lt;sub&gt;0&lt;/sub&gt;" data-mean="31.4" data-p="Single-task SFT">
+<div class="clabel"><span class="cname">π<sub>0</sub></span><span class="cpara">Single-task SFT</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:46.4%"></div>
+<div class="cbar c2r" style="width:16.3%"></div>
+</div>
+</div>
+<div class="crow" data-easy="34.5" data-hard="13.7" data-m="Robotics Diffusion Transformer" data-mean="24.1" data-p="Single-task SFT">
+<div class="clabel"><span class="cname">Robotics Diffusion Transformer</span><span class="cpara">Single-task SFT</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:34.5%"></div>
+<div class="cbar c2r" style="width:13.7%"></div>
+</div>
+</div>
+<div class="crow" data-easy="55.2" data-hard="5.0" data-m="3D Diffusion Policy" data-mean="30.1" data-p="Single-task SFT">
+<div class="clabel"><span class="cname">3D Diffusion Policy</span><span class="cpara">Single-task SFT</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:55.2%"></div>
+<div class="cbar c2r" style="width:5.0%"></div>
+</div>
+</div>
+<div class="crow" data-easy="64.3" data-hard="3.2" data-m="AHA-WAM" data-mean="33.8" data-p="WAM">
+<div class="clabel"><span class="cname">AHA-WAM</span><span class="cpara">WAM</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:64.3%"></div>
+<div class="cbar c2r" style="width:3.2%"></div>
+</div>
+</div>
+<div class="crow" data-easy="77.8" data-hard="1.9" data-m="FastWAM" data-mean="39.9" data-p="WAM">
+<div class="clabel"><span class="cname">FastWAM</span><span class="cpara">WAM</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:77.8%"></div>
+<div class="cbar c2r" style="width:1.9%"></div>
+</div>
+</div>
+<div class="crow" data-easy="29.7" data-hard="1.7" data-m="Action Chunking Transformer" data-mean="15.7" data-p="Single-task SFT">
+<div class="clabel"><span class="cname">Action Chunking Transformer</span><span class="cpara">Single-task SFT</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:29.7%"></div>
+<div class="cbar c2r" style="width:1.7%"></div>
+</div>
+</div>
+<div class="crow" data-easy="28.0" data-hard="0.6" data-m="Diffusion Policy" data-mean="14.3" data-p="Single-task SFT">
+<div class="clabel"><span class="cname">Diffusion Policy</span><span class="cpara">Single-task SFT</span></div>
+<div class="ctrack">
+<div class="cbar c2c" style="width:28.0%"></div>
+<div class="cbar c2r" style="width:0.6%"></div>
+</div>
+</div>
+</div>
+<div class="viz-axis"><div></div><div class="ticks"><i style="left:0%">0</i><i style="left:20%">20</i><i style="left:40%">40</i><i style="left:60%">60</i><i style="left:80%">80</i><i style="left:100%">100</i></div></div>
+<p class="viz-caption">
+            Success rate (%), sorted by Hard. Labelled values are our own row and the best
+            Hard score; hover any bar for exact values, or switch to the table for every number.
+          </p>
+</div>
+<div class="viz-tt" id="viz-tt" role="tooltip"></div>
+<div class="content has-text-justified" style="margin-top: 1.5rem;">
+<p>
+            Our method reaches 86.8% in Easy and 47.9% in Hard. Against LingBot-VA, the
+            RGB-only baseline it shares a backbone with, that is <strong>6.1</strong> and
+            <strong>13.3</strong> percentage points, the larger gain appearing under
+            randomization. FastWAM, which retains video co-training but omits future
+            prediction at inference, drops from 77.8% to 1.9% — video co-training alone
+            does not ensure robustness to these shifts. Among 4D world–action models we
+            exceed 4D-WAM and X-WAM on Hard by 6.1 and 22.1 points.
+          </p>
+<p>
+            GigaBrain-0.7 remains stronger on Hard at 67.9%, but its pretraining exposure is
+            far broader — 37.3K embodied hours plus 272M vision–language samples,
+            against the inherited LingBot-VA backbone's 16K manipulation hours — so that
+            comparison is not budget-matched.
+          </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section" id="rdf-single-view">
+<div class="container is-max-desktop">
+<h2 class="title is-3">Single-View RDF: Geometry and Motion Consistency</h2>
+<div class="content has-text-justified"><p>We present six selected single-view cup-stacking rollouts under variations in object pose, lighting, and scene clutter. For each example, we provide interactive reconstructions from predicted and observed RGB–depth sequences, together with a flow-based tracking diagnostic on visible robot surfaces. These qualitative examples are separate from the multi-view RDR evaluation reported below.</p></div>
+<div aria-label="Select a single-view RDF example" class="rdf-choices" role="group">
+<div class="rdf-condition"><span>Object pose</span><button aria-pressed="true" data-rdf-case="pose-1" type="button">Pose 1</button><button aria-pressed="false" data-rdf-case="pose-2" type="button">Pose 2</button></div>
+<div class="rdf-condition"><span>Lighting</span><button aria-pressed="false" data-rdf-case="lighting-1" type="button">Lighting 1</button><button aria-pressed="false" data-rdf-case="lighting-2" type="button">Lighting 2</button></div>
+<div class="rdf-condition"><span>Clutter</span><button aria-pressed="false" data-rdf-case="clutter-1" type="button">Clutter 1</button><button aria-pressed="false" data-rdf-case="clutter-2" type="button">Clutter 2</button></div>
+</div>
+<div class="rdf-panel-header"><h3 class="title is-4"><span id="rdf-case-title">Pose 1</span> — Interactive 4D reconstruction</h3><a href="./rdf-viewer.html?case=pose-1" id="rdf-open" rel="noopener noreferrer" target="_blank">Open full viewer ↗</a></div>
+<iframe class="rdf-frame" id="rdf-cloud" loading="lazy" referrerpolicy="no-referrer" title="Predicted and observed interactive 4D point clouds"></iframe>
+<p class="rdf-description">Each frame is independently back-projected into the robot base frame. Prediction and observation are compared at matching action indices; missing frames are not interpolated. Rotate either point cloud to inspect its geometry, or use the timeline to examine temporal changes. “4D” denotes a sequence of 3D reconstructions, not persistent point correspondences.</p>
+<h3 class="title is-4" style="margin-top:1.8rem;">Flow-based surface tracking</h3>
+<video aria-label="Observed and predicted flow tracking on visible robot surfaces" class="rdf-track" controls="" id="rdf-tracking" playsinline="" preload="metadata"></video>
+<div class="rdf-video-controls"><button id="rdf-anchor" type="button">First initialization</button><button id="rdf-reset" type="button">Next reinitialization</button><button id="rdf-prev" type="button">Previous frame</button><button id="rdf-next" type="button">Next frame</button></div>
+<p aria-live="polite" class="rdf-metric-line" id="rdf-metrics"></p>
+<p class="rdf-caption">Left: observed flow and depth. Right: predicted flow and depth. Red points indicate tracked locations; cyan crosses indicate visible surface references obtained from measured joint configurations and forward kinematics (FK). Magenta crosses denote missing tracked depth. Reinitialization occurs every eight flow updates (24 action steps). Playback is five displayed frames per second, not wall-clock speed.</p>
+<details class="rdf-method"><summary>Tracking protocol and interpretation</summary><p>Tracking begins once reliable robot surfaces are visible. At each window boundary, surface points are initialized from the current observation and assigned fixed coordinates in their corresponding robot-link frames. Within the window, optical flow propagates the image locations and depth lifts them to 3D; action targets and FK are not used to correct the propagated points. The observed and predicted streams share the same initialization.</p><p>The reported error is the mean finite 3D distance to the visible, measured-FK surface reference, in millimetres. Initialization samples are excluded. Missing tracked depth reduces coverage rather than contributing zero error. At each boundary, the previous window endpoint is scored before the new initialization. Point sets may differ across windows; the results therefore characterize short-window consistency, not uninterrupted long-horizon tracking.</p><p>The recorded observed-flow stream uses kinematic/depth information in its construction. Its agreement with FK is a consistency diagnostic, not an independent ground-truth accuracy estimate. These selected examples do not establish a statistical relationship between flow alignment and task success.</p></details>
+</div>
+</section>
+<section class="section">
+<div class="container is-max-desktop">
+<div class="columns is-centered">
+<div class="column is-full-width">
+<h2 class="title is-3">Zero-Shot Simulation-to-Real Transfer on Stack Cups</h2>
+<div class="content has-text-justified">
+<p>
+            Both the RGB-only and the geometry-augmented policy are trained on the same 1,000
+            scripted demonstrations collected in CoppeliaSim, then deployed on a calibrated
+            Franka Research 3 <strong>without real-world task demonstrations or
+            fine-tuning</strong>. We compare post-convergence checkpoints under two observation
+            layouts — three views (two side cameras and one wrist camera) and a single
+            left-side view — and, on top of the simulation-to-real gap, real-world
+            shifts in cup configuration, lighting (two strong, one dim, one medium) and added
+            clutter, four episodes per layout per shift. In the single-view layout we
+            additionally shift the camera pose, over eight episodes.
+          </p>
+<p>
+            A complete three-cup stack scores 1, and the stack has to stay standing after
+            release. Retries within an episode are allowed, each failed attempt costs 0.5, and
+            the episode score floors at 0. The mean pools all evaluated episodes within a
+            layout. This is <em>not</em> a binary success rate.
+          </p>
+</div>
+<div class="lb-card">
+<div aria-label="Research result table, scroll horizontally on small screens" class="mirror-table-scroll" role="region" tabindex="0"><table class="lb-table lb-paired">
+<thead>
+<tr><th>Method</th><th>Pose</th><th>Light</th><th>Clutter</th><th>Cam pose</th><th>Mean</th><th class="lb-delta-h">Δ Mean</th></tr>
+</thead>
+<tbody>
+<tr class="grouprow"><td colspan="7">Three views: two side cameras and one wrist camera</td></tr>
+<tr><td class="method">RGB-only</td><td class="lb-num"><span class="val">0.0</span><span class="track"><span class="bar" style="width:0.0%"></span></span></td><td class="lb-num"><span class="val">12.5</span><span class="track"><span class="bar" style="width:12.5%"></span></span></td><td class="lb-num"><span class="val">0.0</span><span class="track"><span class="bar" style="width:0.0%"></span></span></td><td class="lb-num na"><span class="val">–</span></td><td class="lb-num"><span class="val">4.2</span><span class="track"><span class="bar" style="width:4.2%"></span></span></td><td class="lb-delta"><span class="delta base">baseline</span></td></tr>
+<tr class="ours"><td class="method">RGB + depth + motion (ours)</td><td class="lb-num best"><span class="val">37.5</span><span class="track"><span class="bar" style="width:37.5%"></span></span></td><td class="lb-num best"><span class="val">25.0</span><span class="track"><span class="bar" style="width:25.0%"></span></span></td><td class="lb-num best"><span class="val">75.0</span><span class="track"><span class="bar" style="width:75.0%"></span></span></td><td class="lb-num na"><span class="val">–</span></td><td class="lb-num best"><span class="val">45.8</span><span class="track"><span class="bar" style="width:45.8%"></span></span></td><td class="lb-delta"><span class="delta up">+41.7</span></td></tr>
+<tr class="grouprow"><td colspan="7">Single view: left-side camera only</td></tr>
+<tr><td class="method">RGB-only</td><td class="lb-num"><span class="val">37.5</span><span class="track"><span class="bar" style="width:37.5%"></span></span></td><td class="lb-num"><span class="val">0.0</span><span class="track"><span class="bar" style="width:0.0%"></span></span></td><td class="lb-num"><span class="val">37.5</span><span class="track"><span class="bar" style="width:37.5%"></span></span></td><td class="lb-num"><span class="val">34.4</span><span class="track"><span class="bar" style="width:34.4%"></span></span></td><td class="lb-num"><span class="val">28.8</span><span class="track"><span class="bar" style="width:28.8%"></span></span></td><td class="lb-delta"><span class="delta base">baseline</span></td></tr>
+<tr class="ours"><td class="method">RGB + depth + flow (ours)</td><td class="lb-num best"><span class="val">87.5</span><span class="track"><span class="bar" style="width:87.5%"></span></span></td><td class="lb-num best"><span class="val">75.0</span><span class="track"><span class="bar" style="width:75.0%"></span></span></td><td class="lb-num best"><span class="val">50.0</span><span class="track"><span class="bar" style="width:50.0%"></span></span></td><td class="lb-num best"><span class="val">65.6</span><span class="track"><span class="bar" style="width:65.6%"></span></span></td><td class="lb-num best"><span class="val">68.8</span><span class="track"><span class="bar" style="width:68.8%"></span></span></td><td class="lb-delta"><span class="delta up">+40.0</span></td></tr>
+</tbody>
+</table></div>
+</div>
+<p class="table-note">
+          Graded task score, 0–100, under object pose, lighting, clutter and camera-pose
+          shifts; camera pose is evaluated in the single-view layout only (– = not
+          evaluated). Mean pools all evaluated episodes within each view layout. Bars are
+          scaled to the full range; bold marks the geometry-augmented policy against RGB-only
+          <em>within the same layout</em> — the two layouts are separate comparisons and
+          should not be ranked against each other.
+        </p>
+<div class="content has-text-justified" style="margin-top: 1.5rem;">
+<p>
+            The geometry-augmented policy beats RGB-only in every shift in both layouts, by
+            <strong>41.7</strong> points with three views and <strong>40.0</strong> with the
+            left view alone. The widest gaps are lighting in the single-view layout, where
+            RGB-only scores 0.0 against 75.0, and clutter with three views, 0.0 against 75.0.
+            Under camera-pose shift in the single-view layout, RGB-only scores 34.4 against
+            65.6.
+          </p>
+</div>
+<h3 class="title is-4" style="margin-top: 2.5rem;">Simulation training data</h3>
+<p class="table-note" style="margin-bottom: .9rem;">
+          The policy is trained on simulated demonstrations. The clip below is one such
+          demonstration — a three-cup stack, with its three views in step. Camera layout
+          differs between simulation and the real lab, so this is not the real-robot
+          configuration.
+        </p>
+<div class="video-shell">
+<video controls="" loop="" muted="" playsinline="" poster="./static/images/poster_sim_three_views.jpg" preload="none">
+<source src="./static/videos/sim_three_views.mp4" type="video/mp4"/>
+</video>
+</div>
+<p class="table-note">
+          Synchronised LEFT / RIGHT / WRIST views. Real time (1×), view names as burned
+          into the clip.
+        </p>
+<h3 class="title is-4" style="margin-top: 2.5rem;">RGB-only vs. ours under the same condition <span class="speed-badge">10× SPEED</span></h3>
+<p class="table-note" style="margin-bottom: .2rem;">
+          Three conditions where the RGB-only policy fails to complete the stack, each beside a
+          successful rollout of the geometry-augmented policy under the same condition. Played at 10×.
+          <strong>These use a three-cup Stack Cups setup, separate from the graded evaluation
+          above</strong>, so they illustrate failure modes rather than contribute to any score.
+          Two further RGB-only failures were left out because their matching success recording
+          could not be identified.
+        </p>
+<div class="pair-grid">
+<div aria-hidden="true" class="pair-head pair-head-cond"></div>
+<div class="pair-head pair-head-rgb">RGB-only</div>
+<div class="pair-head pair-head-ours">Ours (RGB + depth + flow)</div>
+<div class="pair-cond"><span>Added clutter</span></div>
+<div class="pair-item">
+<video controls="" loop="" muted="" playsinline="" poster="./static/images/poster_rgbfail_1.jpg" preload="none">
+<source src="./static/videos/rgbfail_1.mp4" type="video/mp4"/>
+</video>
+<p><b class="tagfail">Fails.</b> The arm engages the cups but no stack is formed.</p>
+</div>
+<div class="pair-item">
+<video controls="" loop="" muted="" playsinline="" poster="./static/images/poster_rgbok_clutter.jpg" preload="none">
+<source src="./static/videos/rgbok_clutter.mp4" type="video/mp4"/>
+</video>
+<p><b class="tagok">Succeeds.</b> The same cluttered workspace, ending in a completed three-cup stack.</p>
+</div>
+<div class="pair-cond"><span>Warm, bright lighting</span></div>
+<div class="pair-item">
+<video controls="" loop="" muted="" playsinline="" poster="./static/images/poster_rgbfail_4.jpg" preload="none">
+<source src="./static/videos/rgbfail_4.mp4" type="video/mp4"/>
+</video>
+<p><b class="tagfail">Fails.</b> The arm hovers over the cups without completing a grasp-and-place.</p>
+</div>
+<div class="pair-item">
+<video controls="" loop="" muted="" playsinline="" poster="./static/images/poster_rgbok_strong.jpg" preload="none">
+<source src="./static/videos/rgbok_strong.mp4" type="video/mp4"/>
+</video>
+<p><b class="tagok">Succeeds.</b> Same illumination, stack completed.</p>
+</div>
+<div class="pair-cond"><span>Dim lighting</span></div>
+<div class="pair-item">
+<video controls="" loop="" muted="" playsinline="" poster="./static/images/poster_rgbfail_5.jpg" preload="none">
+<source src="./static/videos/rgbfail_5.mp4" type="video/mp4"/>
+</video>
+<p><b class="tagfail">Fails.</b> The gripper descends between two cups and the episode ends with no stack.</p>
+</div>
+<div class="pair-item">
+<video controls="" loop="" muted="" playsinline="" poster="./static/images/poster_rgbok_dim.jpg" preload="none">
+<source src="./static/videos/rgbok_dim.mp4" type="video/mp4"/>
+</video>
+<p><b class="tagok">Succeeds.</b> Same illumination, stack completed.</p>
+</div>
+</div>
+<p class="table-note">
+          Selected clips, not a success-rate summary. Conditions were matched from the
+          recordings themselves — clutter by the extra objects on the table, and the two
+          lighting conditions by illumination — not from a lab log.
+        </p>
+</div>
+</div>
+</div>
+</section>
+<section class="section" id="BibTeX">
+<div class="container is-max-desktop content">
+<h2 class="title">BibTeX</h2>
+<pre><code>@misc{s4ndbox2027,
+  title  = {Verifiable 4D World-Action Model for Robust Robot Control},
+  author = {Anonymous Authors},
+  year   = {2027},
+  note   = {Working draft under review}
+}</code></pre>
+</div>
+</section>
+<footer class="footer">
+<div class="container">
+<div class="columns is-centered">
+<div class="column is-8">
+<div class="content">
+<p>
+            This website is licensed under a
+            <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+            It borrows the source code of
+            <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>; we thank the
+            authors for open-sourcing their project page template.
+          </p>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<script>
+  // Cover video: fade in once frames are actually rendering; respect reduced motion.
+  (function () {
+    var v = document.getElementById('cover-video');
+    if (!v) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      v.removeAttribute('autoplay'); v.pause(); return;
+    }
+    v.addEventListener('playing', function () { v.classList.add('is-playing'); });
+    v.addEventListener('loadeddata', function () {
+      if (v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+    });
+  })();
+</script>
+<script>
+  // Table / chart view switch + per-bar hover tooltip.
+  (function () {
+    var toggle = document.getElementById('rt-view');
+    var tableV = document.getElementById('rt-table-view');
+    var chartV = document.getElementById('rt-chart-view');
+    if (!toggle || !tableV || !chartV) return;
+
+    toggle.querySelectorAll('button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        toggle.querySelectorAll('button').forEach(function (b) {
+          b.setAttribute('aria-selected', String(b === btn));
+        });
+        var chart = btn.dataset.view === 'chart';
+        chartV.hidden = !chart;
+        tableV.hidden = chart;
+      });
+    });
+
+    var tt = document.getElementById('viz-tt');
+    function row(label, color, v) {
+      return '<div class="r"><span><i class="sw" style="background:' + color + '"></i>' +
+             label + '</span><span>' + v.toFixed(1) + '</span></div>';
+    }
+    chartV.querySelectorAll('.crow').forEach(function (r) {
+      r.addEventListener('mousemove', function (e) {
+        tt.innerHTML = '<b>' + r.dataset.m + '</b> \u00b7 ' + r.dataset.p +
+          row('Easy', '#2a78d6', parseFloat(r.dataset.easy)) +
+          row('Hard', '#eb6834', parseFloat(r.dataset.hard)) +
+          '<div class="r"><span>Mean</span><span>' + parseFloat(r.dataset.mean).toFixed(1) + '</span></div>';
+        tt.style.opacity = 1;
+        var w = tt.offsetWidth, h = tt.offsetHeight;
+        tt.style.left = Math.min(e.clientX + 14, window.innerWidth - w - 8) + 'px';
+        tt.style.top  = Math.max(e.clientY - h - 10, 8) + 'px';
+      });
+      r.addEventListener('mouseleave', function () { tt.style.opacity = 0; });
+    });
+  })();
+</script>
+<script>
+  // RoboTwin table: paradigm view (as printed in the paper) vs ranked views.
+  (function () {
+    var table = document.getElementById('lb-robotwin');
+    if (!table) return;
+    var tbody   = table.tBodies[0];
+    var hint    = document.getElementById('lb-hint');
+    var rows    = Array.prototype.slice.call(tbody.querySelectorAll('tr:not(.grouprow)'));
+    var groups  = Array.prototype.slice.call(tbody.querySelectorAll('tr.grouprow'));
+    var order   = rows.slice();               // original paper order
+    var COL     = { easy: 0, hard: 1, mean: 2 };
+    var MEDAL   = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
+
+    function val(tr, i) {
+      return parseFloat(tr.querySelectorAll('.lb-num')[i].dataset.v);
+    }
+
+    function render(mode) {
+      table.dataset.mode = mode;
+      // Clear rank cells and detach everything.
+      rows.concat(groups).forEach(function (tr) { tr.remove(); });
+      rows.forEach(function (tr) { tr.querySelector('.rank').innerHTML = ''; });
+
+      if (mode === 'group') {
+        var seen = {};
+        order.forEach(function (tr) {
+          var g = tr.dataset.group;
+          if (!seen[g]) {
+            seen[g] = true;
+            tbody.appendChild(groups.filter(function (h) { return h.dataset.group === g; })[0]);
+          }
+          tbody.appendChild(tr);
+        });
+        hint.textContent = 'Grouped as in the paper \u2014 bars are scaled per column';
+        return;
+      }
+
+      var i = COL[mode];
+      var sorted = rows.slice().sort(function (a, b) { return val(b, i) - val(a, i); });
+      // Competition ranking: equal scores share a rank.
+      var rank = 0, prev = null;
+      sorted.forEach(function (tr, idx) {
+        var v = val(tr, i);
+        if (v !== prev) { rank = idx + 1; prev = v; }
+        tr.querySelector('.rank').innerHTML =
+          rank <= 3 ? '<span class="medal">' + MEDAL[rank - 1] + '</span>' : rank;
+        tbody.appendChild(tr);
+      });
+      hint.textContent = 'Ranked by ' + mode.charAt(0).toUpperCase() + mode.slice(1) +
+                         ' \u2014 tied scores share a rank';
+    }
+
+    document.querySelectorAll('#lb-mode button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('#lb-mode button').forEach(function (b) {
+          b.setAttribute('aria-selected', String(b === btn));
+        });
+        table.querySelectorAll('th.sortable').forEach(function (th) { th.removeAttribute('aria-sort'); });
+        var mode = btn.dataset.mode;
+        if (mode !== 'group') {
+          table.querySelectorAll('th.sortable')[COL[mode]].setAttribute('aria-sort', 'descending');
+        }
+        render(mode);
+      });
+    });
+
+    // Clicking a column header is a shortcut for the matching ranked view.
+    table.querySelectorAll('th.sortable').forEach(function (th) {
+      th.addEventListener('click', function () {
+        var mode = Object.keys(COL).filter(function (k) { return COL[k] === +th.dataset.col; })[0];
+        document.querySelector('#lb-mode button[data-mode="' + mode + '"]').click();
+      });
+    });
+  })();
+</script>
+</body>
+</html>

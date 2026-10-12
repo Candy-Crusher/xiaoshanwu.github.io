@@ -1,0 +1,47 @@
+{
+  "template": "sky-lzy/UGG-website@8c34c46fbb780f79045ef6fd0f176b15a2d219db",
+  "version": "ugg-20261012-v1",
+  "scope": [
+    "sandbox",
+    "eag3r",
+    "videossm",
+    "game",
+    "lifr-seg",
+    "lifr-v2",
+    "evsplat"
+  ],
+  "notes": [
+    "Imports presentation only; no UGG research media or paper text.",
+    "Original media, interactive viewer files and personal-site pages are preserved."
+  ],
+  "pages": {
+    "sandbox": {
+      "source_sha256": "58acf295b8cf97522be401306c681a1c2b0530d55397fb841c856f81d83501cf",
+      "html_sha256": "66d35ca71aadc20a7641226e324dca2e9c26d42a443fbefd1930bb4386e432f7"
+    },
+    "eag3r": {
+      "source_sha256": "9b1f454acbbed2dc221cb3751953586446edefb01a232bf46accadfeb9e70910",
+      "html_sha256": "e6ce040cf89abdb3e2e58374f91bf59c7912239c7e032025d545876783791b1f"
+    },
+    "videossm": {
+      "source_sha256": "2725d00c2827cb7d08c6ad9e6b0604dd6d1d350f8f492baf8164cbd8720b7e71",
+      "html_sha256": "7b752763dc648060f0d2d5083f3dfc3caf5049402a3de0866e25a75566525f35"
+    },
+    "game": {
+      "source_sha256": "8342f93d5b85968d003969b1da31254e558ad9333d8a762216cf56f02c618ff2",
+      "html_sha256": "a4b7d8178a4056e58fcd73eb042c761cf28133a31a808cbec209465fee9950c6"
+    },
+    "lifr-seg": {
+      "source_sha256": "b8e41cdc7f1520b3b3e37148150e757c473f1bd0cc5f28fdb90ee45f1c7548b9",
+      "html_sha256": "07e6a41b13ac092478743c6a0473aa0d4f0a140ee6fe34f9d9d5498bec4ba188"
+    },
+    "lifr-v2": {
+      "source_sha256": "da2bf0bde5b4ad9e4f2a396f4b60d023f640994e7afdf128714a666ecc1a2764",
+      "html_sha256": "cb404d54c5ce29ea1298c4f03c3e60be585280a83cccc90608dec60faffb2cba"
+    },
+    "evsplat": {
+      "source_sha256": "a68af6b853ba38df4e20c696c124747d679885c755a6cb59b8ff7b7de787d561",
+      "html_sha256": "b39e00c5672acc08e20bc884689af368e962e522f2e25066e73ac65ae33bdf54"
+    }
+  }
+}

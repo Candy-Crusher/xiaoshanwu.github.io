@@ -101,5 +101,7 @@ def main():
         path.write_text(text)
     from refine_project_mirrors import main as refine
     refine()
+    import runpy
+    runpy.run_path(str(ROOT / "scripts/build-ugg-projects.py"), run_name="__main__")
     print('Integrated available mirrors and original-source high-resolution figures.')
 if __name__=='__main__':main()
