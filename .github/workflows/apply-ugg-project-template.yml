@@ -1,0 +1,131 @@
+name: Apply UGG project template
+on:
+  push:
+    branches: [master]
+    paths:
+      - scripts/build-ugg-projects.py
+      - scripts/test-ugg-projects.py
+      - .github/workflows/apply-ugg-project-template.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: research-project-pages-master
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: |
+          python -m pip install beautifulsoup4 pillow playwright
+          python -m playwright install --with-deps chromium
+      - name: Preserve personal pages and research media checksums
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          paths=[Path(p) for p in ['index.html','about.html','resume.html','research.html','publications.html','cv.tex','Xiaoshan_Wu_CV.pdf']]
+          paths += [p for p in Path('projects').rglob('*') if p.is_file() and p.suffix.lower() in ['.pdf','.mp4','.webm','.png','.jpg','.jpeg','.webp','.bin','.gz']]
+          Path('/tmp/ugg-protected.json').write_text(json.dumps({str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}))
+          PY
+      - name: Apply template and integrate with future project builds
+        run: |
+          python -m py_compile scripts/build-ugg-projects.py scripts/test-ugg-projects.py
+          python scripts/build-ugg-projects.py
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('scripts/finalize-project-pages.py');text=path.read_text()
+          if 'build-ugg-projects.py' not in text:
+              needle='    refine()\n'
+              if text.count(needle)!=1:raise RuntimeError('Unexpected finalization entry point')
+              text=text.replace(needle,needle+'    import runpy\n    runpy.run_path(str(ROOT / "scripts/build-ugg-projects.py"), run_name="__main__")\n')
+              path.write_text(text)
+          path=Path('.github/workflows/build-project-pages.yml');text=path.read_text()
+          if '      - scripts/build-ugg-projects.py' not in text:
+              text=text.replace('      - scripts/test-project-pages.py','      - scripts/build-ugg-projects.py\n      - scripts/test-ugg-projects.py\n      - scripts/test-project-pages.py',1)
+              path.write_text(text)
+          PY
+      - name: Validate template and source-content preservation
+        run: python scripts/test-ugg-projects.py
+      - name: Check original five-page interactions
+        run: python scripts/test-project-pages.py
+      - name: Check real videos and six 4D viewers
+        run: python scripts/test-project-mirrors.py
+      - name: Ensure repeatability and unchanged protected files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,hashlib,subprocess
+          manifest=Path('projects/assets/ugg-template-provenance.json');before=manifest.read_bytes()
+          subprocess.run(['python','scripts/build-ugg-projects.py'],check=True)
+          if before!=manifest.read_bytes():raise RuntimeError('Template build is not repeatable')
+          saved=json.loads(Path('/tmp/ugg-protected.json').read_text())
+          for name,sha in saved.items():
+              if hashlib.sha256(Path(name).read_bytes()).hexdigest()!=sha:raise RuntimeError('Protected file changed: '+name)
+          print('Unchanged: all four personal pages, legacy publications, CV, and research media.')
+          PY
+      - name: Prepare visual review
+        if: always()
+        run: |
+          mkdir -p ugg-review/pages
+          for slug in sandbox eag3r videossm game lifr-seg lifr-v2 evsplat; do
+            mkdir -p "ugg-review/pages/$slug"
+            cp "projects/$slug/index.html" "ugg-review/pages/$slug/"
+          done
+          cp projects/assets/ugg-template.* ugg-review/ 2>/dev/null || true
+          cp projects/assets/ugg-template-provenance.json ugg-review/ 2>/dev/null || true
+          if [ -d ugg-qa ]; then cp -R ugg-qa ugg-review/; fi
+          if [ -d mirror-qa ]; then cp -R mirror-qa ugg-review/; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ugg-project-pages-review
+          path: ugg-review/
+          retention-days: 7
+      - name: Commit validated project layouts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects/sandbox/index.html projects/eag3r/index.html projects/videossm/index.html projects/game/index.html projects/lifr-seg/index.html projects/lifr-v2/index.html projects/evsplat/index.html projects/assets/ugg-template.css projects/assets/ugg-template.js projects/assets/ugg-template-provenance.json _site_content/project-sources scripts/finalize-project-pages.py .github/workflows/build-project-pages.yml
+          if ! git diff --cached --quiet; then
+            git commit -m "Unify all seven research projects with the selected UGG template"
+            git pull --rebase origin master
+            git push origin HEAD:master
+          fi
+      - name: Request GitHub Pages publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl --fail-with-body --silent --show-error --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pages/builds"
+      - name: Verify all seven public URLs
+        run: |
+          python - <<'PY'
+          from urllib.request import urlopen,Request
+          import concurrent.futures,json,time
+          slugs=['sandbox','eag3r','videossm','game','lifr-seg','lifr-v2','evsplat']
+          base='https://candy-crusher.github.io/xiaoshanwu.github.io/projects/'
+          def check(slug):
+              try:
+                  with urlopen(Request(base+slug+'/?template-check='+str(int(time.time())),headers={'User-Agent':'ResearchTemplateValidation/1.0'}),timeout=12) as r:
+                      text=r.read().decode();return {'project':slug,'status':r.status,'template':'data-project-template="ugg"' in text,'version':'ugg-20261012-v1' in text}
+              except Exception as e:return {'project':slug,'error':str(e)}
+          for attempt in range(48):
+              with concurrent.futures.ThreadPoolExecutor(max_workers=7) as pool:results=list(pool.map(check,slugs))
+              if all(x.get('template') and x.get('version') for x in results):
+                  print(json.dumps({'live_pages':results,'result':'PASS'},indent=2));break
+              time.sleep(5)
+          else:raise SystemExit(json.dumps({'result':'Public deployment not yet verified','checks':results},indent=2))
+          PY
