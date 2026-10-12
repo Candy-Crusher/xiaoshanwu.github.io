@@ -1,0 +1,83 @@
+name: Inspect project media
+on:
+  push:
+    branches: [master]
+    paths: [.github/workflows/audit-project-media.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pillow pymupdf beautifulsoup4
+      - name: Inspect public sites and local figure sources
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request,urlopen
+          from urllib.parse import urljoin,urlsplit
+          import json,io,concurrent.futures
+          from bs4 import BeautifulSoup
+          from PIL import Image
+          import fitz
+          root=Path('media-inspection');root.mkdir(exist_ok=True)
+          report={'sites':{},'local_figures':[],'repositories':{}}
+          def get(url):
+              with urlopen(Request(url,headers={'User-Agent':'ResearchProjectArchive/1.0'}),timeout=30) as r:
+                  data=r.read(40_000_001)
+                  if len(data)>40_000_000:raise ValueError('over 40 MB')
+                  return data
+          for slug,url in [('sandbox','https://demo1-indol-gamma.vercel.app/'),('eag3r','https://raw.githubusercontent.com/Candy-Crusher/EAG3R_Proj/main/index.html')]:
+              try:
+                  data=get(url);folder=root/slug;folder.mkdir(exist_ok=True);(folder/'index.html').write_bytes(data)
+                  soup=BeautifulSoup(data,'html.parser')
+                  links=sorted(set(str(t.get(a)) for a in ('src','href','poster','data-src') for t in soup.select('['+a+']')))
+                  report['sites'][slug]={'status':'ok','bytes':len(data),'links':links}
+                  if slug=='sandbox':
+                      for tag in soup.select('script[src],link[rel="stylesheet"]'):
+                          u=urljoin(url,tag.get('src') or tag.get('href'))
+                          if urlsplit(u).netloc!=urlsplit(url).netloc:continue
+                          try:
+                              dest=folder/urlsplit(u).path.lstrip('/');dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(get(u))
+                          except Exception as e:report['sites'][slug].setdefault('errors',[]).append({'path':urlsplit(u).path,'error':str(e)})
+              except Exception as e:report['sites'][slug]={'status':'failed','error':str(e)}
+          for repo in ['Candy-Crusher/EAG3R_Proj','Candy-Crusher/EAG3R','TaoWan0610/LiFR-v2']:
+              try:
+                  info=json.loads(get('https://api.github.com/repos/'+repo));ref=info['default_branch']
+                  tree=json.loads(get('https://api.github.com/repos/'+repo+'/git/trees/'+ref+'?recursive=1'))['tree']
+                  figures=[t for t in tree if t['type']=='blob' and Path(t['path']).suffix.lower() in ('.png','.jpg','.jpeg','.webp','.pdf','.svg','.mp4','.gif')]
+                  report['repositories'][repo]={'ref':ref,'figures':[{'path':t['path'],'bytes':t.get('size')} for t in figures]}
+                  if repo.endswith('EAG3R_Proj'):
+                      for t in tree:
+                          if t['type']!='blob':continue
+                          if Path(t['path']).suffix.lower() not in ('.html','.css','.js','.png','.jpg','.jpeg','.webp','.svg','.md'):continue
+                          dest=root/'eag3r'/t['path'];dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(get('https://raw.githubusercontent.com/'+repo+'/'+ref+'/'+t['path']))
+              except Exception as e:report['repositories'][repo]={'error':str(e)}
+          for path in Path('images').rglob('*'):
+              if not path.is_file():continue
+              if path.suffix.lower() not in ('.pdf','.png','.jpg','.jpeg','.webp','.svg'):continue
+              item={'path':str(path),'bytes':path.stat().st_size}
+              try:
+                  if path.suffix=='.pdf':
+                      d=fitz.open(path);item.update(pages=len(d),rect=list(d[0].rect),drawings=len(d[0].get_drawings()))
+                      if len(d)<=2:
+                          dest=root/'original-figures'/path;dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(path.read_bytes())
+                  elif path.suffix!='.svg':
+                      im=Image.open(path);item['pixels']=list(im.size)
+              except Exception as e:item['error']=str(e)
+              report['local_figures'].append(item)
+          (root/'report.json').write_text(json.dumps(report,indent=2))
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: original-project-media
+          path: media-inspection/
+          retention-days: 7
