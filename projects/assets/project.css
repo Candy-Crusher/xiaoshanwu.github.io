@@ -5,3 +5,8 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{.topbar,.actions,.copy-button,.zoom-hint,footer nav{display:none}.wrap{width:100%}.hero{padding-top:0}.section{break-inside:avoid}.hero h1{font-size:48px}.figure-link{border:0;padding:0}.figure img{max-height:400px}}
 
 .section > *{min-width:0}.table-wrap{max-width:100%;min-width:0}
+@media(max-width:600px){
+  .results{font-size:12px}
+  .results th,.results td{padding:12px 7px;white-space:normal}
+  .results thead th{font-size:11px}
+}
