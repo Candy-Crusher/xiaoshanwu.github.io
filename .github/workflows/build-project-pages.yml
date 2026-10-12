@@ -1,23 +1,20 @@
 name: Build research project pages
-
 on:
   push:
     branches: [master]
     paths:
       - scripts/build-project-pages.py
       - scripts/build-project-site.py
+      - scripts/finalize-project-pages.py
       - scripts/test-project-pages.py
       - .github/workflows/build-project-pages.yml
   workflow_dispatch:
-
 permissions:
   contents: write
   pages: write
-
 concurrency:
   group: research-project-pages-master
   cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,10 +31,11 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check pillow beautifulsoup4 playwright
           python -m playwright install --with-deps chromium
-      - name: Generate static pages and download public paper figures
+      - name: Generate static pages and integrate mirrors and HD media
         run: |
-          python -m py_compile scripts/build-project-pages.py scripts/build-project-site.py scripts/test-project-pages.py
+          python -m py_compile scripts/build-project-pages.py scripts/build-project-site.py scripts/finalize-project-pages.py scripts/test-project-pages.py
           python scripts/build-project-site.py --download-assets
+          python scripts/finalize-project-pages.py
       - name: Test desktop and mobile pages
         run: python scripts/test-project-pages.py
       - name: Prepare review package
@@ -45,12 +43,13 @@ jobs:
         run: |
           mkdir -p project-pages-delivery/site/scripts project-pages-delivery/site/images/research
           if [ -d projects ]; then cp -R projects project-pages-delivery/site/; fi
-          cp scripts/build-project-pages.py scripts/build-project-site.py scripts/test-project-pages.py project-pages-delivery/site/scripts/
+          find project-pages-delivery -type f \( -name '*.mp4' -o -name '*.bin' -o -name '*.gz' -o -name '*.npz' -o -name '*.npy' \) -delete
+          cp scripts/build-project-pages.py scripts/build-project-site.py scripts/finalize-project-pages.py scripts/test-project-pages.py project-pages-delivery/site/scripts/
           for image in game-overview.webp videossm-full.webp; do
             if [ -f "images/research/$image" ]; then cp "images/research/$image" project-pages-delivery/site/images/research/; fi
           done
           if [ -d project-pages-qa ]; then cp -R project-pages-qa project-pages-delivery/; fi
-      - name: Save screenshots, validation report, and static source
+      - name: Save screenshots and validation report
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -66,16 +65,15 @@ jobs:
           if git diff --cached --quiet; then
             echo "Generated pages are already up to date."
           else
-            git commit -m "Publish VideoSSM, GaMe, LiFR-Seg, LiFR v2 and EVSplat project pages"
+            git commit -m "Refresh project pages while preserving mirrors and original-source HD figures"
             git pull --rebase origin master
             git push origin HEAD:master
           fi
-      - name: Request a fresh build of the existing GitHub Pages site
+      - name: Request a fresh GitHub Pages build
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           curl --fail-with-body --silent --show-error --request POST \
             --header "Accept: application/vnd.github+json" \
             --header "Authorization: Bearer $GH_TOKEN" \
-            --header "X-GitHub-Api-Version: 2026-03-10" \
             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pages/builds"
