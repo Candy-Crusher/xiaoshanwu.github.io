@@ -1,0 +1,121 @@
+name: Mirror original project sites
+on:
+  push:
+    branches: [master]
+    paths:
+      - scripts/sync-project-mirrors.py
+      - .github/workflows/mirror-project-sites.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: research-project-pages-master
+  cancel-in-progress: false
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install build dependencies
+        run: |
+          python -m pip install pillow pymupdf beautifulsoup4 playwright
+          python -m playwright install --with-deps chromium
+      - name: Copy original public sites and render repository PDF figures
+        run: |
+          python -m py_compile scripts/sync-project-mirrors.py scripts/finalize-project-pages.py
+          python scripts/sync-project-mirrors.py
+          python scripts/finalize-project-pages.py
+      - name: Check the five existing project pages
+        run: python scripts/test-project-pages.py
+      - name: Validate the copied pages and every HTML asset reference
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlsplit,unquote
+          from http.server import ThreadingHTTPServer,SimpleHTTPRequestHandler
+          from bs4 import BeautifulSoup
+          import threading,json,functools
+          from playwright.sync_api import sync_playwright
+          root=Path.cwd();errors=[];checks=[]
+          for slug in ['sandbox','eag3r']:
+              for path in (root/'projects'/slug).rglob('*.html'):
+                  soup=BeautifulSoup(path.read_text(),'html.parser')
+                  for tag in soup.select('img[src],source[src],script[src],iframe[src],link[rel="stylesheet"],video[poster]'):
+                      value=tag.get('src') or tag.get('href') or tag.get('poster');u=urlsplit(value or '')
+                      if u.scheme or u.netloc or not u.path:continue
+                      local=unquote(u.path)
+                      target=root/local.removeprefix('/xiaoshanwu.github.io/').lstrip('/') if local.startswith('/') else path.parent/local
+                      if not target.is_file():errors.append({'page':str(path.relative_to(root)),'missing':value})
+          class Handler(SimpleHTTPRequestHandler):
+              def translate_path(self,path):
+                  return super().translate_path(path.removeprefix('/xiaoshanwu.github.io'))
+          server=ThreadingHTTPServer(('127.0.0.1',0),functools.partial(Handler,directory=str(root)))
+          threading.Thread(target=server.serve_forever,daemon=True).start()
+          out=root/'mirror-qa';out.mkdir(exist_ok=True)
+          try:
+              with sync_playwright() as pw:
+                  browser=pw.chromium.launch(headless=True,args=['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
+                  for width in [1440,390]:
+                      page=browser.new_page(viewport={'width':width,'height':950})
+                      for slug in ['sandbox','eag3r']:
+                          page.goto(f'http://127.0.0.1:{server.server_port}/xiaoshanwu.github.io/projects/{slug}/',wait_until='domcontentloaded')
+                          page.wait_for_timeout(2000)
+                          page.evaluate('async()=>{for(let y=0;y<document.body.scrollHeight;y+=900){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,80));}window.scrollTo(0,0)}')
+                          page.wait_for_timeout(2500)
+                          state=page.evaluate('() => ({overflow:document.documentElement.scrollWidth>innerWidth,brokenImages:[...document.images].filter(i=>!i.naturalWidth).map(i=>i.src),videos:[...document.querySelectorAll("video")].map(v=>({source:v.currentSrc,error:v.error?.code||null,width:v.videoWidth,height:v.videoHeight}))})')
+                          checks.append({'slug':slug,'width':width,**state})
+                          page.screenshot(path=str(out/f'{slug}-{width}.png'),full_page=True)
+                          if state['brokenImages']:errors.append({'slug':slug,'width':width,**state})
+                      page.close()
+                  page=browser.new_page(viewport={'width':1280,'height':900})
+                  failed=[];page.on('response',lambda r:failed.append({'status':r.status,'url':r.url}) if r.status>=400 and '127.0.0.1' in r.url else None)
+                  for case in ['pose-1','pose-2','lighting-1','lighting-2','clutter-1','clutter-2']:
+                      page.goto(f'http://127.0.0.1:{server.server_port}/xiaoshanwu.github.io/projects/sandbox/rdf-viewer.html?case={case}&view=compare',wait_until='domcontentloaded')
+                      page.wait_for_timeout(3500)
+                      checks.append({'viewer_case':case,'canvas_count':page.locator('canvas').count(),'body_excerpt':page.locator('body').inner_text()[:800]})
+                      if case=='pose-1':page.screenshot(path=str(out/'sandbox-viewer.png'),full_page=True)
+                  errors.extend(failed);browser.close()
+          finally:
+              server.shutdown();(out/'report.json').write_text(json.dumps({'checks':checks,'errors':errors},indent=2))
+          if errors:raise SystemExit(json.dumps(errors,indent=2))
+          print('Original mirror HTML assets and all six viewer routes checked.')
+          PY
+      - name: Save review artifact without duplicating large videos and point-cloud binaries
+        if: always()
+        run: |
+          mkdir -p mirror-review
+          cp -R projects mirror-review/projects
+          find mirror-review -type f \( -name '*.mp4' -o -name '*.bin' -o -name '*.gz' -o -name '*.npz' -o -name '*.npy' \) -delete
+          if [ -d mirror-qa ]; then cp -R mirror-qa mirror-review/; fi
+          if [ -d project-pages-qa ]; then cp -R project-pages-qa mirror-review/; fi
+          cp -R scripts mirror-review/scripts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mirrored-sites-review
+          path: mirror-review/
+          retention-days: 7
+      - name: Commit validated copies and request Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects index.html publications.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Mirror S4NDBOX and EAG3R; serve original-source high-resolution figures"
+            git pull --rebase origin master
+            git push origin HEAD:master
+          fi
+          curl --fail-with-body --silent --show-error --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pages/builds"
