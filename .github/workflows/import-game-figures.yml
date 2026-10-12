@@ -1,0 +1,64 @@
+name: Import selected GaMe figures
+on:
+  push:
+    branches: [master]
+    paths: [.github/workflows/import-game-figures.yml]
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pillow pymupdf
+      - name: Import only the two selected project figures
+        env:
+          FIGURE_ARCHIVE: 'https://sdmntprnorthcentralus.oaiusercontent.com/files/00000000-1604-822f-ade5-deb307895657/raw?se=2026-10-12T01%3A01%3A54Z&sp=r&sv=2026-02-06&sr=b&scid=a9430cbf-f6b8-5206-8b09-297fa4b85708&skoid=e96cf01c-9c0f-4e27-b41e-0f2e435e6532&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-11T12%3A32%3A35Z&ske=2026-10-12T12%3A32%3A35Z&sks=b&skv=2026-02-06&sig=BTZEsDFnYJ9jyNsn/mNkKyxhHQUEakZQ6J4z05dA9vY%3D'
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import urlopen
+          import os,io,zipfile,hashlib,json
+          import fitz
+          from PIL import Image
+          expected={'teaser.pdf':'5fd6188468be110b51ea7a5675282242a5e8b18a28c8b6988647149ead153150','method.pdf':'9a8b55340401968850161ac6e6f533dedcf1cdb24161c0cbe8959f7dedfe322f'}
+          folder=Path('projects/game/assets');folder.mkdir(parents=True,exist_ok=True)
+          if all((folder/name).is_file() and hashlib.sha256((folder/name).read_bytes()).hexdigest()==sha for name,sha in expected.items()):
+              archive=None
+          else:
+              with urlopen(os.environ['FIGURE_ARCHIVE'],timeout=30) as r:raw=r.read(2_000_001)
+              if len(raw)>2_000_000:raise ValueError('Unexpected archive size')
+              archive=zipfile.ZipFile(io.BytesIO(raw))
+          report=[]
+          for name,sha in expected.items():
+              raw=archive.read(name) if archive else (folder/name).read_bytes()
+              if hashlib.sha256(raw).hexdigest()!=sha:raise ValueError('Unexpected figure contents: '+name)
+              (folder/name).write_bytes(raw)
+              with fitz.open(stream=raw,filetype='pdf') as d:
+                  if len(d)!=1:raise ValueError('Only single-page figures may be imported')
+                  p=d[0];pix=p.get_pixmap(matrix=fitz.Matrix(3600/p.rect.width,3600/p.rect.width),alpha=False)
+                  image=Image.frombytes('RGB',(pix.width,pix.height),pix.samples)
+                  image.save(folder/(Path(name).stem+'-hd.webp'),'WEBP',quality=96,method=6)
+                  small=image.resize((1440,round(image.height*1440/image.width)),Image.Resampling.LANCZOS)
+                  small.save(folder/(Path(name).stem+'.webp'),'WEBP',quality=96,method=6)
+                  report.append({'source_file':name,'sha256':sha,'pixels':list(image.size),'vector_paths':len(p.get_drawings())})
+          (folder/'sources.json').write_text(json.dumps({'source':'Selected project figures exported from the GaMe manuscript repository on 2026-10-12. No full manuscript or author notes are included.','figures':report},indent=2))
+          print(json.dumps(report,indent=2))
+          PY
+      - name: Commit selected figure assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects/game/assets
+          if ! git diff --cached --quiet; then
+            git commit -m "Add original GaMe teaser and method figures with 3600-pixel renders"
+            git pull --rebase origin master
+            git push origin HEAD:master
+          fi
