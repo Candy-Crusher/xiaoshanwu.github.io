@@ -41,10 +41,20 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import hashlib
+          p=Path('scripts/test-sandbox-media.py')
+          s=p.read_text().replace('from playwright.sync_api import sync_playwright','from playwright.sync_api import sync_playwright, expect')
+          s=s.replace("assert page.locator('.site-nav a[href=\"#research\"]').get_attribute('aria-current') == 'location'", "expect(page.locator('.site-nav a[href=\"#research\"]')).to_have_attribute('aria-current', 'location')")
+          s=s.replace("wait_until='networkidle'", "wait_until='domcontentloaded'")
+          s=s.replace("        for width in [390, 1440]:", "        for width in [390, 1440]:\n            print(f'Testing Research navigation and video at {width}px', flush=True)")
+          s=s.replace("        for case in CASES:\n            page.goto", "        for case in CASES:\n            print(f'Testing point clouds: {case}', flush=True)\n            page.goto")
+          s=s.replace("        for case in CASES:\n            page.locator", "        for case in CASES:\n            print(f'Testing project gallery: {case}', flush=True)\n            page.locator")
+          s=s.replace("        for mode in ['pred', 'obs']:\n            page.goto", "        for mode in ['pred', 'obs']:\n            print(f'Testing single-stream mode: {mode}', flush=True)\n            page.goto")
+          s=s.replace("    report = {'files': validate_files(), 'cases': [], 'navigation': []}", "    report = {'files': validate_files(), 'cases': [], 'navigation': []}\n    (out / 'sandbox-files-report.json').write_text(json.dumps(report['files'], indent=2))")
+          p.write_text(s)
           expected={
             'scripts/build-personal-site.py':'40b213149fa4d4679bfc3c122a34d237d4637f3f',
             'scripts/test-personal-site.py':'49af043c79b0719b324643fab484089db0139ec6',
-            'scripts/test-sandbox-media.py':'c044ad622757cbcd182df38308a271c2d5610f3d',
+            'scripts/test-sandbox-media.py':'e8744369aedb12e0d30f63e98aae002955b3f73c',
             'assets/js/site-pages.js':'b28d40b00ac4fd30e47005e2eeb6d3423fa165d1',
             'assets/css/site-pages.css':'637747e91b81fdb68ed43baf49d57aaceaab278e',
             '_site_content/site-presentation.json':'850388dd8b68490bbcd504b6cf37e13853bbfd29',
@@ -58,6 +68,8 @@ jobs:
           pip install beautifulsoup4 playwright
           python -m playwright install --with-deps chromium
       - name: Build and validate pages, inline video and six interactive cases
+        env:
+          PYTHONUNBUFFERED: '1'
         run: |
           python scripts/build-personal-site.py
           python scripts/test-personal-site.py
@@ -82,7 +94,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts/build-personal-site.py scripts/test-personal-site.py assets/css/site-pages.css assets/js/site-pages.js _site_content index.html about.html resume.html research.html publications.html
+          git add scripts/build-personal-site.py scripts/test-personal-site.py scripts/test-sandbox-media.py assets/css/site-pages.css assets/js/site-pages.js _site_content index.html about.html resume.html research.html publications.html
           git commit -m 'Validate Research anchor, inline original demo and restored interactive 4D assets'
           git push origin HEAD:stage-research-media-fix-20261014
           git rev-parse HEAD HEAD^{tree}
