@@ -76,7 +76,9 @@ def browser_checks(base):
                 response = page.goto(base + name, wait_until='networkidle')
                 assert response.status == 200, (name, response.status)
                 page.locator('body[data-design="' + DESIGN + '"]').wait_for()
-                for image in page.locator('img').all():
+                # A closed native dialog deliberately contains an empty, hidden
+                # image. Only displayed document images should be decoded here.
+                for image in page.locator('main img').all():
                     image.scroll_into_view_if_needed()
                     image.evaluate('(img) => img.decode().catch(() => {})')
                     assert image.evaluate('(img) => img.complete && img.naturalWidth > 0'), (name, image.get_attribute('src'))
@@ -86,7 +88,7 @@ def browser_checks(base):
                 assert animations == 0, (name, animations)
                 page.evaluate('window.scrollTo(0,0)')
                 page.screenshot(path=str(OUT / f'{Path(name).stem}-{width}.png'), full_page=True)
-                results.append({'page': name, 'width': width, 'overflow_px': max(dimensions['document'], dimensions['body']) - width, 'loaded_images': page.locator('img').count(), 'animations': animations})
+                results.append({'page': name, 'width': width, 'overflow_px': max(dimensions['document'], dimensions['body']) - width, 'loaded_images': page.locator('main img').count(), 'animations': animations})
         page.set_viewport_size({'width': 1024, 'height': 900})
         page.goto(base + 'research.html', wait_until='networkidle')
         page.locator('#selected-world-action-model [data-figure]').first.click()
