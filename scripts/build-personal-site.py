@@ -206,6 +206,17 @@ def media(view, url):
     m = view.get('media')
     if not m:
         return ''
+    if m.get('kind') == 'video':
+        # Native controls are not nested inside a project link. The title and
+        # Project resource remain clickable; the cover itself plays the demo.
+        video = (f'<span class="media-frame video-frame">'
+                 f'<video class="research-video" controls muted loop playsinline '
+                 f'preload="metadata" poster="{esc(m["poster"])}" '
+                 f'aria-label="{esc(m["alt"])}" data-autoplay-on-view>'
+                 f'<source src="{esc(m["src"])}" type="video/mp4">'
+                 f'{link(m["src"], "Open robot demonstration")}</video></span>')
+        return ('<figure class="research-media research-video-media">' + video +
+                '<figcaption>' + esc(m['caption']) + '</figcaption></figure>')
     crop = m.get('crop')
     style = ''
     if crop:
@@ -346,7 +357,7 @@ def main():
     papers={lookup[normalized(p['title'])]:p for p in cv['papers']}
     assert len(papers)==15 and len(cfg['research']['directions'])==3
     assert cfg['home']['research_statement'] and cfg['home']['interest_indices']==[0,1,3]
-    assert cfg['navigation']==[{'label':l,'url':u} for l,u in [('Home','index.html#top'),('Resume','index.html#resume'),('About','about.html')]]
+    assert cfg['navigation']==[{'label':l,'url':u} for l,u in [('Home','index.html#top'),('Research','index.html#research'),('Resume','index.html#resume'),('About','about.html')]]
     bodies={'index.html':home_page(cfg,papers,cv,data),'research.html':research_page(cfg,papers,cv),'resume.html':resume_page(cfg,papers,cv),'about.html':about_page(cfg,papers,cv)}
     # Legacy URLs redirect to Home and preserve all paper anchors; no-JS fallback remains.
     bodies['publications.html']=bodies['research.html']
