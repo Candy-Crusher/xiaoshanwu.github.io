@@ -1,12 +1,28 @@
-# Personal website information architecture
+# Personal website
 
-Home (`index.html`): original cinematic cover, a short introduction, three project highlights and recent updates.
-About (`about.html`): biography, one research perspective, future interests and the existing personal inspiration.
-Resume (`resume.html`): CV PDF, education, research experience, honors and technical skills.
-Research (`research.html`): seven project summaries and the complete publication record.
+The personal pages use a quiet academic layout: white background, compact typography, modest portrait, text links and research rows. The cinematic assets remain available, but are no longer loaded on Home. The existing film-inspiration section stays on About.
 
-`personal-site.json` preserves the pre-migration sections as editable source. Edit those fragments for biography, dates, awards, news, authors or publication statuses. Do not delete the source file: the short homepage intentionally no longer contains the full record. Project descriptions for LiFR v2 and EVSplat are read from their current project pages during a build.
+## Page roles and editable content
 
-Run `python scripts/build-personal-site.py` and `python scripts/test-personal-site.py`. The personal-site workflow also runs after successful project-page builds, so updates do not restore the old navigation. It serializes with other site writers.
+- `index.html`: generated introduction, three selected projects and existing news. The selected projects remain S4NDBOX, GaMe and EAG3R; authors, statuses, summaries, figures and resources are copied from the current Research page.
+- `about.html`: biography, research perspective, future interests and personal inspiration.
+- `resume.html`: CV PDF, education, experience, a separate honors/awards section, and skills.
+- `research.html`: all seven project summaries and all 15 publication records.
+- `publications.html`: legacy URL compatibility and no-JavaScript publication fallback.
 
-The original CV PDF and LaTeX are unchanged. All seven project URLs are unchanged. `publications.html#pub-*` redirects to the same anchor on Research, with a full no-JavaScript archive fallback. Old homepage research, background and inspiration anchors have explicit redirects.
+Edit About, Resume and Research content in their HTML files. `scripts/build-personal-site.py` preserves their main-text content exactly and only refreshes the shared shell. Home uses the approved `direction` and `foundation` paragraphs in `personal-site.json`, the existing Home news, and selected entries from `research.html`. Other fragments in `personal-site.json`, including the old `hero`, are retained as an archive rather than silently restored over newer content.
+
+## Build and checks
+
+```sh
+python -m pip install beautifulsoup4 playwright
+python -m playwright install chromium
+python scripts/build-personal-site.py
+python scripts/test-personal-site.py
+```
+
+The existing `.github/workflows/build-personal-site.yml` runs these commands, verifies repeatable generation, uploads screenshots and test results, commits validated HTML and requests a Pages rebuild. No workflow-file change is needed for this design update.
+
+Responsive checks cover 320, 390, 768, 1024 and 1440 px, image loading, navigation, keyboard dismissal of figures, the no-JavaScript publication archive and legacy anchors. Screenshots and `report.json` are written to `personal-site-qa/` and included in the existing review artifact.
+
+The CV PDF, main LaTeX, all 13 tailored CVs and every project microsite remain outside this generator's write scope. Existing project routes, paper links and contribution labels are preserved.
