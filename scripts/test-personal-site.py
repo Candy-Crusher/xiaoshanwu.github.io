@@ -16,8 +16,8 @@ from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'personal-site-qa'
-PAGES=['index.html','resume.html','about.html']
-ALIASES=['research.html','publications.html']
+PAGES=['index.html','about.html']
+ALIASES=['research.html','publications.html','resume.html']
 DESIGN='academic-home-research-20261014'
 NAV=['Home','Resume','About']
 
@@ -81,21 +81,36 @@ def static_checks():
         assert any(text(a) == label and a['href'] == destination for a in biography.select('a')), label
     interests = text(docs['index.html'].select_one('.research-lead'))
     assert norm(interests) == norm(builder.plain(' '.join(cv['interests'][i] for i in [0,1,3])))
-    for name in ALIASES:
+    for name in ['research.html','publications.html']:
         assert len(docs[name].select('.publication-list > li')) == 15
+    for name in ALIASES:
         assert docs[name].select_one('link[rel=canonical]')['href'].endswith('/index.html')
     assert docs['index.html'].select_one('[data-paper="pub-videossm"]')
-    assert docs['resume.html'].select_one('#experience h2').get_text()=='Research Experience'
-    assert 'Harvard' in text(docs['resume.html'].select_one('#experience'))
-    assert 'Harvard' not in text(docs['resume.html'].select_one('#education'))
-    assert docs['resume.html'].select_one('#awards h2').get_text()=='Selected Awards'
-    for award in cv['awards']:assert norm(builder.plain(award)) in norm(text(docs['resume.html'].select_one('#awards')))
-    for skill in cv['skills']:assert norm(builder.plain(skill)) in norm(text(docs['resume.html'].select_one('#skills')))
+    home = docs['index.html']
+    assert home.body['data-resume-placement'] == 'home'
+    assert home.select_one('#resume h2').get_text() == 'Resume'
+    assert len(home.select('#resume')) == 1
+    assert home.select_one('#experience h3').get_text()=='Research Experience'
+    assert 'Harvard' in text(home.select_one('#experience'))
+    assert 'Harvard' not in text(home.select_one('#education'))
+    assert home.select_one('#awards h3').get_text()=='Selected Awards'
+    assert home.select_one('nav[aria-label="Main navigation"] a[href="#resume"]')
+    assert home.select_one('nav[aria-label="Main navigation"] a[href="#top"]')
+    assert docs['about.html'].select_one('nav[aria-label="Main navigation"] a[href="index.html#resume"]')
+    assert not home.select('a[href^="resume.html"]')
+    sections=[n.get('id') for n in home.select('main > section')]
+    assert sections.index('research') < sections.index('resume')
+    for name in ['index.html','resume.html']:
+        for award in cv['awards']:assert norm(builder.plain(award)) in norm(text(docs[name].select_one('#awards')))
+        for skill in cv['skills']:assert norm(builder.plain(skill)) in norm(text(docs[name].select_one('#skills')))
+        for anchor in ['experience','education','skills','awards']:
+            assert norm(text(home.select_one('#'+anchor))) == norm(text(docs['resume.html'].select_one('#'+anchor)))
+        assert len(docs[name].select('#resume a[href="Xiaoshan_Wu_CV.pdf"]')) == 2
     for name in ['resume.html','research.html','publications.html']:
         assert 'agent–world model co-evolution' not in text(docs[name].main), name
     assert 'agent–world model co-evolution' in text(docs['about.html'].main)
     assert 'agent–world model co-evolution' in text(docs['index.html'].select_one('.research-lead'))
-    return {'navigation':NAV,'unique_publications':15,'first_author_work':8,'collaborative_work':7,'homepage_research_records':15,'intro_paragraphs':2,'harvard_first':True,'official_scholarship_links':True,'mentor_links_preserved':True,'research_interest_source':'CV02 sentences 1, 2 and 4','metadata_matches_cv02':True,'standalone_awards':True,'no_duplicate_project_list':True,'legacy_fallbacks':True,'internal_resources':'PASS','repeat_build':'PASS'}
+    return {'navigation':NAV,'unique_publications':15,'first_author_work':8,'collaborative_work':7,'homepage_research_records':15,'intro_paragraphs':2,'harvard_first':True,'resume_on_home':True,'native_resume_navigation':True,'resume_content_matches_cv02':True,'official_scholarship_links':True,'mentor_links_preserved':True,'research_interest_source':'CV02 sentences 1, 2 and 4','metadata_matches_cv02':True,'standalone_awards':True,'no_duplicate_project_list':True,'legacy_fallbacks':True,'internal_resources':'PASS','repeat_build':'PASS'}
 
 
 def inline_doc(name):
@@ -143,7 +158,7 @@ def browser_checks(base,inline=False):
             page.locator('a[data-figure]').first.click();page.locator('dialog[open]').wait_for()
             page.locator('dialog[open] img').evaluate('(i)=>i.decode()')
             page.keyboard.press('Escape');assert not page.locator('dialog[open]').count()
-            routes=[('research.html','index.html#research'),('publications.html','index.html#research'),('index.html#pub-game','index.html#pub-game'),('research.html#pub-game','index.html#pub-game'),('publications.html#pub-game','index.html#pub-game'),('index.html#selected-world-action-model','index.html#selected-world-action-model'),('research.html#projects','index.html#projects'),('index.html#awards','resume.html#awards'),('index.html#inspiration','about.html#inspiration'),('resume.html#research-interests','index.html#research-interests'),('resume.html#resume-publications','index.html#publications')]
+            routes=[('research.html','index.html#research'),('publications.html','index.html#research'),('index.html#pub-game','index.html#pub-game'),('research.html#pub-game','index.html#pub-game'),('publications.html#pub-game','index.html#pub-game'),('index.html#selected-world-action-model','index.html#selected-world-action-model'),('research.html#projects','index.html#projects'),('index.html#awards','index.html#awards'),('index.html#inspiration','about.html#inspiration'),('resume.html','index.html#resume'),('resume.html#awards','index.html#awards'),('resume.html#experience','index.html#experience'),('resume.html#education','index.html#education'),('resume.html#skills','index.html#skills'),('resume.html?from=old#awards','index.html?from=old#awards'),('resume.html#research-interests','index.html#research-interests'),('resume.html#resume-publications','index.html#publications')]
             for source,target in routes:
                 page.goto(base+source);page.wait_for_url(base+target)
                 assert page.locator('#'+target.split('#')[1]).count()==1
@@ -155,11 +170,44 @@ def browser_checks(base,inline=False):
             page.goto(base+'index.html');page.keyboard.press('Tab')
             assert page.evaluate('document.activeElement.classList.contains("skip-link")')
             nojs=browser.new_context(java_script_enabled=False);np=nojs.new_page()
-            for name in ['index.html']+ALIASES:
+            for name in ['index.html','research.html','publications.html']:
                 np.goto(base+name)
                 assert np.locator('.publication-list > li').count()==15
                 assert all(x.is_visible() for x in np.locator('.publication-list > li').all())
-            nojs.close();report['navigation_and_keyboard']='PASS';report['no_javascript_record']='PASS'
+            np.goto(base+'resume.html')
+            assert np.locator('#awards li').count() == 4
+            np.goto(base+'index.html')
+            np.locator('.site-nav a[href="#resume"]').click()
+            assert np.url == base+'index.html#resume'
+            assert np.locator('#resume-title').is_visible()
+            nojs.close();report['navigation_and_keyboard']='PASS';report['no_javascript_record']='PASS';report['no_javascript_resume']='PASS'
+            # Confirm these controls only change the hash, not the document.
+            report['native_anchor_checks']=[]
+            for width in [390,1440]:
+                page.set_viewport_size({'width':width,'height':900})
+                page.goto(base+'index.html',wait_until='networkidle')
+                page.evaluate('window.__resumeNavigationSentinel = "same-document"')
+                page.locator('.site-nav a[href="#resume"]').click()
+                page.wait_for_url(base+'index.html#resume')
+                assert page.evaluate('window.__resumeNavigationSentinel') == 'same-document'
+                header_bottom=page.locator('.site-topbar').bounding_box()['height']
+                heading=page.locator('#resume-title').bounding_box()
+                assert header_bottom <= heading['y'] < 400, (width, header_bottom, heading)
+                assert page.locator('.site-nav a[href="#resume"]').get_attribute('aria-current') == 'location'
+                page.screenshot(path=str(OUT/f'resume-section-{width}.png'))
+                page.locator('.site-nav a[href="#top"]').click()
+                assert page.evaluate('window.__resumeNavigationSentinel') == 'same-document'
+                assert page.evaluate('scrollY') < 5
+                page.go_back()
+                page.wait_for_url(base+'index.html#resume')
+                assert page.evaluate('window.__resumeNavigationSentinel') == 'same-document'
+                page.locator('nav[aria-label="Resume sections"] a[href="#awards"]').click()
+                page.wait_for_url(base+'index.html#awards')
+                awards=page.locator('#awards').bounding_box()
+                assert awards['y'] >= header_bottom, (width, awards, header_bottom)
+                assert page.evaluate('window.__resumeNavigationSentinel') == 'same-document'
+                report['native_anchor_checks'].append({'width':width,'same_document':True,'heading_below_navigation':True,'back_navigation':True,'awards_jump':True})
+
         else:
             report['navigation_and_keyboard']='Not exercised in offline preview; checked by CI'
         assert not errors,errors

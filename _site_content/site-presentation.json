@@ -4,11 +4,11 @@
   "navigation": [
     {
       "label": "Home",
-      "url": "index.html"
+      "url": "index.html#top"
     },
     {
       "label": "Resume",
-      "url": "resume.html"
+      "url": "index.html#resume"
     },
     {
       "label": "About",

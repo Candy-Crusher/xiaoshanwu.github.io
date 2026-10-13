@@ -2,31 +2,51 @@
 (() => {
   'use strict';
   const page = document.body.dataset.page;
-  const legacy = page === 'research' || page === 'publications';
-  if (legacy) {
-    location.replace('index.html' + location.search + (location.hash || '#research'));
+  const resumeAnchors = new Set(['resume','background','education','experience','skills','awards']);
+  function normalizedHash(hash, fallback) {
+    if (!hash) return fallback;
+    if (hash === '#resume-publications') return '#publications';
+    return hash;
+  }
+  if (['research', 'publications', 'resume'].includes(page)) {
+    const hash = normalizedHash(location.hash, page === 'resume' ? '#resume' : '#research');
+    location.replace('index.html' + location.search + hash);
     return;
   }
   function routeLegacyHash() {
-    const hash = location.hash;
-    if (!hash) return false;
-    let id;
-    try { id = decodeURIComponent(hash.slice(1)); } catch (_) { return false; }
-    if (page === 'index') {
-      const resume = ['background', 'education', 'experience', 'awards', 'skills'];
-      if (resume.includes(id)) { location.replace('resume.html' + hash); return true; }
-      if (id === 'inspiration') { location.replace('about.html' + hash); return true; }
-      // Research and paper hashes now stay here. Never redirect back to the
-      // legacy research.html alias: that would cause a navigation loop.
-    }
-    if (page === 'resume' && ['research-interests', 'resume-publications'].includes(id)) {
-      location.replace('index.html#' + (id === 'resume-publications' ? 'publications' : 'research-interests'));
+    if (page !== 'index') return false;
+    if (location.hash === '#inspiration') {
+      location.replace('about.html' + location.search + location.hash);
       return true;
     }
+    if (location.hash === '#resume-publications') {
+      location.replace('index.html' + location.search + '#publications');
+      return true;
+    }
+    // Resume, education and awards anchors now stay on this document.
     return false;
   }
   if (routeLegacyHash()) return;
-  window.addEventListener('hashchange', routeLegacyHash);
+  function updateNavigation() {
+    let id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch (_) { id = ''; }
+    const resumeSelected = resumeAnchors.has(id);
+    document.querySelectorAll('.site-nav a, .site-footer nav a').forEach(a => {
+      if (page !== 'index') return;
+      a.removeAttribute('aria-current');
+      const target = a.getAttribute('href');
+      if (target === '#resume' && resumeSelected) a.setAttribute('aria-current', 'location');
+      if (target === '#top' && !resumeSelected) a.setAttribute('aria-current', 'location');
+    });
+  }
+  function measureHeader() {
+    const height = document.querySelector('.site-topbar')?.getBoundingClientRect().height;
+    if (height) document.documentElement.style.setProperty('--navigation-height', height + 'px');
+  }
+  measureHeader();
+  window.addEventListener('resize', measureHeader);
+  updateNavigation();
+  window.addEventListener('hashchange', () => { if (!routeLegacyHash()) updateNavigation(); });
   const dialog = document.getElementById('research-figure');
   if (!dialog || typeof dialog.showModal !== 'function') return;
   let opener = null;

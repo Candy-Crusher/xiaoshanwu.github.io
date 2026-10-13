@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a combined Home/Research page, Resume and About from CV02 facts.
+"""Build a Home/Research/Resume page and About from CV02 facts.
 
 The TeX parser preserves authors, statuses, dates, skills and awards. The separate
 site-presentation.json controls short summaries, existing-image crops, and page
@@ -121,8 +121,8 @@ def parse_cv():
 
 # Facts are parsed above. Page-specific editorial choices live separately in
 # site-presentation.json; changing the CV never expands every page into the CV.
-STYLE = 'assets/css/site-pages.css?v=academic-home-research-20261014'
-SCRIPT = 'assets/js/site-pages.js?v=academic-home-research-20261014'
+STYLE = 'assets/css/site-pages.css?v=academic-home-resume-20261014'
+SCRIPT = 'assets/js/site-pages.js?v=academic-home-resume-20261014'
 
 
 # Verified personal pages. These are presentation links, not edits to CV02.
@@ -164,13 +164,21 @@ def link(url, label, extra=''):
 
 
 def navigation(cfg, page):
-    current = 'index.html' if page in ('research.html', 'publications.html') else page
-    return ''.join(link(n['url'], esc(n['label']), ' aria-current="page"' if n['url'] == current else '') for n in cfg['navigation'])
+    # Native anchors work without JavaScript and keep Resume on the homepage.
+    links = []
+    for entry in cfg['navigation']:
+        url, label = entry['url'], entry['label']
+        if page == 'index.html' and url.startswith('index.html#'):
+            url = url.removeprefix('index.html')
+        active = (page == 'about.html' and label == 'About') or (page == 'index.html' and label == 'Home')
+        links.append(link(url, esc(label), ' aria-current="page"' if active else ''))
+    return ''.join(links)
+
 
 
 def document(name, content, cfg, cv):
     title = 'Xiaoshan Wu' if name == 'index.html' else name.split('.')[0].title() + ' | Xiaoshan Wu'
-    canonical = 'index.html' if name in ('research.html', 'publications.html') else name
+    canonical = 'index.html' if name in ('research.html', 'publications.html', 'resume.html') else name
     description = 'Xiaoshan Wu — world models for generalizable robotic planning, spatial perception, and embodied intelligence.'
     nav = navigation(cfg, name)
     return f'''<!doctype html>
@@ -184,7 +192,7 @@ def document(name, content, cfg, cv):
 <meta property="og:type" content="website"><meta property="og:url" content="{BASE}{canonical}">
 <link rel="stylesheet" href="{STYLE}"><script defer src="{SCRIPT}"></script>
 </head>
-<body class="site-layout" data-page="{name.split('.')[0]}" data-design="{DESIGN}" data-resume-source="cv02" data-resume-source-blob="{cv['source_git_blob']}" id="top">
+<body class="site-layout" data-page="{name.split('.')[0]}" data-design="{DESIGN}" data-resume-placement="home" data-resume-source="cv02" data-resume-source-blob="{cv['source_git_blob']}" id="top">
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-topbar"><div class="site-header wrap">{link('index.html','Xiaoshan Wu',' class="wordmark" aria-label="Xiaoshan Wu, Home"')}<nav class="site-nav" aria-label="Main navigation">{nav}</nav></div></header>
 <main class="wrap" id="main">{content}</main>
@@ -249,6 +257,7 @@ def home_page(cfg, papers, cv, data):
 </section>'''
     # One visible record replaces both the former featured list and Research.
     content += research_page(cfg, papers, cv, embedded=True)
+    content += resume_page(cfg, papers, cv, embedded=True)
     content += '<section class="news-section" aria-labelledby="news"><h2 id="news">Recent updates</h2>'
     content += data['news'].replace('publications.html#','#').replace('research.html#','#') + '</section>'
     return content
@@ -282,27 +291,32 @@ def research_page(cfg, papers, cv, embedded=False):
     return content + '</div></section>'
 
 
-def experience_row(e):
-    return '<div class="experience-row"><div><h3>'+esc(e['school'])+'</h3><p class="position">'+esc(e['role'])+'</p>'+''.join('<p class="detail">'+mentor_links(x)+'</p>' for x in e['details'])+'</div><p class="dates">'+esc(e['dates'])+'<br><span>'+esc(e['location'])+'</span></p></div>'
+def experience_row(e, heading_level=3):
+    heading = f'h{heading_level}'
+    return '<div class="experience-row"><div><'+heading+'>'+esc(e['school'])+'</'+heading+'><p class="position">'+esc(e['role'])+'</p>'+''.join('<p class="detail">'+mentor_links(x)+'</p>' for x in e['details'])+'</div><p class="dates">'+esc(e['dates'])+'<br><span>'+esc(e['location'])+'</span></p></div>'
 
 
-def resume_page(cfg, papers, cv):
-    def sec(id,heading,body):
-        return f'<section class="resume-section" id="{id}"><h2>{heading}</h2><div>{body}</div></section>'
-    content = '<header class="page-heading resume-heading"><h1>Resume</h1><div class="download-links">'+link('Xiaoshan_Wu_CV.pdf','View CV (PDF)',' target="_blank" rel="noopener"')+link('Xiaoshan_Wu_CV.pdf','Download PDF',' download="Xiaoshan_Wu_CV.pdf"')+'</div></header>'
-    content += '<p class="resume-intro">World models for generalizable robotic planning. '+link('index.html#research','Browse research &amp; publications →')+'</p><div id="background">'
+def resume_page(cfg, papers, cv, embedded=False):
+    # One renderer supplies the homepage and the legacy, no-JS fallback.
+    level = 2 if embedded else 1
+    def sec(id, heading, body):
+        return f'<section class="resume-section" id="{id}"><h{level+1}>{heading}</h{level+1}><div>{body}</div></section>'
+    content = f'<section class="resume-record" id="resume" aria-labelledby="resume-title"><header class="resume-heading"><h{level} id="resume-title">Resume</h{level}><div class="download-links">'+link('Xiaoshan_Wu_CV.pdf','View CV (PDF)',' target="_blank" rel="noopener"')+link('Xiaoshan_Wu_CV.pdf','Download PDF',' download="Xiaoshan_Wu_CV.pdf"')+'</div></header>'
+    if not embedded:
+        content += '<p class="legacy-notice">Resume now lives on the '+link('index.html#resume','homepage')+'. This page preserves previously shared links.</p>'
+    content += '<nav class="section-links" aria-label="Resume sections">'+''.join(link('#'+id, title) for id,title in [('experience','Experience'),('education','Education'),('skills','Skills'),('awards','Awards')])+'</nav><div id="background">'
     experience = [e for e in cv['education'] if 'Visiting' in e['role']]
     education = [e for e in cv['education'] if 'Visiting' not in e['role']]
-    content += sec('experience','Research Experience',''.join(experience_row(e) for e in experience))
-    content += sec('education','Education',''.join(experience_row(e) for e in education))
+    content += sec('experience','Research Experience',''.join(experience_row(e, level+2) for e in experience))
+    content += sec('education','Education',''.join(experience_row(e, level+2) for e in education))
     content += sec('skills','Technical Skills',''.join('<p class="skill-line">'+s+'</p>' for s in cv['skills']))
     content += sec('awards','Selected Awards','<ul class="awards">'+''.join('<li>'+s.rstrip('.')+'</li>' for s in cv['awards'])+'</ul>')
-    return content + '</div>'
+    return content + '</div></section>'
 
 
 def about_page(cfg, papers, cv):
     a=cfg['about']
-    content='<article class="about-essay"><header class="page-heading"><h1>About</h1><p>'+mentor_links(esc(a['background']))+'</p><p class="about-background-link">'+link('resume.html','Education &amp; experience →')+'</p></header>'
+    content='<article class="about-essay"><header class="page-heading"><h1>About</h1><p>'+mentor_links(esc(a['background']))+'</p><p class="about-background-link">'+link('index.html#resume','Education &amp; experience →')+'</p></header>'
     content+='<section aria-labelledby="perspective"><h2 id="perspective">Research perspective</h2>'+''.join('<p>'+esc(s)+'</p>' for s in a['perspective'])+'</section>'
     content+='<section aria-labelledby="future"><h2 id="future">Looking ahead</h2><p>'+cv['interests'][3]+'</p></section>'
     content+='<section id="inspiration" aria-labelledby="inspiration-title"><h2 id="inspiration-title">A personal inspiration</h2><p>'+a['inspiration']+'</p><figure class="inspiration-figure"><img src="images/theme/shared-world-1440.webp" alt="Film still from Blade Runner 2049" width="1440" height="603" loading="lazy" decoding="async"><figcaption><cite>Blade Runner 2049</cite> (2017). Visual inspiration, not a research result. '+link('images/theme/shared-world-source.json','Image source')+'. All rights belong to the respective rights holders.</figcaption></figure></section></article>'
@@ -318,7 +332,7 @@ def main():
     lookup={normalized(v['source_title']):id for id,v in cfg['papers'].items()}
     papers={lookup[normalized(p['title'])]:p for p in cv['papers']}
     assert len(papers)==15 and cfg['home']['interest_indices']==[0,1,3]
-    assert cfg['navigation']==[{'label':l,'url':u} for l,u in [('Home','index.html'),('Resume','resume.html'),('About','about.html')]]
+    assert cfg['navigation']==[{'label':l,'url':u} for l,u in [('Home','index.html#top'),('Resume','index.html#resume'),('About','about.html')]]
     bodies={'index.html':home_page(cfg,papers,cv,data),'research.html':research_page(cfg,papers,cv),'resume.html':resume_page(cfg,papers,cv),'about.html':about_page(cfg,papers,cv)}
     # Legacy URLs redirect to Home and preserve all paper anchors; no-JS fallback remains.
     bodies['publications.html']=bodies['research.html']
@@ -327,7 +341,7 @@ def main():
     cv['publication_anchors']=list(papers)
     (ROOT/'_site_content/resume-cv02.json').write_text(json.dumps(cv,ensure_ascii=False,indent=2)+'\n')
     assert all(digest(ROOT/n)==h for n,h in protected.items()), 'A protected CV or project page changed'
-    report={'design':DESIGN,'source':SOURCE,'source_git_blob':cv['source_git_blob'],'publication_count':15,'first_author_count':8,'collaborative_count':7,'homepage_publications':len(papers),'intro_paragraphs':2,'publications_visible_without_javascript':True,'separate_awards_section':True,'protected_files':protected,'page_roles':{'Home':'Harvard-first biography, CV02 interests and the complete research record','Resume':'Experience, education, skills and awards','About':'Motivation and future interests','Legacy Research/Publications':'Hash-preserving redirect to Home with a no-JS record'}}
+    report={'design':DESIGN,'source':SOURCE,'source_git_blob':cv['source_git_blob'],'publication_count':15,'first_author_count':8,'collaborative_count':7,'homepage_publications':len(papers),'intro_paragraphs':2,'publications_visible_without_javascript':True,'separate_awards_section':True,'resume_embedded_on_home':True,'native_resume_anchor':'#resume','protected_files':protected,'page_roles':{'Home':'Harvard-first biography, CV02 interests, complete research record and inline resume','Legacy Resume':'Hash-preserving redirect to Home; complete CV02 resume as a no-JS fallback','About':'Motivation and future interests','Legacy Research/Publications':'Hash-preserving redirect to Home with a no-JS record'}}
     Path('/tmp/personal-site-style-preservation.json').write_text(json.dumps(report,indent=2))
     print(json.dumps({k:v for k,v in report.items() if k!='protected_files'},indent=2))
 

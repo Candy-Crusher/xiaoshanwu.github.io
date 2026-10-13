@@ -36,3 +36,21 @@ body[data-page=research] .research-record,body[data-page=publications] .research
 .news-section{margin-top:24px}
 @media(max-width:800px){.profile{column-gap:32px}}
 @media(max-width:600px){.profile{grid-template-areas:'heading portrait' 'biography biography' 'interests interests' 'contacts contacts';column-gap:20px;row-gap:18px;padding:29px 0}.biography,.research-lead{font-size:14px;line-height:1.8}.research-heading h2{font-size:22px}.publication-group-title{font-size:18px}.research-record{padding-top:24px}.research-record .section-links{gap:6px 18px}.publication-layout .research-media{width:min(100%,315px)}}
+
+/* Resume lives below the homepage research record; navigation stays reachable. */
+:root{--navigation-height:74px}
+html{scroll-padding-top:calc(var(--navigation-height) + 16px)}
+.site-topbar{position:sticky;top:0;z-index:20;background:var(--paper)}
+.site-nav a[aria-current=location]{color:var(--ink);text-decoration:underline;text-underline-offset:7px}
+.resume-record{margin-top:40px;padding-top:28px;border-top:1px solid var(--line);scroll-margin-top:16px}
+.resume-record>.resume-heading{margin-bottom:18px}
+.resume-record>.resume-heading h2{font-size:24px}
+.resume-record>.resume-heading h1{font:35px/1.25 var(--serif);letter-spacing:-.55px}
+.resume-record>.section-links{margin-bottom:4px}
+.resume-section{scroll-margin-top:16px}
+.resume-section>h2,.resume-section>h3{font-size:19px;font-weight:600;line-height:1.45;letter-spacing:-.15px}
+.experience-row h3,.experience-row h4{font-size:16px;font-weight:600;line-height:1.5;margin-bottom:4px}
+.resume-record .resume-section:first-child{border-top:0}
+body[data-page=resume] .resume-record{border-top:0;margin-top:0;padding-top:37px}
+@media(max-width:600px){:root{--navigation-height:103px}.resume-record{margin-top:30px;padding-top:24px}.resume-record>.resume-heading h2{font-size:22px}.resume-record>.section-links{gap:7px 18px}}
+@media print{html{scroll-padding-top:0}.resume-record{margin-top:25px}}
