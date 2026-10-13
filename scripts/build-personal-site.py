@@ -125,6 +125,35 @@ STYLE = 'assets/css/site-pages.css?v=academic-home-research-20261014'
 SCRIPT = 'assets/js/site-pages.js?v=academic-home-research-20261014'
 
 
+# Verified personal pages. These are presentation links, not edits to CV02.
+MENTOR_PROFILES = {
+    'Yilun Du': 'https://yilundu.github.io/',
+    'Mengyu Wang': 'https://wang.hms.harvard.edu/team/dr-wang/',
+}
+
+
+def mentor_links(content):
+    """Link plain mentor names without changing text or nesting existing links."""
+    pattern = re.compile(r'\b(' + '|'.join(map(re.escape, MENTOR_PROFILES)) + r')\b')
+    doc = fragment(content)
+    before = doc.get_text()
+    for node in list(doc.find_all(string=pattern)):
+        if node.find_parent(['a', 'script', 'style', 'code', 'pre']):
+            continue
+        text, cursor, parts = str(node), 0, []
+        for match in pattern.finditer(text):
+            parts.append(NavigableString(text[cursor:match.start()]))
+            anchor = doc.new_tag('a', href=MENTOR_PROFILES[match[0]], target='_blank', rel='noopener')
+            anchor.string = match[0]
+            parts.append(anchor)
+            cursor = match.end()
+        parts.append(NavigableString(text[cursor:]))
+        node.replace_with(*parts)
+    assert doc.get_text() == before, 'Mentor linking changed visible text'
+    assert not doc.select('a a'), 'Nested mentor links'
+    return str(doc)
+
+
 def esc(value):
     return html.escape(str(value), quote=True)
 
@@ -216,7 +245,7 @@ def home_page(cfg, papers, cv, data):
     content = f'''<section class="profile" id="welcome" aria-labelledby="name">
 <div class="profile-heading"><h1 id="name">Xiaoshan Wu <span lang="zh">吴小山</span></h1></div>
 <figure class="portrait"><img src="images/research/profile.webp" alt="Xiaoshan Wu" width="170" height="222" decoding="async" fetchpriority="high"></figure>
-<div class="profile-copy"><p class="biography">{cfg['home']['identity']}</p><p class="research-lead" id="research-interests">{interests}</p><nav class="contact-links" aria-label="Contact and profiles">{contacts}</nav></div>
+<div class="profile-copy"><p class="biography">{mentor_links(cfg['home']['identity'])}</p><p class="research-lead" id="research-interests">{interests}</p><nav class="contact-links" aria-label="Contact and profiles">{contacts}</nav></div>
 </section>'''
     # One visible record replaces both the former featured list and Research.
     content += research_page(cfg, papers, cv, embedded=True)
@@ -254,7 +283,7 @@ def research_page(cfg, papers, cv, embedded=False):
 
 
 def experience_row(e):
-    return '<div class="experience-row"><div><h3>'+esc(e['school'])+'</h3><p class="position">'+esc(e['role'])+'</p>'+''.join('<p class="detail">'+x+'</p>' for x in e['details'])+'</div><p class="dates">'+esc(e['dates'])+'<br><span>'+esc(e['location'])+'</span></p></div>'
+    return '<div class="experience-row"><div><h3>'+esc(e['school'])+'</h3><p class="position">'+esc(e['role'])+'</p>'+''.join('<p class="detail">'+mentor_links(x)+'</p>' for x in e['details'])+'</div><p class="dates">'+esc(e['dates'])+'<br><span>'+esc(e['location'])+'</span></p></div>'
 
 
 def resume_page(cfg, papers, cv):
@@ -273,7 +302,7 @@ def resume_page(cfg, papers, cv):
 
 def about_page(cfg, papers, cv):
     a=cfg['about']
-    content='<article class="about-essay"><header class="page-heading"><h1>About</h1><p>'+esc(a['background'])+'</p><p class="about-background-link">'+link('resume.html','Education &amp; experience →')+'</p></header>'
+    content='<article class="about-essay"><header class="page-heading"><h1>About</h1><p>'+mentor_links(esc(a['background']))+'</p><p class="about-background-link">'+link('resume.html','Education &amp; experience →')+'</p></header>'
     content+='<section aria-labelledby="perspective"><h2 id="perspective">Research perspective</h2>'+''.join('<p>'+esc(s)+'</p>' for s in a['perspective'])+'</section>'
     content+='<section aria-labelledby="future"><h2 id="future">Looking ahead</h2><p>'+cv['interests'][3]+'</p></section>'
     content+='<section id="inspiration" aria-labelledby="inspiration-title"><h2 id="inspiration-title">A personal inspiration</h2><p>'+a['inspiration']+'</p><figure class="inspiration-figure"><img src="images/theme/shared-world-1440.webp" alt="Film still from Blade Runner 2049" width="1440" height="603" loading="lazy" decoding="async"><figcaption><cite>Blade Runner 2049</cite> (2017). Visual inspiration, not a research result. '+link('images/theme/shared-world-source.json','Image source')+'. All rights belong to the respective rights holders.</figcaption></figure></section></article>'
