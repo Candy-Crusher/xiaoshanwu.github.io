@@ -100,9 +100,9 @@ jobs:
                           text=response.read().decode();status=response.status
                       doc=BeautifulSoup(text,'html.parser')
                       nav=[a.get_text(strip=True) for a in doc.select('nav[aria-label="Main navigation"] a')]
-                      reports.append({'page':name,'status':status,'navigation':nav,'updated':'20261012-four-pages' in text})
+                      reports.append({'page':name,'status':status,'navigation':nav,'updated':doc.body.get('data-design')=='academic-ia-20261014'})
                   except Exception as exc:reports.append({'page':name,'error':str(exc)})
-              if all(r.get('updated') and r.get('navigation')==['Home','About','Resume','Research'] for r in reports):
+              if all(r.get('updated') and r.get('navigation')==['Home','Research','Resume','About'] for r in reports):
                   print(json.dumps({'live_pages':reports,'status':'PASS'},indent=2));break
               time.sleep(5)
           else:raise SystemExit(json.dumps({'live_verification':'Updated pages not yet observed','last_checks':reports},indent=2))

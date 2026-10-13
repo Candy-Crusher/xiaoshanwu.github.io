@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Sync the existing quiet academic website from CV 02 without changing its design.
+"""Build four purposeful academic pages from CV02 facts and editorial views.
 
-The 02 Robotics TeX is authoritative for the public resume, interests, skills,
-awards, publication order and metadata. Research figures, original resource
-links, personal inspiration, and the other tailored CVs remain untouched.
-The root cv.tex must be an exact copy; the existing CV workflow builds its PDF.
+The TeX parser preserves authors, statuses, dates, skills and awards. The separate
+site-presentation.json controls short summaries, existing-image crops, and page
+selection. Never write the CVs, PDFs, or individual research project pages.
 """
 from pathlib import Path
 from copy import deepcopy
@@ -14,7 +13,7 @@ from bs4 import BeautifulSoup, NavigableString
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = 'cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex'
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
-DESIGN = 'quiet-academic-20261013'
+DESIGN = 'academic-ia-20261014'
 BASE = 'https://candy-crusher.github.io/xiaoshanwu.github.io/'
 
 
@@ -120,119 +119,186 @@ def parse_cv():
                 graduation=graduation,interests=interests,education=education,skills=skills,awards=awards,papers=papers)
 
 
-def education_html(e, i):
-    details=''.join('<p class="detail">'+d+'</p>' for d in e['details'])
-    return '<div class="experience-row"'+(' id="experience"' if i==0 else '')+'><div><strong>'+html.escape(e['school'])+'</strong><p>'+html.escape(e['role'])+'</p>'+details+'</div><div class="dates">'+html.escape(e['dates'])+'<br>'+html.escape(e['location'])+'</div></div>'
+# Facts are parsed above. Page-specific editorial choices live separately in
+# site-presentation.json; changing the CV never expands every page into the CV.
+STYLE = 'assets/css/site-pages.css?v=academic-ia-20261014'
+SCRIPT = 'assets/js/site-pages.js?v=academic-ia-20261014'
 
 
-def synchronize(docs, cv, data):
-    interests=cv['interests'];theme='World models for generalizable robotic planning'
-    if normalized(theme) not in normalized(interests[0]): raise ValueError('Review the website theme against the chosen CV')
-    rows=[education_html(e,i) for i,e in enumerate(cv['education'])]
-    # The source specifies a current visiting scholar, not the previous site's
-    # expired visiting-researcher entry. No additional dates or roles are inferred.
-    bio='I am a Ph.D. candidate at the University of Hong Kong, advised by <a href="https://xjqi.github.io/">Xiaojuan Qi</a>, and a Visiting Scholar at Harvard University, working with Yilun Du and Mengyu Wang.'
-    data.update(resume_source=SOURCE,resume_source_blob=cv['source_git_blob'],bio='<p>'+bio+'</p>',direction='<p>'+interests[0]+'</p>',
-                foundation='<p>'+interests[1]+' '+interests[2]+'</p>',future='<p>'+interests[3]+'</p>',experience=rows,
-                awards='<ul class="awards">'+''.join('<li>'+a+'</li>' for a in cv['awards'])+'</ul>',skills=cv['skills'])
-    home=docs['index.html'];copy=home.select_one('.academic-copy');contacts=deepcopy(copy.select_one('.contact-links'))
-    set_inner(copy,'<p>'+bio+'</p>'+data['direction']+data['foundation']);copy.append(contacts)
-    about=docs['about.html']
-    set_inner(about.select_one('.about-profile .section-body'),'<p>'+bio+'</p><p>I received dual B.S. degrees in Computer Engineering through the ZJUI Institute at Zhejiang University and UIUC.</p>')
-    perspective=about.find(id='perspective').find_next_sibling()
-    old_links=deepcopy(perspective.select_one('.inline-links'))
-    set_inner(perspective,data['direction']+data['foundation']+'<div class="future-note"><p class="section-label">Looking ahead</p>'+data['future']+'</div>')
-    if old_links: perspective.append(old_links)
-    set_inner(about.select_one('.page-heading > p'),theme+'.')
-    resume=docs['resume.html'];main=resume.main
-    heading=deepcopy(main.select_one('.page-heading'));download=deepcopy(main.select_one('.cv-download'))
-    set_inner(heading.select_one('p'),'Research, education, experience, and selected awards.')
-    def sec(id,title,body): return '<section class="resume-section" id="'+id+'"><h2>'+title+'</h2><div>'+body+'</div></section>'
-    content=str(heading)+str(download)+'<div id="background">'+sec('education','Education',''.join(rows))
-    content+=sec('research-interests','Research interests',''.join('<p>'+p+'</p>' for p in interests))
-    content+=sec('skills','Technical skills',''.join('<p class="skill-list">'+p+'</p>' for p in cv['skills']))
-    content+=sec('awards','Selected Awards',data['awards'])+'</div>'
-    content+=sec('resume-publications','Publications &amp; preprints','<p>First- and co-first-author work, followed by collaborative work.</p><div class="inline-links"><a class="text-link" href="research.html#publications">View the complete publication record →</a></div>')
-    set_inner(main,content)
-    research=docs['research.html']
-    set_inner(research.select_one('.page-heading > p'),theme+'.')
-    set_inner(research.select_one('#direction'),''.join('<p>'+p+'</p>' for p in interests))
-    # Resolve stable publication anchors by matching titles, not list positions.
-    archive=research.select_one('#publications')
-    lookup={normalized(x.select_one('.pub-title').get_text()):x for x in archive.select('.publication-list > li')}
-    source_ids=[]
-    for p in cv['papers']:
-        key=normalized(p['title'])
-        if key not in lookup: raise ValueError('Publication title not found on the current site: '+p['title'])
-        li=lookup[key];source_ids.append(li['id'])
-        for whitespace in list(li.children):
-            if isinstance(whitespace, NavigableString) and not whitespace.strip(): whitespace.extract()
-        title_node=li.select_one('.pub-title');anchor=title_node.select_one('a')
-        set_inner(anchor if anchor else title_node,html.escape(p['title']))
-        set_inner(li.select_one('.pub-authors'),p['authors'])
-        detail=li.select_one('.pub-detail');links=deepcopy(detail.select_one('.paper-links'))
-        set_inner(detail,'<span class="paper-venue">'+p['venue']+'</span>'+('<span class="pub-role">'+html.escape(p['role'])+'</span>' if p['role'] else ''))
-        if links: detail.append(links)
-        for old in li.select('.s4ndbox-tldr, .cv-source-summary'): old.decompose()
-        if p['summary']: li.append(fragment('<p class="research-summary cv-source-summary">'+p['summary']+'</p>').p)
-    groups=archive.select('.publication-list')
-    for group in groups: group.clear()
-    for i,p in enumerate(cv['papers']): groups[p['group']].append(lookup[normalized(p['title'])])
-    projects=research.select_one('.project-grid');project_order=[]
-    for p,id in zip(cv['papers'],source_ids):
-        entry=research.find(id=id.replace('pub-','selected-',1))
-        if not entry: continue
-        set_inner(entry.select_one('h3 a'),html.escape(p['title'].split(': ',1)[1] if ': ' in p['title'] else p['title']))
-        set_inner(entry.select_one('.research-authors'),p['authors'])
-        set_inner(entry.select_one('.research-meta'),'<span>'+p['venue']+'</span><span>'+html.escape(p['role'])+'</span>')
-        if p['summary']: set_inner(entry.select_one('.research-summary'),p['summary'])
-        project_order.append(entry)
-    if len(project_order)!=7: raise ValueError('Expected seven unchanged project routes')
-    projects.clear()
-    for entry in project_order: projects.append(entry)
-    # Refresh Home from the canonical metadata but keep the same three projects,
-    # figures, resources, and compact academic row layout.
-    selected=home.select_one('.selected-list');selected.clear()
-    for id in ['selected-world-action-model','selected-game','selected-eag3r']:
-        item=deepcopy(research.find(id=id));del item['id'];item['class']=['research-entry','home-research-entry']
-        if item.select_one('figcaption'):item.select_one('figcaption').decompose()
-        selected.append(item)
-    # Keep the no-JavaScript archive fallback synchronized as well.
-    fallback=docs['publications.html']
-    old_groups=fallback.select('.publication-group');new_groups=archive.select('.publication-group')
-    if len(old_groups)!=2: raise ValueError('Missing publication fallback groups')
-    for old,new in zip(old_groups,new_groups):old.replace_with(deepcopy(new))
-    data['publications']=[str(g) for g in new_groups]
-    for name,doc in docs.items():
-        doc.body['data-resume-source']='cv02';doc.body['data-resume-source-blob']=cv['source_git_blob']
-        title=('Xiaoshan Wu | '+theme) if name=='index.html' else doc.title.get_text()
-        doc.title.string=title
-        if doc.select_one('meta[property="og:title"]'):doc.select_one('meta[property="og:title"]')['content']=title
-        description='Xiaoshan Wu — '+theme.lower()+', 4D world–action modeling, and sim-to-real transfer.'
-        for m in doc.select('meta[name="description"],meta[property="og:description"]'):m['content']=description
-    return source_ids
+def esc(value):
+    return html.escape(str(value), quote=True)
+
+
+def link(url, label, extra=''):
+    external = ' target="_blank" rel="noopener"' if url.startswith(('https://', 'http://')) else ''
+    return f'<a href="{esc(url)}"{external}{extra}>{label}</a>'
+
+
+def navigation(cfg, page):
+    current = 'research.html' if page == 'publications.html' else page
+    return ''.join(link(n['url'], esc(n['label']), ' aria-current="page"' if n['url'] == current else '') for n in cfg['navigation'])
+
+
+def document(name, content, cfg, cv):
+    title = 'Xiaoshan Wu' if name == 'index.html' else name.split('.')[0].title() + ' | Xiaoshan Wu'
+    canonical = 'research.html' if name == 'publications.html' else name
+    description = 'Xiaoshan Wu — world models for generalizable robotic planning, spatial perception, and embodied intelligence.'
+    nav = navigation(cfg, name)
+    return f'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Xiaoshan Wu"><meta name="color-scheme" content="light">
+<title>{esc(title)}</title><meta name="description" content="{esc(description)}">
+<link rel="canonical" href="{BASE}{canonical}">
+<meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}">
+<meta property="og:type" content="website"><meta property="og:url" content="{BASE}{canonical}">
+<link rel="stylesheet" href="{STYLE}"><script defer src="{SCRIPT}"></script>
+</head>
+<body class="site-layout" data-page="{name.split('.')[0]}" data-design="{DESIGN}" data-resume-source="cv02" data-resume-source-blob="{cv['source_git_blob']}" id="top">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-topbar"><div class="site-header wrap">{link('index.html','Xiaoshan Wu',' class="wordmark" aria-label="Xiaoshan Wu, Home"')}<nav class="site-nav" aria-label="Main navigation">{nav}</nav></div></header>
+<main class="wrap" id="main">{content}</main>
+<footer class="site-footer wrap"><span>© 2026 Xiaoshan Wu</span><nav aria-label="Footer navigation">{nav}{link('mailto:wuxiaoshan630@gmail.com','Email')}</nav></footer>
+<dialog class="figure-dialog" id="research-figure" aria-labelledby="figure-heading"><div class="dialog-bar"><p id="figure-heading">Research figure</p><button type="button" class="figure-close">Close ×</button></div><img class="figure-dialog-image" alt=""><p class="figure-dialog-caption"></p></dialog>
+</body></html>
+'''
+
+
+def media(view, url):
+    m = view.get('media')
+    if not m:
+        return ''
+    crop = m.get('crop')
+    style = ''
+    if crop:
+        x, y, w, h = crop
+        frame_style = f'aspect-ratio:{w}/{h}'
+        style = f'position:absolute;width:{m["width"] / w * 100:.5f}%;max-width:none;height:auto;left:{-x / w * 100:.5f}%;top:{-y / h * 100:.5f}%'
+    else:
+        frame_style = f'aspect-ratio:{m["width"]}/{m["height"]}'
+    image = f'<span class="media-frame" style="{frame_style}"><img src="{esc(m["src"])}" alt="{esc(m["alt"])}" width="{m["width"]}" height="{m["height"]}" loading="lazy" decoding="async" style="{style}"></span>'
+    return '<figure class="research-media">' + link(url, image, ' class="media-link" aria-label="Open project"') + '<figcaption>' + esc(m['caption']) + '</figcaption></figure>'
+
+
+def resource_links(view, home=False):
+    links = []
+    for r in view.get('resources', []):
+        if home and not r.get('home'):
+            continue
+        extra = ' data-figure' if r.get('figure') else ''
+        links.append(link(r['url'], esc(r['label']), extra))
+    return '<nav class="research-links" aria-label="Research resources">' + ''.join(links) + '</nav>' if links else ''
+
+
+def authors_short(authors):
+    parts = authors.rstrip('. ').split(', ')
+    if len(parts) <= 3:
+        return authors
+    selected = parts[:3]
+    if not any('X. Wu' in p for p in selected):
+        # Never let abbreviation hide the site's author.
+        selected = parts[:2] + [next(p for p in parts if 'X. Wu' in p)]
+    return ', '.join(selected) + ', et al.'
+
+
+def metadata(paper):
+    venue = paper['venue'].rstrip('.')
+    role = '<span class="research-role">' + esc(paper['role']) + '</span>' if paper['role'] else ''
+    return '<p class="research-meta"><span>' + venue + '</span>' + role + '</p>'
+
+
+def home_page(cfg, papers, cv, data):
+    contacts = ''.join(link(u,l) for l,u in [('Email','mailto:wuxiaoshan630@gmail.com'),('Google Scholar','https://scholar.google.com/citations?user=9nsSKpsAAAAJ&hl=en'),('GitHub','https://github.com/Candy-Crusher'),('CV (PDF)','Xiaoshan_Wu_CV.pdf')])
+    content = f'''<section class="profile" id="welcome" aria-labelledby="name">
+<div class="profile-heading"><h1 id="name">Xiaoshan Wu <span lang="zh">吴小山</span></h1></div>
+<figure class="portrait"><img src="images/research/profile.webp" alt="Xiaoshan Wu" width="170" height="222" decoding="async" fetchpriority="high"></figure>
+<div class="profile-copy"><p class="biography">{cfg['home']['identity']}</p><p class="research-lead">{cfg['home']['lead']}</p><nav class="contact-links" aria-label="Contact and profiles">{contacts}</nav></div>
+</section><section class="home-selected" aria-labelledby="home-selected-title"><div class="section-heading"><h2 id="home-selected-title">Selected research</h2>{link('research.html','All publications →')}</div><div class="selected-list">'''
+    for id in cfg['home']['featured']:
+        p = papers[id]; v = cfg['papers'][id]
+        image = media(v, p['project_url'])
+        title = link(p['project_url'], esc(v['short_title']))
+        evidence = '<p class="research-evidence">' + v['evidence'] + '</p>' if v.get('evidence') else ''
+        content += f'''<article class="selected-entry" data-paper="{id}">{image}<div class="research-copy"><h3>{title}</h3>{metadata(p)}<p class="research-authors">{authors_short(p['authors'])}</p><p class="research-summary">{esc(v['summary'])}</p>{evidence}{resource_links(v, home=True)}</div></article>'''
+    content += '</div></section><section class="news-section" aria-labelledby="news"><h2 id="news">Recent updates</h2>'
+    content += data['news'].replace('publications.html#','research.html#') + '</section>'
+    return content
+
+
+def research_page(cfg, papers, cv):
+    content = '<header class="page-heading"><h1>Research</h1><p>' + esc(cfg['research']['intro']) + '</p></header>'
+    content += '<nav class="section-links" aria-label="Research sections">' + link('#first-author-work','First- &amp; co-first-author work') + link('#collaborative-work','Collaborative work') + '</nav>'
+    content += '<div id="publications"><span class="anchor-alias" id="direction"></span><span class="anchor-alias" id="projects"></span><span class="anchor-alias" id="selected-research"></span>'
+    for group_idx, heading, anchor in [(0,'First- and Co-first-author Work','first-author-work'),(1,'Collaborative Work','collaborative-work')]:
+        content += f'<section class="publication-group" aria-labelledby="{anchor}"><h2 id="{anchor}">{heading}</h2>'
+        if group_idx == 0:
+            content += '<p class="section-note">* Equal contribution · † Project lead. Publication and review status are indicated for each work.</p>'
+        content += '<ol class="publication-list '+('lead-papers' if group_idx == 0 else 'collaborative-papers')+'" start="'+('1' if group_idx==0 else '9')+'">'
+        for id, p in papers.items():
+            if p['group'] != group_idx:
+                continue
+            v = cfg['papers'][id]
+            dest = p['project_url'] or next((x['url'] for x in v['resources'] if x['label']=='Paper'), None)
+            title = link(dest, esc(p['title'])) if dest else esc(p['title'])
+            image = media(v, dest) if dest else ''
+            summary = '<p class="research-summary">'+esc(v['summary'])+'</p>' if v.get('summary') else ''
+            evidence = '<p class="research-evidence">'+v['evidence']+'</p>' if v.get('evidence') else ''
+            alias = '<span class="anchor-alias" id="'+id.replace('pub-','selected-',1)+'"></span>' if p['project_url'] else ''
+            content += f'<li id="{id}" data-paper="{id}" class="publication-entry '+('with-media' if image else 'text-only')+f'">{alias}<div class="publication-layout">{image}<div class="research-copy"><h3 class="pub-title">{title}</h3>{metadata(p)}<p class="pub-authors research-authors">{p["authors"]}</p>{summary}{evidence}{resource_links(v)}</div></div></li>'
+        content += '</ol></section>'
+    return content + '</div>'
+
+
+def experience_row(e):
+    return '<div class="experience-row"><div><h3>'+esc(e['school'])+'</h3><p class="position">'+esc(e['role'])+'</p>'+''.join('<p class="detail">'+x+'</p>' for x in e['details'])+'</div><p class="dates">'+esc(e['dates'])+'<br><span>'+esc(e['location'])+'</span></p></div>'
+
+
+def resume_page(cfg, papers, cv):
+    def sec(id,heading,body):
+        return f'<section class="resume-section" id="{id}"><h2>{heading}</h2><div>{body}</div></section>'
+    content = '<header class="page-heading resume-heading"><h1>Resume</h1><div class="download-links">'+link('Xiaoshan_Wu_CV.pdf','View CV (PDF)',' target="_blank" rel="noopener"')+link('Xiaoshan_Wu_CV.pdf','Download PDF',' download="Xiaoshan_Wu_CV.pdf"')+'</div></header>'
+    content += '<p class="resume-intro">World models for generalizable robotic planning. '+link('research.html','Browse research &amp; publications →')+'</p><div id="background">'
+    experience = [e for e in cv['education'] if 'Visiting' in e['role']]
+    education = [e for e in cv['education'] if 'Visiting' not in e['role']]
+    content += sec('experience','Research Experience',''.join(experience_row(e) for e in experience))
+    content += sec('education','Education',''.join(experience_row(e) for e in education))
+    content += sec('skills','Technical Skills',''.join('<p class="skill-line">'+s+'</p>' for s in cv['skills']))
+    content += sec('awards','Selected Awards','<ul class="awards">'+''.join('<li>'+s.rstrip('.')+'</li>' for s in cv['awards'])+'</ul>')
+    return content + '</div>'
+
+
+def about_page(cfg, papers, cv):
+    a=cfg['about']
+    content='<article class="about-essay"><header class="page-heading"><h1>About</h1><p>'+esc(a['background'])+'</p><p class="about-background-link">'+link('resume.html','Education &amp; experience →')+'</p></header>'
+    content+='<section aria-labelledby="perspective"><h2 id="perspective">Research perspective</h2>'+''.join('<p>'+esc(s)+'</p>' for s in a['perspective'])+'</section>'
+    content+='<section aria-labelledby="future"><h2 id="future">Looking ahead</h2><p>'+cv['interests'][3]+'</p></section>'
+    content+='<section id="inspiration" aria-labelledby="inspiration-title"><h2 id="inspiration-title">A personal inspiration</h2><p>'+a['inspiration']+'</p><figure class="inspiration-figure"><img src="images/theme/shared-world-1440.webp" alt="Film still from Blade Runner 2049" width="1440" height="603" loading="lazy" decoding="async"><figcaption><cite>Blade Runner 2049</cite> (2017). Visual inspiration, not a research result. '+link('images/theme/shared-world-source.json','Image source')+'. All rights belong to the respective rights holders.</figcaption></figure></section></article>'
+    return content
 
 
 def main():
-    protected={str(p.relative_to(ROOT)):digest(p) for p in [ROOT/'cv.tex',ROOT/'Xiaoshan_Wu_CV.pdf',*sorted((ROOT/'cv/2027-internships').glob('*.tex'))]}
-    docs={name:fragment((ROOT/name).read_text()) for name in PAGES}
-    inspiration=str(docs['about.html'].select_one('#inspiration'))
-    cv=parse_cv();data=json.loads((ROOT/'_site_content/personal-site.json').read_text())
-    ids=synchronize(docs,cv,data)
-    assert str(docs['about.html'].select_one('#inspiration'))==inspiration
-    assert len(docs['research.html'].select('.publication-list > li'))==15
-    assert docs['resume.html'].select_one('#awards h2').get_text()=='Selected Awards'
-    for name,doc in docs.items():
-        assert doc.body['data-design']==DESIGN
-        (ROOT/name).write_text(str(doc).rstrip()+'\n')
-    (ROOT/'_site_content/personal-site.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
-    cv['publication_anchors']=ids
+    paths=[ROOT/'cv.tex',ROOT/'Xiaoshan_Wu_CV.pdf',ROOT/'ia8eshfzfsvn.pdf',*sorted((ROOT/'cv/2027-internships').glob('*.tex')),*sorted((ROOT/'projects').glob('*/index.html'))]
+    protected={str(p.relative_to(ROOT)):digest(p) for p in paths if p.is_file()}
+    cv=parse_cv()
+    cfg=json.loads((ROOT/'_site_content/site-presentation.json').read_text())
+    data=json.loads((ROOT/'_site_content/personal-site.json').read_text())
+    lookup={normalized(v['source_title']):id for id,v in cfg['papers'].items()}
+    papers={lookup[normalized(p['title'])]:p for p in cv['papers']}
+    assert len(papers)==15 and len(cfg['home']['featured'])==4
+    assert cfg['navigation']==[{'label':l,'url':u} for l,u in [('Home','index.html'),('Research','research.html'),('Resume','resume.html'),('About','about.html')]]
+    bodies={'index.html':home_page(cfg,papers,cv,data),'research.html':research_page(cfg,papers,cv),'resume.html':resume_page(cfg,papers,cv),'about.html':about_page(cfg,papers,cv)}
+    # Full, no-JavaScript fallback on the former archive URL; no extra record on Research.
+    bodies['publications.html']=bodies['research.html']
+    for name,body in bodies.items():
+        (ROOT/name).write_text(document(name,body,cfg,cv))
+    cv['publication_anchors']=list(papers)
     (ROOT/'_site_content/resume-cv02.json').write_text(json.dumps(cv,ensure_ascii=False,indent=2)+'\n')
-    for name,sha in protected.items():assert digest(ROOT/name)==sha,name
-    report=dict(design=DESIGN,source=SOURCE,source_git_blob=cv['source_git_blob'],public_cv_matches_source=True,
-                publication_count=15,project_count=7,separate_awards_section=True,protected_cv_files=len(protected),
-                publication_anchors=ids,inspiration_preserved=True)
+    assert all(digest(ROOT/n)==h for n,h in protected.items()), 'A protected CV or project page changed'
+    report={'design':DESIGN,'source':SOURCE,'source_git_blob':cv['source_git_blob'],'publication_count':15,'first_author_count':8,'collaborative_count':7,'homepage_features':cfg['home']['featured'],'publications_visible_without_javascript':True,'separate_awards_section':True,'protected_files':protected,'page_roles':{'Home':'Introduction and selected work','Research':'Single complete publication record','Resume':'Experience, education, skills and awards','About':'Motivation and future interests'}}
     Path('/tmp/personal-site-style-preservation.json').write_text(json.dumps(report,indent=2))
-    print(json.dumps(report,indent=2))
+    print(json.dumps({k:v for k,v in report.items() if k!='protected_files'},indent=2))
 
-if __name__=='__main__':main()
+
+if __name__=='__main__':
+    main()

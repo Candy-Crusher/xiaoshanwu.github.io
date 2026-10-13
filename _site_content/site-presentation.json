@@ -1,0 +1,293 @@
+{
+  "version": 2,
+  "design": "academic-ia-20261014",
+  "navigation": [
+    {
+      "label": "Home",
+      "url": "index.html"
+    },
+    {
+      "label": "Research",
+      "url": "research.html"
+    },
+    {
+      "label": "Resume",
+      "url": "resume.html"
+    },
+    {
+      "label": "About",
+      "url": "about.html"
+    }
+  ],
+  "home": {
+    "identity": "I am a Ph.D. candidate at the University of Hong Kong, advised by <a href=\"https://xjqi.github.io/\">Xiaojuan Qi</a>, and a Visiting Scholar at Harvard University, working with Yilun Du and Mengyu Wang.",
+    "lead": "I am interested in <strong>world models for generalizable robotic planning</strong>. My work connects spatial perception and memory with physically grounded future prediction to support reliable robot action.",
+    "featured": [
+      "pub-world-action-model",
+      "pub-game",
+      "pub-videossm",
+      "pub-eag3r"
+    ]
+  },
+  "research": {
+    "intro": "My research develops the perceptual and predictive foundations for reliable robot action—from recovering spatial evidence and retaining context to generating physically grounded futures. Below are my first- and co-first-author papers, followed by collaborative work."
+  },
+  "about": {
+    "background": "I am a Ph.D. candidate at the University of Hong Kong and a Visiting Scholar at Harvard University. I received dual B.S. degrees in Computer Engineering from Zhejiang University and UIUC through the ZJUI Institute.",
+    "perspective": [
+      "I am interested in how robots can use a coherent understanding of the physical world to act reliably in unfamiliar environments. This requires more than recognizing what is in an image: a robot must recover spatial relationships, retain useful evidence across observations, and anticipate how the world may change.",
+      "My work approaches this question through spatial perception, geometric memory, and future prediction. The common goal is to make information about the world useful for action—not simply to produce another image or representation."
+    ],
+    "inspiration": "Joi in <cite>Blade Runner 2049</cite> inspires my interest in AI as a presence in everyday life. For me, the research question is how to ground that presence in an understanding of the world, meaningful action, and the ability to learn from experience."
+  },
+  "papers": {
+    "pub-world-action-model": {
+      "resources": [
+        {
+          "label": "Project",
+          "url": "projects/sandbox/",
+          "home": true,
+          "figure": false
+        },
+        {
+          "label": "Interactive 4D",
+          "url": "projects/sandbox/rdf-viewer.html?case=pose-1",
+          "home": false,
+          "figure": false
+        },
+        {
+          "label": "Method figure",
+          "url": "images/research/s4ndbox-method-full.webp",
+          "home": false,
+          "figure": true
+        },
+        {
+          "label": "Robot demo (10×)",
+          "url": "https://demo1-indol-gamma.vercel.app/#cover",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "summary": "Explicit 4D futures connect visual prediction with robot control and support pre-execution geometric consistency checks.",
+      "short_title": "S4NDBOX: 4D futures for robot control",
+      "evidence": "<strong>+13.3 pp</strong> success on RoboTwin Hard after clean-only training, versus RGB-only; zero-shot sim-to-real on Franka Research 3.",
+      "media": {
+        "src": "projects/sandbox/static/images/poster_rgbok_clutter.jpg",
+        "width": 1024,
+        "height": 576,
+        "alt": "Franka Research 3 and cups in the real-world clutter setting",
+        "caption": "Franka Research 3 · real-robot setup"
+      },
+      "evidence_source": "Tex02 S4NDBOX note; supplied manuscript, Sections 4.1–4.2.",
+      "source_title": "Verifiable 4D World–Action Model for Robust Robot Control"
+    },
+    "pub-game": {
+      "resources": [
+        {
+          "label": "Project",
+          "url": "projects/game/",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "summary": "Geometric working memory brings multi-view spatial evidence into vision–language reasoning.",
+      "short_title": "GaMe: Geometry as memory",
+      "media": {
+        "src": "projects/game/assets/teaser-hd.webp",
+        "width": 1440,
+        "height": 502,
+        "crop": [
+          1025,
+          222,
+          396,
+          198
+        ],
+        "alt": "Annotated room illustrating the reference-frame question in GaMe",
+        "caption": "Cross-view reasoning · illustrative example"
+      },
+      "evidence_source": "Tex02 GaMe note and the existing project teaser. The image is conceptual, not a measured prediction.",
+      "source_title": "GaMe: Geometry as Memory for Multi-View Spatial Reasoning"
+    },
+    "pub-eag3r": {
+      "resources": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2512.00771",
+          "home": true,
+          "figure": false
+        },
+        {
+          "label": "Project",
+          "url": "projects/eag3r/",
+          "home": true,
+          "figure": false
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/Candy-Crusher/EAG3R",
+          "home": true,
+          "figure": false
+        },
+        {
+          "label": "Method figure",
+          "url": "images/research/eag3r-pipeline-full.webp",
+          "home": false,
+          "figure": true
+        }
+      ],
+      "summary": "RGB–event fusion recovers scene geometry under fast motion and difficult lighting, including daytime-to-nighttime transfer.",
+      "short_title": "EAG3R: 3D geometry in challenging light",
+      "media": {
+        "src": "images/research/eag3r-night-depth.webp",
+        "width": 848,
+        "height": 284,
+        "alt": "Nighttime RGB input, RGB-only depth and EAG3R depth compared side by side",
+        "caption": "RGB input · RGB-only depth · EAG3R"
+      },
+      "evidence_source": "Existing EAG3R project and the original research poster crop.",
+      "source_title": "EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes"
+    },
+    "pub-videossm": {
+      "resources": [
+        {
+          "label": "Project",
+          "url": "projects/videossm/",
+          "home": true,
+          "figure": false
+        },
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2512.04519",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "summary": "Local attention and recurrent state-space memory retain recent detail and long-range context for autoregressive video generation.",
+      "short_title": "VideoSSM: Long-video generation with memory",
+      "media": {
+        "src": "projects/videossm/assets/overview-hd.webp",
+        "width": 1440,
+        "height": 474,
+        "crop": [
+          10,
+          324,
+          504,
+          98
+        ],
+        "alt": "Three generated frames from the VideoSSM row of the original overview",
+        "caption": "Generated frames 0 · 480 · 960"
+      },
+      "evidence_source": "Existing VideoSSM project overview and Figure 1. Crop includes only the Ours row; frame indices refer to the original figure.",
+      "source_title": "VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory"
+    },
+    "pub-lifr-seg": {
+      "resources": [
+        {
+          "label": "Project",
+          "url": "projects/lifr-seg/",
+          "home": true,
+          "figure": false
+        },
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2603.21115",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "summary": "Event-guided propagation and temporal memory keep semantic predictions up to date between RGB frames, without requiring an image at each query time.",
+      "source_title": "LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation"
+    },
+    "pub-evsplat": {
+      "resources": [
+        {
+          "label": "Project",
+          "url": "projects/evsplat/",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "summary": "Uncertainty-aware Gaussian splatting for dynamic-scene reconstruction with an event camera.",
+      "source_title": "EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera"
+    },
+    "pub-lifr-v2": {
+      "resources": [
+        {
+          "label": "Project",
+          "url": "projects/lifr-v2/",
+          "home": true,
+          "figure": false
+        },
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2609.25803",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "summary": "Propagation reuses observed content, event-guided completion recovers missing source support, and memory retains inferred content for later queries.",
+      "source_title": "LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction"
+    },
+    "pub-spiking-depth": {
+      "resources": [],
+      "source_title": "Event-Based Depth Prediction With Deep Spiking Neural Network"
+    },
+    "pub-neural-field-memory": {
+      "resources": [
+        {
+          "label": "Paper",
+          "url": "https://www.nature.com/articles/s41586-026-10646-w",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "source_title": "Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory"
+    },
+    "pub-optigeo": {
+      "resources": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2608.29881",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "source_title": "OptiGeo: Efficient Monocular Geometry for Embodied Perception in Optically Challenging Scenes"
+    },
+    "pub-foundationgeo": {
+      "resources": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2607.11588",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "source_title": "FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry"
+    },
+    "pub-streaming-geometry": {
+      "resources": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2605.25308",
+          "home": true,
+          "figure": false
+        }
+      ],
+      "source_title": "Stabilizing Streaming Video Geometry via Dynamic Feature Normalization"
+    },
+    "pub-digital-twin": {
+      "resources": [],
+      "source_title": "Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver"
+    },
+    "pub-dynamic-snn": {
+      "resources": [],
+      "source_title": "Topology Optimization of Random Memristors for Input-Aware Dynamic SNN"
+    },
+    "pub-floating-gate-memory": {
+      "resources": [],
+      "source_title": "Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing"
+    }
+  },
+  "source_policy": "Tex02 is authoritative for CV facts, author order, status, roles, awards and the downloadable PDF. This file controls page-specific editorial summaries, selection, existing-media crops and resources; it does not alter Tex02. No new 8B/128-GPU claim is added in this style change."
+}

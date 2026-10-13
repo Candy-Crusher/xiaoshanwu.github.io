@@ -1,39 +1,33 @@
-# Personal website — CV 02 content, quiet academic design
+# Personal website: facts and presentation
 
-## Canonical resume source
+Navigation: **Home → Research → Resume → About**.
 
-The user-selected source is:
+- **Home**: a short identity and research introduction; S4NDBOX, GaMe, VideoSSM, EAG3R; existing news. Small author lists always retain X. Wu.
+- **Research**: one open record of all 15 papers (8 first/co-first + 7 collaborative). Each paper appears once. No hidden publication accordion or duplicate project catalog.
+- **Resume**: the CV02 PDF; research appointments; degrees; technical skills; a standalone Selected Awards section. Visiting Scholar is an appointment, not a degree.
+- **About**: brief background, research motivation, the future co-evolution agenda, and the existing film inspiration.
 
-`cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex`
+## Sources
 
-The public `cv.tex` is an exact copy of that source. The existing `Build CV PDF` workflow compiles it to both stable public names, `Xiaoshan_Wu_CV.pdf` and `ia8eshfzfsvn.pdf`. Every existing CV download link therefore serves the selected Robotics version. The 13 application sources themselves are not rewritten by the website generator.
+`cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex` is the source of factual CV information. `cv.tex` must match it exactly; the existing CV workflow builds the public PDF. This update does not change either source or any tailored CV.
 
-`python scripts/build-personal-site.py` reads CV 02 and synchronizes:
+`site-presentation.json` is the editorial layer: homepage selection, concise descriptions, display titles, crops of existing figures, captions and resources. It deliberately does not mirror every CV paragraph. `source_title` matches each record to CV02; author lists, publication status, ordering and role labels are obtained from TeX, never retyped here. The full CV-derived cache is `resume-cv02.json`.
 
-- Resume: education/research entries, dates, advisers, GPAs, research interests, technical skills and a separate Selected Awards section.
-- Home and About: the matching biography and research direction, with current work and future co-evolution clearly separated.
-- Research and the legacy publication fallback: publication order, author lists, venues, contribution labels and project notes available in the source.
-- `_site_content/resume-cv02.json`: parsed content and the exact source Git blob SHA for auditability.
-- `_site_content/personal-site.json`: matching editable/archive fragments so older website content does not return on rebuild.
+`personal-site.json` retains the existing news and earlier approved material. Its old cinematic fragment is archival, not rendered.
 
-Figures, project URLs, paper/code/demo links, detailed summaries not supplied by the CV, news and the personal inspiration remain in the existing pages. No new publication status, training scale, award criterion or employment date is invented. In particular, the current source's Tools / Methods wording is copied as written rather than replaced with a different proposed Skills line.
+Media are existing research assets, not newly generated illustrations. GaMe's cropped scene is explicitly an illustrative example; VideoSSM's crop is the original Ours row at frames 0, 480 and 960. All image files remain unchanged. The former local robot-demo URL points to an absent file; the personal-page link now opens the original project site's demo instead.
 
-## Updating the selected resume
-
-After editing CV 02, copy it to `cv.tex`, commit the copy, and let the existing CV workflow finish before publishing the website update. The website generator refuses to publish when the source and public TeX differ.
+## Build and validate
 
 ```sh
-cp cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex cv.tex
 python -m pip install beautifulsoup4 playwright
 python -m playwright install chromium
 python scripts/build-personal-site.py
 python scripts/test-personal-site.py
 ```
 
-The parser is scoped to the current standalone CV format and fails on unsupported LaTeX commands or changed publication/entry counts instead of silently dropping text. Rebuilding twice must yield identical output.
+Tests check factual equivalence to CV02, one record per paper, all 15 visible without JavaScript, author-name retention, independent Awards, internal resources, 320/390/768/1024/1440 px layouts, image loading, keyboard figure closure and legacy anchors. Build repeatability and protected-file hashes are checked. Screenshots and report.json are saved under `personal-site-qa/`.
 
-The existing personal-site workflow performs the responsive and functional checks, uploads screenshots and `report.json`, commits the generated pages, and requests the Pages rebuild. No `.github/workflows/` changes are needed for this update.
+For an offline renderer with no navigation access, use `--inline-preview` and optionally `BROWSER_EXECUTABLE=/path/to/chromium`. This reports navigation testing as not performed; CI executes the full HTTP tests.
 
-## Design and preservation
-
-The white background, typography, modest portrait, four-page navigation and research-row layout remain unchanged. The standalone Selected Awards section is retained in both PDF and HTML. The cinematic image remains only in the existing personal-inspiration section. CV 02 and the other 12 application TeX files, all seven project microsites, CSS and JavaScript files are outside this content synchronization's write scope.
+`publications.html` redirects to Research but retains a full no-JavaScript fallback. Existing `#pub-*`, `#selected-*`, `#projects`, `#publications`, Resume and inspiration anchors are preserved. Individual project microsites and their media are not rewritten.
