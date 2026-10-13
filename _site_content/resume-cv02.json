@@ -1,0 +1,205 @@
+{
+  "source": "cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex",
+  "source_git_blob": "06b46727206e4de4d68542ba50e07b95aa2e8951",
+  "graduation": "Aug. 2027",
+  "interests": [
+    "I am interested in <strong>world models for generalizable robotic planning</strong>: how predictions of the physical world can support reliable action in unfamiliar environments.",
+    "My work develops the perceptual and predictive foundations for this goal, from recovering and retaining spatial evidence to imagining physically plausible 4D futures that guide robot actions and support pre-execution consistency checks.",
+    "My recent world–action model is evaluated through zero-shot sim-to-real transfer.",
+    "I am now interested in <strong>agent–world model co-evolution</strong>: using task-relevant prediction errors to guide interaction and model refinement, while action-conditioned world models support policy evaluation, improvement, and longer-horizon planning."
+  ],
+  "education": [
+    {
+      "school": "Harvard University",
+      "location": "Cambridge, MA, USA",
+      "role": "Visiting Scholar (Embodied AI & 4D World Models)",
+      "dates": "Apr. 2026 – Present",
+      "details": [
+        "<strong>Advisors:</strong> Yilun Du and Mengyu Wang."
+      ]
+    },
+    {
+      "school": "The University of Hong Kong (HKU)",
+      "location": "Hong Kong",
+      "role": "Ph.D. in Electrical and Computer Engineering",
+      "dates": "Sep. 2023 – Present",
+      "details": [
+        "<strong>Awards:</strong> Hong Kong PhD Fellowship (<strong>HKPFS, Top Tier</strong>), HKU Presidential Scholarship.",
+        "<strong>Advisor:</strong> Xiaojuan Qi. <strong>GPA:</strong> 4.0/4.3. <strong>Expected graduation:</strong> Aug. 2027."
+      ]
+    },
+    {
+      "school": "Zhejiang University (ZJU) & UIUC",
+      "location": "China & USA",
+      "role": "Dual B.S. in Computer Engineering (ZJUI Institute)",
+      "dates": "Sep. 2019 – Jun. 2023",
+      "details": [
+        "<strong>Honors:</strong> Outstanding Graduate (Rank 5), Dean&#x27;s List. <strong>GPA:</strong> 3.99/4.0 (ZJU), 3.75/4.0 (UIUC)."
+      ]
+    }
+  ],
+  "skills": [
+    "<strong>Tools:</strong> Python, PyTorch (CUDA), Diffusers, Open3D, OpenCV.",
+    "<strong>Methods:</strong> World–action modeling; geometric action checks; sim-to-real evaluation on Franka Research 3."
+  ],
+  "awards": [
+    "Hong Kong PhD Fellowship (HKPFS, 2023)",
+    "HKU Presidential Scholarship (2023).",
+    "Outstanding Graduate of Zhejiang University (2023)",
+    "NeurIPS (2025) and ICLR (2026) Travel Awards."
+  ],
+  "papers": [
+    {
+      "title": "Verifiable 4D World–Action Model for Robust Robot Control",
+      "authors": "<strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou, M. Wang, and Y. Du.",
+      "venue": "Under review at ICLR 2027.",
+      "role": "First author",
+      "summary": "<span>S4NDBOX bridges visual imagination and robot control through explicit 4D futures, improving <strong>physical plausibility</strong> (+11.2% relative spatiotemporal IoU vs. RGB-only) and enabling <strong>pre-execution geometric verification</strong> (observed +7.9 pp success within three attempts vs. random ordering).</span> <strong>OOD generalization</strong> over RGB-only: <strong>+13.3 pp</strong> success on RoboTwin Hard (clean-only training); <strong>+40.0</strong> task-score points on single-view <strong>zero-shot sim-to-real</strong> settings.",
+      "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/sandbox/",
+      "group": 0
+    },
+    {
+      "title": "GaMe: Geometry as Memory for Multi-View Spatial Reasoning",
+      "authors": "<strong>X. Wu</strong>, X. Lyu, Y. Yu, M. Liu, S. Shi, Z. Wang, and X. Qi.",
+      "venue": "Under review at ICRA 2027.",
+      "role": "First author",
+      "summary": "<span>Geometric working memory aggregates multi-view evidence for spatial question answering.</span>",
+      "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/game/",
+      "group": 0
+    },
+    {
+      "title": "EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes",
+      "authors": "<strong>X. Wu</strong>, Y. Yu, X. Lyu, et al.",
+      "venue": "<strong>NeurIPS 2025</strong> <span class=\"highlight\"><strong>· Spotlight</strong></span>.",
+      "role": "First author",
+      "summary": "",
+      "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/eag3r/",
+      "group": 0
+    },
+    {
+      "title": "VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory",
+      "authors": "Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*</sup></strong>, X. Hu, et al.",
+      "venue": "arXiv:2512.04519, 2025.",
+      "role": "Co-first author",
+      "summary": "",
+      "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/videossm/",
+      "group": 0
+    },
+    {
+      "title": "LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation",
+      "authors": "<strong>X. Wu</strong>, X. Lyu, Y. Yu, B. Wang, Z. Wang, and X. Qi.",
+      "venue": "<strong>ICLR 2026</strong>.",
+      "role": "First author",
+      "summary": "",
+      "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/lifr-seg/",
+      "group": 0
+    },
+    {
+      "title": "EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera",
+      "authors": "Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*†</sup></strong>, X. Lyu, Z. Wang, and X. Qi.",
+      "venue": "Under review at AAAI 2027.",
+      "role": "Co-first author; project lead",
+      "summary": "",
+      "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/evsplat/",
+      "group": 0
+    },
+    {
+      "title": "LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction",
+      "authors": "T. Wan<sup>*</sup>, <strong>X. Wu<sup>*†</sup></strong>, Y. Yu, et al.",
+      "venue": "Under review at IEEE TPAMI; arXiv:2609.25803, 2026.",
+      "role": "Co-first author; project lead",
+      "summary": "",
+      "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/lifr-v2/",
+      "group": 0
+    },
+    {
+      "title": "Event-Based Depth Prediction With Deep Spiking Neural Network",
+      "authors": "<strong>X. Wu</strong>, W. He, M. Yao, et al.",
+      "venue": "<strong>IEEE TCDS</strong>, 16(6):2008–2018, 2024.",
+      "role": "First author",
+      "summary": "",
+      "project_url": null,
+      "group": 0
+    },
+    {
+      "title": "Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory",
+      "authors": "Y. Yu, X. Zhang, S. Wang, …, <strong>X. Wu</strong>, et al.",
+      "venue": "<strong>Nature</strong>, 654:642–651, 2026.",
+      "role": "",
+      "summary": "",
+      "project_url": null,
+      "group": 1
+    },
+    {
+      "title": "OptiGeo: Efficient Monocular Geometry for Embodied Perception in Optically Challenging Scenes",
+      "authors": "M. Liu, T. Liu, J. Xia, X. Lyu, <strong>X. Wu</strong>, et al.",
+      "venue": "<strong>CoRL 2026</strong>.",
+      "role": "",
+      "summary": "",
+      "project_url": null,
+      "group": 1
+    },
+    {
+      "title": "FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry",
+      "authors": "M. Liu, X. Lyu, T. Ren, P. Dai, <strong>X. Wu</strong>, et al.",
+      "venue": "<strong>ECCV 2026</strong>.",
+      "role": "",
+      "summary": "",
+      "project_url": null,
+      "group": 1
+    },
+    {
+      "title": "Stabilizing Streaming Video Geometry via Dynamic Feature Normalization",
+      "authors": "X. Lyu, M. Liu, <strong>X. Wu</strong>, et al.",
+      "venue": "<strong>CVPR 2026</strong>, pp. 7577–7587.",
+      "role": "",
+      "summary": "",
+      "project_url": null,
+      "group": 1
+    },
+    {
+      "title": "Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver",
+      "authors": "H. Chen, J. Yang, J. Chen, …, <strong>X. Wu</strong>, et al.",
+      "venue": "<strong>Science Advances</strong>, 11(22):eadr7571, 2025.",
+      "role": "",
+      "summary": "",
+      "project_url": null,
+      "group": 1
+    },
+    {
+      "title": "Topology Optimization of Random Memristors for Input-Aware Dynamic SNN",
+      "authors": "B. Wang, X. Zhang, S. Wang, …, <strong>X. Wu</strong>, et al.",
+      "venue": "<strong>Science Advances</strong>, 11(16):eads5340, 2025.",
+      "role": "",
+      "summary": "",
+      "project_url": null,
+      "group": 1
+    },
+    {
+      "title": "Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing",
+      "authors": "C. Li, X. Chen, Z. Zhang, <strong>X. Wu</strong>, et al.",
+      "venue": "<strong>Nano Letters</strong>, 24(47):15025–15034, 2024.",
+      "role": "",
+      "summary": "",
+      "project_url": null,
+      "group": 1
+    }
+  ],
+  "publication_anchors": [
+    "pub-world-action-model",
+    "pub-game",
+    "pub-eag3r",
+    "pub-videossm",
+    "pub-lifr-seg",
+    "pub-evsplat",
+    "pub-lifr-v2",
+    "pub-spiking-depth",
+    "pub-neural-field-memory",
+    "pub-optigeo",
+    "pub-foundationgeo",
+    "pub-streaming-geometry",
+    "pub-digital-twin",
+    "pub-dynamic-snn",
+    "pub-floating-gate-memory"
+  ]
+}
