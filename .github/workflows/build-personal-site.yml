@@ -83,12 +83,16 @@ jobs:
             --header "Accept: application/vnd.github+json" \
             --header "Authorization: Bearer $GH_TOKEN" \
             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pages/builds"
-      - name: Verify the public four-page website
+      - name: Verify the public personal website and compatibility pages
         run: |
           python - <<'PY'
           from urllib.request import Request,urlopen
           from bs4 import BeautifulSoup
           import time,json
+          from pathlib import Path
+          config=json.loads(Path('_site_content/site-presentation.json').read_text())
+          expected_nav=[item['label'] for item in config['navigation']]
+          expected_design=config['design']
           base='https://candy-crusher.github.io/xiaoshanwu.github.io/'
           reports=[]
           for attempt in range(42):
@@ -100,9 +104,9 @@ jobs:
                           text=response.read().decode();status=response.status
                       doc=BeautifulSoup(text,'html.parser')
                       nav=[a.get_text(strip=True) for a in doc.select('nav[aria-label="Main navigation"] a')]
-                      reports.append({'page':name,'status':status,'navigation':nav,'updated':doc.body.get('data-design')=='academic-ia-20261014'})
+                      reports.append({'page':name,'status':status,'navigation':nav,'updated':doc.body.get('data-design')==expected_design})
                   except Exception as exc:reports.append({'page':name,'error':str(exc)})
-              if all(r.get('updated') and r.get('navigation')==['Home','Research','Resume','About'] for r in reports):
+              if all(r.get('updated') and r.get('navigation')==expected_nav for r in reports):
                   print(json.dumps({'live_pages':reports,'status':'PASS'},indent=2));break
               time.sleep(5)
           else:raise SystemExit(json.dumps({'live_verification':'Updated pages not yet observed','last_checks':reports},indent=2))

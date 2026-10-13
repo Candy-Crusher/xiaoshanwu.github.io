@@ -1,21 +1,32 @@
-/* Progressive enhancement only: every paper is readable without JavaScript. */
+/* Progressive enhancement: the complete research record is native homepage HTML. */
 (() => {
   'use strict';
   const page = document.body.dataset.page;
-  const hash = location.hash;
-  if (page === 'publications') { location.replace('research.html' + hash); return; }
-  if (page === 'index' && hash) {
-    const id = hash.slice(1);
-    const resume = ['background', 'education', 'experience', 'awards', 'skills', 'research-interests'];
-    const target = resume.includes(id) ? 'resume.html' : id === 'inspiration' ? 'about.html' :
-      ['direction', 'selected-research', 'publications', 'projects'].includes(id) || /^(selected-|pub-)/.test(id) ? 'research.html' : '';
-    if (target) { location.replace(target + hash); return; }
+  const legacy = page === 'research' || page === 'publications';
+  if (legacy) {
+    location.replace('index.html' + location.search + (location.hash || '#research'));
+    return;
   }
-  // Old Resume interest links now point to the research record rather than a
-  // second copy of the same paragraph.
-  if (page === 'resume' && ['#research-interests','#resume-publications'].includes(hash)) {
-    location.replace('research.html' + (hash === '#resume-publications' ? '#publications' : '#direction')); return;
+  function routeLegacyHash() {
+    const hash = location.hash;
+    if (!hash) return false;
+    let id;
+    try { id = decodeURIComponent(hash.slice(1)); } catch (_) { return false; }
+    if (page === 'index') {
+      const resume = ['background', 'education', 'experience', 'awards', 'skills'];
+      if (resume.includes(id)) { location.replace('resume.html' + hash); return true; }
+      if (id === 'inspiration') { location.replace('about.html' + hash); return true; }
+      // Research and paper hashes now stay here. Never redirect back to the
+      // legacy research.html alias: that would cause a navigation loop.
+    }
+    if (page === 'resume' && ['research-interests', 'resume-publications'].includes(id)) {
+      location.replace('index.html#' + (id === 'resume-publications' ? 'publications' : 'research-interests'));
+      return true;
+    }
+    return false;
   }
+  if (routeLegacyHash()) return;
+  window.addEventListener('hashchange', routeLegacyHash);
   const dialog = document.getElementById('research-figure');
   if (!dialog || typeof dialog.showModal !== 'function') return;
   let opener = null;
@@ -25,7 +36,7 @@
   document.querySelectorAll('a[data-figure]').forEach(a => a.addEventListener('click', e => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
     e.preventDefault(); opener = a; image.src = a.href;
-    image.alt = a.closest('[data-paper]')?.querySelector('h3')?.textContent || 'Research figure';
+    image.alt = a.closest('[data-paper]')?.querySelector('.pub-title')?.textContent || 'Research figure';
     caption.textContent = a.dataset.caption || image.alt;
     dialog.showModal(); close.focus();
   }));

@@ -16,9 +16,10 @@ from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'personal-site-qa'
-PAGES=['index.html','research.html','resume.html','about.html']
-DESIGN='academic-ia-20261014'
-NAV=['Home','Research','Resume','About']
+PAGES=['index.html','resume.html','about.html']
+ALIASES=['research.html','publications.html']
+DESIGN='academic-home-research-20261014'
+NAV=['Home','Resume','About']
 
 
 def text(node): return ' '.join(node.stripped_strings)
@@ -29,10 +30,10 @@ def static_checks():
     spec=importlib.util.spec_from_file_location('site_builder',ROOT/'scripts/build-personal-site.py')
     builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
     cv=builder.parse_cv()
-    before={n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest() for n in PAGES+['publications.html']}
+    before={n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest() for n in PAGES+ALIASES}
     builder.main()
     assert all(hashlib.sha256((ROOT/n).read_bytes()).hexdigest()==h for n,h in before.items()), 'Build is not idempotent'
-    docs={n:BeautifulSoup((ROOT/n).read_text(),'html.parser') for n in PAGES+['publications.html']}
+    docs={n:BeautifulSoup((ROOT/n).read_text(),'html.parser') for n in PAGES+ALIASES}
     for name,doc in docs.items():
         assert doc.body['data-design']==DESIGN
         assert [text(a) for a in doc.select('nav[aria-label="Main navigation"] a')]==NAV
@@ -49,16 +50,27 @@ def static_checks():
             if url.fragment and local.suffix=='.html':
                 target=BeautifulSoup(local.read_text(),'html.parser')
                 assert target.find(id=unquote(url.fragment)), (name,str(url))
-    r=docs['research.html'];items=r.select('.publication-list > li')
+    r=docs['index.html'];items=r.select('.publication-list > li')
     assert len(items)==15
     assert len(r.select('.lead-papers > li'))==8 and len(r.select('.collaborative-papers > li'))==7
     for item,paper in zip(items,cv['papers']):
-        assert text(item.select_one('h3'))==paper['title']
+        assert text(item.select_one('.pub-title'))==paper['title']
         assert norm(text(item.select_one('.pub-authors')))==norm(builder.plain(paper['authors']))
         assert 'X.Wu' in norm(text(item.select_one('.pub-authors')))
         assert norm(text(item.select_one('.research-meta > span')))==norm(builder.plain(paper['venue']))
         if paper['role']:assert text(item.select_one('.research-role'))==paper['role']
-    assert len(docs['index.html'].select('.selected-entry'))==4
+    assert not docs['index.html'].select('.selected-entry')
+    assert len(docs['index.html'].select('[data-paper]')) == 15
+    assert len(docs['index.html'].select('.profile-copy > p')) == 2
+    bio = text(docs['index.html'].select_one('.biography'))
+    assert bio.startswith('I am a Visiting Scholar at Harvard University')
+    assert bio.index('Harvard') < bio.index('University of Hong Kong') < bio.index('Zhejiang University')
+    assert all(x in bio for x in ['Yilun Du', 'Mengyu Wang', 'fourth-year', 'HKPFS', 'HKUPS', 'University of Illinois Urbana-Champaign'])
+    interests = text(docs['index.html'].select_one('.research-lead'))
+    assert norm(interests) == norm(builder.plain(' '.join(cv['interests'][i] for i in [0,1,3])))
+    for name in ALIASES:
+        assert len(docs[name].select('.publication-list > li')) == 15
+        assert docs[name].select_one('link[rel=canonical]')['href'].endswith('/index.html')
     assert docs['index.html'].select_one('[data-paper="pub-videossm"]')
     assert docs['resume.html'].select_one('#experience h2').get_text()=='Research Experience'
     assert 'Harvard' in text(docs['resume.html'].select_one('#experience'))
@@ -66,10 +78,11 @@ def static_checks():
     assert docs['resume.html'].select_one('#awards h2').get_text()=='Selected Awards'
     for award in cv['awards']:assert norm(builder.plain(award)) in norm(text(docs['resume.html'].select_one('#awards')))
     for skill in cv['skills']:assert norm(builder.plain(skill)) in norm(text(docs['resume.html'].select_one('#skills')))
-    for name in ['index.html','resume.html','research.html']:
+    for name in ['resume.html','research.html','publications.html']:
         assert 'agent–world model co-evolution' not in text(docs[name].main), name
     assert 'agent–world model co-evolution' in text(docs['about.html'].main)
-    return {'navigation':NAV,'unique_publications':15,'first_author_work':8,'collaborative_work':7,'home_features':4,'metadata_matches_cv02':True,'standalone_awards':True,'duplicate_cv_paragraphs_removed':True,'internal_resources':'PASS','repeat_build':'PASS'}
+    assert 'agent–world model co-evolution' in text(docs['index.html'].select_one('.research-lead'))
+    return {'navigation':NAV,'unique_publications':15,'first_author_work':8,'collaborative_work':7,'homepage_research_records':15,'intro_paragraphs':2,'harvard_first':True,'research_interest_source':'CV02 sentences 1, 2 and 4','metadata_matches_cv02':True,'standalone_awards':True,'no_duplicate_project_list':True,'legacy_fallbacks':True,'internal_resources':'PASS','repeat_build':'PASS'}
 
 
 def inline_doc(name):
@@ -107,24 +120,32 @@ def browser_checks(base,inline=False):
                 overflow=page.evaluate('document.documentElement.scrollWidth-innerWidth')
                 assert overflow<=1,(name,width,overflow)
                 assert page.evaluate('document.getAnimations().filter(a=>a.playState==="running").length')==0
-                if name=='research.html':
+                if name=='index.html':
                     assert all(i.is_visible() for i in page.locator('.publication-list > li').all())
                 page.evaluate('scrollTo(0,0)')
                 page.screenshot(path=str(OUT/f'{Path(name).stem}-{width}.png'),full_page=True)
                 report['responsive'].append({'page':name,'width':width,'overflow_px':overflow,'images_loaded':page.locator('main img').count()})
         if not inline:
-            page.goto(base+'research.html',wait_until='networkidle')
+            page.goto(base+'index.html',wait_until='networkidle')
             page.locator('a[data-figure]').first.click();page.locator('dialog[open]').wait_for()
             page.locator('dialog[open] img').evaluate('(i)=>i.decode()')
             page.keyboard.press('Escape');assert not page.locator('dialog[open]').count()
-            for source,target in [('index.html#pub-game','research.html#pub-game'),('index.html#selected-world-action-model','research.html#selected-world-action-model'),('index.html#awards','resume.html#awards'),('publications.html#pub-game','research.html#pub-game'),('index.html#inspiration','about.html#inspiration')]:
+            routes=[('research.html','index.html#research'),('publications.html','index.html#research'),('index.html#pub-game','index.html#pub-game'),('research.html#pub-game','index.html#pub-game'),('publications.html#pub-game','index.html#pub-game'),('index.html#selected-world-action-model','index.html#selected-world-action-model'),('research.html#projects','index.html#projects'),('index.html#awards','resume.html#awards'),('index.html#inspiration','about.html#inspiration'),('resume.html#research-interests','index.html#research-interests'),('resume.html#resume-publications','index.html#publications')]
+            for source,target in routes:
                 page.goto(base+source);page.wait_for_url(base+target)
                 assert page.locator('#'+target.split('#')[1]).count()==1
+            # Every previously shared paper anchor reaches the same record.
+            for item in BeautifulSoup((ROOT/'index.html').read_text(),'html.parser').select('.publication-list > li'):
+                page.goto(base+'research.html#'+item['id'])
+                page.wait_for_url(base+'index.html#'+item['id'])
+                assert page.locator('#'+item['id']).count()==1
             page.goto(base+'index.html');page.keyboard.press('Tab')
             assert page.evaluate('document.activeElement.classList.contains("skip-link")')
             nojs=browser.new_context(java_script_enabled=False);np=nojs.new_page()
-            np.goto(base+'research.html');assert all(x.is_visible() for x in np.locator('.publication-list > li').all())
-            assert np.locator('.publication-list > li').count()==15
+            for name in ['index.html']+ALIASES:
+                np.goto(base+name)
+                assert np.locator('.publication-list > li').count()==15
+                assert all(x.is_visible() for x in np.locator('.publication-list > li').all())
             nojs.close();report['navigation_and_keyboard']='PASS';report['no_javascript_record']='PASS'
         else:
             report['navigation_and_keyboard']='Not exercised in offline preview; checked by CI'

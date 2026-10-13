@@ -1,14 +1,10 @@
 {
-  "version": 2,
-  "design": "academic-ia-20261014",
+  "version": 3,
+  "design": "academic-home-research-20261014",
   "navigation": [
     {
       "label": "Home",
       "url": "index.html"
-    },
-    {
-      "label": "Research",
-      "url": "research.html"
     },
     {
       "label": "Resume",
@@ -20,20 +16,20 @@
     }
   ],
   "home": {
-    "identity": "I am a Ph.D. candidate at the University of Hong Kong, advised by <a href=\"https://xjqi.github.io/\">Xiaojuan Qi</a>, and a Visiting Scholar at Harvard University, working with Yilun Du and Mengyu Wang.",
-    "lead": "I am interested in <strong>world models for generalizable robotic planning</strong>. My work connects spatial perception and memory with physically grounded future prediction to support reliable robot action.",
-    "featured": [
-      "pub-world-action-model",
-      "pub-game",
-      "pub-videossm",
-      "pub-eag3r"
-    ]
+    "identity": "I am a Visiting Scholar at <strong>Harvard University</strong>, working with Yilun Du and Mengyu Wang on 4D world models for robotic planning. I am also a fourth-year Ph.D. student at the <strong>University of Hong Kong</strong>, advised by <a href=\"https://xjqi.github.io/\">Xiaojuan Qi</a>, and a recipient of the <a href=\"resume.html#awards\">Hong Kong PhD Fellowship (HKPFS)</a> and the <a href=\"resume.html#awards\">HKU Presidential Scholarship (HKUPS)</a>. Previously, I received dual B.S. degrees in Computer Engineering from Zhejiang University and the University of Illinois Urbana-Champaign.",
+    "interest_indices": [
+      0,
+      1,
+      3
+    ],
+    "identity_source": "User-approved Harvard-first biography (2026-10-14); fourth-year status and the HKPFS/HKUPS abbreviations were explicitly supplied. Other academic details match CV02.",
+    "interest_source": "Sentences 1, 2 and 4 of CV02 Research Interests, joined as the second introductory paragraph; sim-to-real evidence remains in the research entries."
   },
   "research": {
     "intro": "My research develops the perceptual and predictive foundations for reliable robot action—from recovering spatial evidence and retaining context to generating physically grounded futures. Below are my first- and co-first-author papers, followed by collaborative work."
   },
   "about": {
-    "background": "I am a Ph.D. candidate at the University of Hong Kong and a Visiting Scholar at Harvard University. I received dual B.S. degrees in Computer Engineering from Zhejiang University and UIUC through the ZJUI Institute.",
+    "background": "I am a Visiting Scholar at Harvard University and a fourth-year Ph.D. student at the University of Hong Kong. I received dual B.S. degrees in Computer Engineering from Zhejiang University and UIUC through the ZJUI Institute.",
     "perspective": [
       "I am interested in how robots can use a coherent understanding of the physical world to act reliably in unfamiliar environments. This requires more than recognizing what is in an image: a robot must recover spatial relationships, retain useful evidence across observations, and anticipate how the world may change.",
       "My work approaches this question through spatial perception, geometric memory, and future prediction. The common goal is to make information about the world useful for action—not simply to produce another image or representation."

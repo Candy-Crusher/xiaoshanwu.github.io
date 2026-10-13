@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build four purposeful academic pages from CV02 facts and editorial views.
+"""Build a combined Home/Research page, Resume and About from CV02 facts.
 
 The TeX parser preserves authors, statuses, dates, skills and awards. The separate
 site-presentation.json controls short summaries, existing-image crops, and page
@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup, NavigableString
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = 'cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex'
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
-DESIGN = 'academic-ia-20261014'
+DESIGN = 'academic-home-research-20261014'
 BASE = 'https://candy-crusher.github.io/xiaoshanwu.github.io/'
 
 
@@ -121,8 +121,8 @@ def parse_cv():
 
 # Facts are parsed above. Page-specific editorial choices live separately in
 # site-presentation.json; changing the CV never expands every page into the CV.
-STYLE = 'assets/css/site-pages.css?v=academic-ia-20261014'
-SCRIPT = 'assets/js/site-pages.js?v=academic-ia-20261014'
+STYLE = 'assets/css/site-pages.css?v=academic-home-research-20261014'
+SCRIPT = 'assets/js/site-pages.js?v=academic-home-research-20261014'
 
 
 def esc(value):
@@ -135,13 +135,13 @@ def link(url, label, extra=''):
 
 
 def navigation(cfg, page):
-    current = 'research.html' if page == 'publications.html' else page
+    current = 'index.html' if page in ('research.html', 'publications.html') else page
     return ''.join(link(n['url'], esc(n['label']), ' aria-current="page"' if n['url'] == current else '') for n in cfg['navigation'])
 
 
 def document(name, content, cfg, cv):
     title = 'Xiaoshan Wu' if name == 'index.html' else name.split('.')[0].title() + ' | Xiaoshan Wu'
-    canonical = 'research.html' if name == 'publications.html' else name
+    canonical = 'index.html' if name in ('research.html', 'publications.html') else name
     description = 'Xiaoshan Wu — world models for generalizable robotic planning, spatial perception, and embodied intelligence.'
     nav = navigation(cfg, name)
     return f'''<!doctype html>
@@ -210,28 +210,31 @@ def metadata(paper):
 
 def home_page(cfg, papers, cv, data):
     contacts = ''.join(link(u,l) for l,u in [('Email','mailto:wuxiaoshan630@gmail.com'),('Google Scholar','https://scholar.google.com/citations?user=9nsSKpsAAAAJ&hl=en'),('GitHub','https://github.com/Candy-Crusher'),('CV (PDF)','Xiaoshan_Wu_CV.pdf')])
+    # The first paragraph is explicitly supplied by the user. The second uses
+    # CV02 verbatim, without upgrading future interests into completed work.
+    interests = ' '.join(cv['interests'][i] for i in cfg['home']['interest_indices'])
     content = f'''<section class="profile" id="welcome" aria-labelledby="name">
 <div class="profile-heading"><h1 id="name">Xiaoshan Wu <span lang="zh">吴小山</span></h1></div>
 <figure class="portrait"><img src="images/research/profile.webp" alt="Xiaoshan Wu" width="170" height="222" decoding="async" fetchpriority="high"></figure>
-<div class="profile-copy"><p class="biography">{cfg['home']['identity']}</p><p class="research-lead">{cfg['home']['lead']}</p><nav class="contact-links" aria-label="Contact and profiles">{contacts}</nav></div>
-</section><section class="home-selected" aria-labelledby="home-selected-title"><div class="section-heading"><h2 id="home-selected-title">Selected research</h2>{link('research.html','All publications →')}</div><div class="selected-list">'''
-    for id in cfg['home']['featured']:
-        p = papers[id]; v = cfg['papers'][id]
-        image = media(v, p['project_url'])
-        title = link(p['project_url'], esc(v['short_title']))
-        evidence = '<p class="research-evidence">' + v['evidence'] + '</p>' if v.get('evidence') else ''
-        content += f'''<article class="selected-entry" data-paper="{id}">{image}<div class="research-copy"><h3>{title}</h3>{metadata(p)}<p class="research-authors">{authors_short(p['authors'])}</p><p class="research-summary">{esc(v['summary'])}</p>{evidence}{resource_links(v, home=True)}</div></article>'''
-    content += '</div></section><section class="news-section" aria-labelledby="news"><h2 id="news">Recent updates</h2>'
-    content += data['news'].replace('publications.html#','research.html#') + '</section>'
+<div class="profile-copy"><p class="biography">{cfg['home']['identity']}</p><p class="research-lead" id="research-interests">{interests}</p><nav class="contact-links" aria-label="Contact and profiles">{contacts}</nav></div>
+</section>'''
+    # One visible record replaces both the former featured list and Research.
+    content += research_page(cfg, papers, cv, embedded=True)
+    content += '<section class="news-section" aria-labelledby="news"><h2 id="news">Recent updates</h2>'
+    content += data['news'].replace('publications.html#','#').replace('research.html#','#') + '</section>'
     return content
 
 
-def research_page(cfg, papers, cv):
-    content = '<header class="page-heading"><h1>Research</h1><p>' + esc(cfg['research']['intro']) + '</p></header>'
+def research_page(cfg, papers, cv, embedded=False):
+    # Legacy research.html/publications.html keep a complete no-JS fallback.
+    level = 2 if embedded else 1
+    content = f'<section class="research-record" id="research" aria-labelledby="research-title"><header class="research-heading"><h{level} id="research-title">Research &amp; Publications</h{level}></header>'
+    if not embedded:
+        content += '<p class="legacy-notice">Research now lives on the '+link('index.html#research','homepage')+'. This page preserves previously shared links.</p>'
     content += '<nav class="section-links" aria-label="Research sections">' + link('#first-author-work','First- &amp; co-first-author work') + link('#collaborative-work','Collaborative work') + '</nav>'
     content += '<div id="publications"><span class="anchor-alias" id="direction"></span><span class="anchor-alias" id="projects"></span><span class="anchor-alias" id="selected-research"></span>'
     for group_idx, heading, anchor in [(0,'First- and Co-first-author Work','first-author-work'),(1,'Collaborative Work','collaborative-work')]:
-        content += f'<section class="publication-group" aria-labelledby="{anchor}"><h2 id="{anchor}">{heading}</h2>'
+        content += f'<section class="publication-group" aria-labelledby="{anchor}"><h{level+1} class="publication-group-title" id="{anchor}">{heading}</h{level+1}>'
         if group_idx == 0:
             content += '<p class="section-note">* Equal contribution · † Project lead. Publication and review status are indicated for each work.</p>'
         content += '<ol class="publication-list '+('lead-papers' if group_idx == 0 else 'collaborative-papers')+'" start="'+('1' if group_idx==0 else '9')+'">'
@@ -245,9 +248,9 @@ def research_page(cfg, papers, cv):
             summary = '<p class="research-summary">'+esc(v['summary'])+'</p>' if v.get('summary') else ''
             evidence = '<p class="research-evidence">'+v['evidence']+'</p>' if v.get('evidence') else ''
             alias = '<span class="anchor-alias" id="'+id.replace('pub-','selected-',1)+'"></span>' if p['project_url'] else ''
-            content += f'<li id="{id}" data-paper="{id}" class="publication-entry '+('with-media' if image else 'text-only')+f'">{alias}<div class="publication-layout">{image}<div class="research-copy"><h3 class="pub-title">{title}</h3>{metadata(p)}<p class="pub-authors research-authors">{p["authors"]}</p>{summary}{evidence}{resource_links(v)}</div></div></li>'
+            content += f'<li id="{id}" data-paper="{id}" class="publication-entry '+('with-media' if image else 'text-only')+f'">{alias}<div class="publication-layout">{image}<div class="research-copy"><h{level+2} class="pub-title">{title}</h{level+2}>{metadata(p)}<p class="pub-authors research-authors">{p["authors"]}</p>{summary}{evidence}{resource_links(v)}</div></div></li>'
         content += '</ol></section>'
-    return content + '</div>'
+    return content + '</div></section>'
 
 
 def experience_row(e):
@@ -258,7 +261,7 @@ def resume_page(cfg, papers, cv):
     def sec(id,heading,body):
         return f'<section class="resume-section" id="{id}"><h2>{heading}</h2><div>{body}</div></section>'
     content = '<header class="page-heading resume-heading"><h1>Resume</h1><div class="download-links">'+link('Xiaoshan_Wu_CV.pdf','View CV (PDF)',' target="_blank" rel="noopener"')+link('Xiaoshan_Wu_CV.pdf','Download PDF',' download="Xiaoshan_Wu_CV.pdf"')+'</div></header>'
-    content += '<p class="resume-intro">World models for generalizable robotic planning. '+link('research.html','Browse research &amp; publications →')+'</p><div id="background">'
+    content += '<p class="resume-intro">World models for generalizable robotic planning. '+link('index.html#research','Browse research &amp; publications →')+'</p><div id="background">'
     experience = [e for e in cv['education'] if 'Visiting' in e['role']]
     education = [e for e in cv['education'] if 'Visiting' not in e['role']]
     content += sec('experience','Research Experience',''.join(experience_row(e) for e in experience))
@@ -285,17 +288,17 @@ def main():
     data=json.loads((ROOT/'_site_content/personal-site.json').read_text())
     lookup={normalized(v['source_title']):id for id,v in cfg['papers'].items()}
     papers={lookup[normalized(p['title'])]:p for p in cv['papers']}
-    assert len(papers)==15 and len(cfg['home']['featured'])==4
-    assert cfg['navigation']==[{'label':l,'url':u} for l,u in [('Home','index.html'),('Research','research.html'),('Resume','resume.html'),('About','about.html')]]
+    assert len(papers)==15 and cfg['home']['interest_indices']==[0,1,3]
+    assert cfg['navigation']==[{'label':l,'url':u} for l,u in [('Home','index.html'),('Resume','resume.html'),('About','about.html')]]
     bodies={'index.html':home_page(cfg,papers,cv,data),'research.html':research_page(cfg,papers,cv),'resume.html':resume_page(cfg,papers,cv),'about.html':about_page(cfg,papers,cv)}
-    # Full, no-JavaScript fallback on the former archive URL; no extra record on Research.
+    # Legacy URLs redirect to Home and preserve all paper anchors; no-JS fallback remains.
     bodies['publications.html']=bodies['research.html']
     for name,body in bodies.items():
         (ROOT/name).write_text(document(name,body,cfg,cv))
     cv['publication_anchors']=list(papers)
     (ROOT/'_site_content/resume-cv02.json').write_text(json.dumps(cv,ensure_ascii=False,indent=2)+'\n')
     assert all(digest(ROOT/n)==h for n,h in protected.items()), 'A protected CV or project page changed'
-    report={'design':DESIGN,'source':SOURCE,'source_git_blob':cv['source_git_blob'],'publication_count':15,'first_author_count':8,'collaborative_count':7,'homepage_features':cfg['home']['featured'],'publications_visible_without_javascript':True,'separate_awards_section':True,'protected_files':protected,'page_roles':{'Home':'Introduction and selected work','Research':'Single complete publication record','Resume':'Experience, education, skills and awards','About':'Motivation and future interests'}}
+    report={'design':DESIGN,'source':SOURCE,'source_git_blob':cv['source_git_blob'],'publication_count':15,'first_author_count':8,'collaborative_count':7,'homepage_publications':len(papers),'intro_paragraphs':2,'publications_visible_without_javascript':True,'separate_awards_section':True,'protected_files':protected,'page_roles':{'Home':'Harvard-first biography, CV02 interests and the complete research record','Resume':'Experience, education, skills and awards','About':'Motivation and future interests','Legacy Research/Publications':'Hash-preserving redirect to Home with a no-JS record'}}
     Path('/tmp/personal-site-style-preservation.json').write_text(json.dumps(report,indent=2))
     print(json.dumps({k:v for k,v in report.items() if k!='protected_files'},indent=2))
 
