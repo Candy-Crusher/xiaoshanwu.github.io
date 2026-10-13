@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "design": "academic-home-research-20261014",
   "navigation": [
     {
@@ -23,10 +23,63 @@
       3
     ],
     "identity_source": "User-supplied Harvard-first biography; fourth-year status and HKPFS/HKUPS retained. Revised Ph.D. wording and replaced internal award anchors with verified official RGC/HKU programme links (2026-10-14). Other academic details match CV02.",
-    "interest_source": "Sentences 1, 2 and 4 of CV02 Research Interests, joined as the second introductory paragraph; sim-to-real evidence remains in the research entries."
+    "interest_source": "Web-specific paraphrase of CV02 Research Interests, keeping the robotics/world-model goal, perceptual and predictive foundations, and future-only co-evolution agenda. The original TeX and PDF remain unchanged.",
+    "research_statement": "I am interested in <strong>world models for generalizable robotic planning</strong>: how robots can understand the physical world and use imagined futures to act in unfamiliar environments. My work makes geometry and motion explicit in these futures, connects them to robot actions, and develops the perception and memory needed to recover and retain useful evidence across observations. Looking ahead, I aim to explore <strong>agent–world model co-evolution</strong>, where interaction improves the world model, and the improved model supports better planning and policy learning."
   },
   "research": {
-    "intro": "My research develops the perceptual and predictive foundations for reliable robot action—from recovering spatial evidence and retaining context to generating physically grounded futures. Below are my first- and co-first-author papers, followed by collaborative work."
+    "question": "What should a robot perceive, remember, and predict to act reliably in an unfamiliar environment?",
+    "directions": [
+      {
+        "id": "world-models",
+        "title": "4D world models for action",
+        "text": "I develop models that generate visual futures together with corresponding robot actions. Making geometry and motion explicit lets the predicted future guide action generation and support consistency checks before execution.",
+        "examples": [
+          {
+            "paper": "pub-world-action-model",
+            "label": "S4NDBOX"
+          }
+        ],
+        "source": "S4NDBOX abstract and introduction; current CV02. Future-before-action modeling, not an already action-conditioned simulator or safety guarantee."
+      },
+      {
+        "id": "spatial-temporal-memory",
+        "title": "Memory across views and time",
+        "text": "I study how models retain useful information as viewpoints change and sequences grow longer. Geometric working memory supports multi-view spatial reasoning, while recurrent state-space memory carries temporal context through long-video generation.",
+        "examples": [
+          {
+            "paper": "pub-game",
+            "label": "GaMe"
+          },
+          {
+            "paper": "pub-videossm",
+            "label": "VideoSSM"
+          }
+        ],
+        "source": "Current CV02 and existing GaMe/VideoSSM project descriptions. These are distinct working-memory and generation methods, not an already unified persistent world model."
+      },
+      {
+        "id": "dynamic-perception",
+        "title": "Perception in changing environments",
+        "text": "I develop methods for recovering scene geometry and keeping dense predictions up to date when lighting is difficult or RGB observations are sparse. Event measurements provide complementary evidence as the scene changes.",
+        "examples": [
+          {
+            "paper": "pub-eag3r",
+            "label": "EAG3R"
+          },
+          {
+            "paper": "pub-lifr-seg",
+            "label": "LiFR-Seg"
+          },
+          {
+            "paper": "pub-lifr-v2",
+            "label": "LiFR v2"
+          }
+        ],
+        "source": "Current CV02 and existing EAG3R/LiFR project summaries. These works provide perceptual foundations; they are not all robot policies."
+      }
+    ],
+    "presentation_reference": "https://yilundu.github.io/",
+    "presentation_note": "Reference for organization only: a central research question, short explanations, and concrete linked examples before publications. No text, research claims, taxonomy, or assets copied from the reference website."
   },
   "about": {
     "background": "I am a Visiting Scholar at Harvard University and a fourth-year Ph.D. student at the University of Hong Kong. I received dual B.S. degrees in Computer Engineering from Zhejiang University and UIUC through the ZJUI Institute.",
@@ -285,5 +338,5 @@
       "source_title": "Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing"
     }
   },
-  "source_policy": "Tex02 is authoritative for CV facts, author order, status, roles, awards and the downloadable PDF. This file controls page-specific editorial summaries, selection, existing-media crops and resources; it does not alter Tex02. No new 8B/128-GPU claim is added in this style change."
+  "source_policy": "Tex02 is authoritative for factual CV information, authors, statuses, roles, awards, publication ordering and the downloadable PDF. This configuration controls web-specific paraphrases, research framing, existing-media crops and links. Future co-evolution is not presented as completed work. No TeX, model-scale claim, paper status or experimental result is changed."
 }

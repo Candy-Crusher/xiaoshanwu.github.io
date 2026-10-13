@@ -36,6 +36,7 @@ def static_checks():
     docs={n:BeautifulSoup((ROOT/n).read_text(),'html.parser') for n in PAGES+ALIASES}
     for name,doc in docs.items():
         assert doc.body['data-design']==DESIGN
+        assert doc.body['data-research-presentation']=='question-first-20261014'
         assert [text(a) for a in doc.select('nav[aria-label="Main navigation"] a')]==NAV
         assert len(doc.select('h1'))==1 and len(doc.select('main'))==1
         ids=[n['id'] for n in doc.select('[id]')]
@@ -79,8 +80,29 @@ def static_checks():
         assert anchors[0].get('target') == '_blank' and 'noopener' in anchors[0].get('rel', []), label
     for label, destination in builder.MENTOR_PROFILES.items():
         assert any(text(a) == label and a['href'] == destination for a in biography.select('a')), label
+    cfg=json.loads((ROOT/'_site_content/site-presentation.json').read_text())
     interests = text(docs['index.html'].select_one('.research-lead'))
-    assert norm(interests) == norm(builder.plain(' '.join(cv['interests'][i] for i in [0,1,3])))
+    assert norm(interests) == norm(builder.plain(cfg['home']['research_statement']))
+    assert 'Looking ahead, I aim to explore' in interests
+    assert docs['index.html'].select_one('.contact-links a[href="Xiaoshan_Wu_CV.pdf"]').get_text()=='CV'
+    for doc in docs.values():
+        assert all('(PDF)' not in text(a) for a in doc.select('a[href="Xiaoshan_Wu_CV.pdf"]'))
+    for name in ['index.html','research.html','publications.html']:
+        doc=docs[name]
+        assert doc.select_one('#research-title').get_text()=='Research'
+        assert doc.select_one('#publications-title').get_text()=='Publications'
+        assert text(doc.select_one('.research-question'))==cfg['research']['question']
+        assert len(doc.select('.research-direction'))==3
+        for node,topic in zip(doc.select('.research-direction'),cfg['research']['directions']):
+            assert node.find(id=topic['id']).get_text()==topic['title']
+            assert text(node.select_one('div > p'))==topic['text']
+            for a,example in zip(node.select('.direction-examples a'),topic['examples']):
+                assert a['href']=='#'+example['paper'] and a.get_text()==example['label']
+                assert doc.find(id=example['paper']) is not None
+        assert not doc.select('#research [data-paper]')
+        for item in doc.select('.publication-list > li'):
+            nodes=[n.get('class',[]) for n in item.select_one('.research-copy').find_all(recursive=False)]
+            assert nodes.index(['pub-title']) < nodes.index(['pub-authors','research-authors']) < nodes.index(['research-meta'])
     for name in ['research.html','publications.html']:
         assert len(docs[name].select('.publication-list > li')) == 15
     for name in ALIASES:
@@ -99,7 +121,7 @@ def static_checks():
     assert docs['about.html'].select_one('nav[aria-label="Main navigation"] a[href="index.html#resume"]')
     assert not home.select('a[href^="resume.html"]')
     sections=[n.get('id') for n in home.select('main > section')]
-    assert sections.index('research') < sections.index('resume')
+    assert sections.index('research') < sections.index('publications') < sections.index('resume')
     for name in ['index.html','resume.html']:
         for award in cv['awards']:assert norm(builder.plain(award)) in norm(text(docs[name].select_one('#awards')))
         for skill in cv['skills']:assert norm(builder.plain(skill)) in norm(text(docs[name].select_one('#skills')))
@@ -110,7 +132,7 @@ def static_checks():
         assert 'agent–world model co-evolution' not in text(docs[name].main), name
     assert 'agent–world model co-evolution' in text(docs['about.html'].main)
     assert 'agent–world model co-evolution' in text(docs['index.html'].select_one('.research-lead'))
-    return {'navigation':NAV,'unique_publications':15,'first_author_work':8,'collaborative_work':7,'homepage_research_records':15,'intro_paragraphs':2,'harvard_first':True,'resume_on_home':True,'native_resume_navigation':True,'resume_content_matches_cv02':True,'official_scholarship_links':True,'mentor_links_preserved':True,'research_interest_source':'CV02 sentences 1, 2 and 4','metadata_matches_cv02':True,'standalone_awards':True,'no_duplicate_project_list':True,'legacy_fallbacks':True,'internal_resources':'PASS','repeat_build':'PASS'}
+    return {'navigation':NAV,'unique_publications':15,'first_author_work':8,'collaborative_work':7,'homepage_research_records':15,'intro_paragraphs':2,'harvard_first':True,'resume_on_home':True,'native_resume_navigation':True,'resume_content_matches_cv02':True,'official_scholarship_links':True,'mentor_links_preserved':True,'research_interest_source':'Web-specific paraphrase grounded in CV02','research_overview':'Central question + three connected lines of work with linked examples','cv_label':'CV','metadata_matches_cv02':True,'standalone_awards':True,'no_duplicate_project_list':True,'legacy_fallbacks':True,'internal_resources':'PASS','repeat_build':'PASS'}
 
 
 def inline_doc(name):
@@ -154,6 +176,10 @@ def browser_checks(base,inline=False):
                 page.screenshot(path=str(OUT/f'{Path(name).stem}-{width}.png'),full_page=True)
                 report['responsive'].append({'page':name,'width':width,'overflow_px':overflow,'images_loaded':page.locator('main img').count()})
         if not inline:
+            page.goto(base+'index.html',wait_until='networkidle')
+            for anchor in page.locator('.research-jump, .direction-examples a').all():
+                expected=anchor.get_attribute('href');anchor.click();page.wait_for_url(base+'index.html'+expected)
+                assert page.locator(expected).count()==1
             page.goto(base+'index.html',wait_until='networkidle')
             page.locator('a[data-figure]').first.click();page.locator('dialog[open]').wait_for()
             page.locator('dialog[open] img').evaluate('(i)=>i.decode()')

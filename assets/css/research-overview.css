@@ -1,0 +1,20 @@
+/* A question, three connected lines of work, then the publication record. */
+.research-record > .research-heading{display:flex;justify-content:space-between;align-items:baseline;gap:10px 24px;flex-wrap:wrap}
+.research-jump{font-size:13px;white-space:nowrap}
+.research-question{font-size:18px;font-weight:500;line-height:1.65;max-width:780px;margin:0 0 22px;scroll-margin-top:24px}
+.research-directions{display:grid;gap:23px}
+.research-direction{display:grid;grid-template-columns:218px minmax(0,1fr);gap:30px;align-items:start}
+.research-direction h2,.research-direction h3{font-size:16px;font-weight:600;line-height:1.5;letter-spacing:0;scroll-margin-top:24px}
+.research-direction p{font-size:14px;line-height:1.8;margin:0}
+.research-direction .direction-examples{font-size:13px;margin-top:5px;color:var(--muted)}
+.direction-examples a{white-space:nowrap}
+.publications-record{border-top:1px solid var(--line);margin-top:32px;padding-top:27px;scroll-margin-top:24px}
+.publications-record > .section-links{margin-bottom:20px}
+.publications-record > .publication-group{margin-top:20px}
+.publications-record > .publication-group + .publication-group{margin-top:35px}
+.publication-entry .pub-title{margin-bottom:4px}
+.publication-entry .research-authors{margin-bottom:5px}
+.publication-entry .research-meta{margin-bottom:8px}
+@media(max-width:800px){.research-direction{grid-template-columns:178px minmax(0,1fr);gap:25px}}
+@media(max-width:600px){.research-question{font-size:16px;line-height:1.75;margin-bottom:21px}.research-directions{gap:22px}.research-direction{grid-template-columns:minmax(0,1fr);gap:7px}.research-direction h3{font-size:16px}.research-direction p{font-size:14px}.research-direction .direction-examples{font-size:12px}.research-jump{font-size:12px}.publications-record{margin-top:26px;padding-top:24px}}
+@media print{.research-jump{display:none}.research-direction{break-inside:avoid}.publications-record{margin-top:20px}}

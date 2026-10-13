@@ -47,3 +47,22 @@ metadata preservation, unique headings and anchors, 320–1440 px layouts,
 no-JavaScript content, native Resume navigation, browser Back, old routes,
 keyboard navigation and image enlargement. `--inline-preview` provides only
 static/offline visual validation; full navigation tests run in CI.
+
+## Research narrative
+
+The homepage keeps the Harvard-first biography and uses a shorter, web-specific
+paraphrase of CV02 for the second introduction paragraph. Research then presents
+one central question and three connected lines of work, each with links to its
+actual publications. Publications remain a single, fully visible record below.
+This borrows the problem-first organization of https://yilundu.github.io/, not
+its prose, research claims or taxonomy. CV02 and its PDF are not rewritten.
+
+Edit `home.research_statement` and `research.question/directions` in
+`site-presentation.json`. Each direction records its supporting source and
+references publication anchors instead of duplicating entries. The short CV
+link label is `CV`; the destination remains `Xiaoshan_Wu_CV.pdf`.
+
+`assets/css/research-overview.css` styles only the new overview and its adjacent
+publication heading. Existing personal-page navigation and resume layout stay
+unchanged. Tests check the overview, real example links, metadata/order
+preservation, plain CV labels and the future-only co-evolution framing.
