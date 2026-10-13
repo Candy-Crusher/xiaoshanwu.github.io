@@ -7,6 +7,10 @@
       "url": "index.html#top"
     },
     {
+      "label": "Research",
+      "url": "index.html#research"
+    },
+    {
       "label": "Resume",
       "url": "index.html#resume"
     },
@@ -109,26 +113,23 @@
           "url": "images/research/s4ndbox-method-full.webp",
           "home": false,
           "figure": true
-        },
-        {
-          "label": "Robot demo (10×)",
-          "url": "https://demo1-indol-gamma.vercel.app/#cover",
-          "home": true,
-          "figure": false
         }
       ],
       "summary": "Explicit 4D futures connect visual prediction with robot control and support pre-execution geometric consistency checks.",
       "short_title": "S4NDBOX: 4D futures for robot control",
       "evidence": "<strong>+13.3 pp</strong> success on RoboTwin Hard after clean-only training, versus RGB-only; zero-shot sim-to-real on Franka Research 3.",
       "media": {
-        "src": "projects/sandbox/static/images/poster_rgbok_clutter.jpg",
-        "width": 1024,
-        "height": 576,
-        "alt": "Franka Research 3 and cups in the real-world clutter setting",
-        "caption": "Franka Research 3 · real-robot setup"
+        "kind": "video",
+        "src": "projects/sandbox/static/videos/disco_light_10x.mp4",
+        "poster": "projects/sandbox/static/images/poster_disco_light.jpg",
+        "width": 1920,
+        "height": 1080,
+        "alt": "Stack Cups on a Franka Research 3 under moving coloured lighting, played at 10× speed",
+        "caption": "Franka Research 3 · robot demo (10×)"
       },
       "evidence_source": "Tex02 S4NDBOX note; supplied manuscript, Sections 4.1–4.2.",
-      "source_title": "Verifiable 4D World–Action Model for Robust Robot Control"
+      "source_title": "Verifiable 4D World–Action Model for Robust Robot Control",
+      "media_source": "Original cover-video source and poster from projects/sandbox/index.html; restored byte-for-byte from pre-deletion Git history."
     },
     "pub-game": {
       "resources": [

@@ -10,7 +10,7 @@ import json
 import os
 import re
 from bs4 import BeautifulSoup
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ['pose-1', 'pose-2', 'lighting-1', 'lighting-2', 'clutter-1', 'clutter-2']
@@ -59,6 +59,7 @@ def validate_files():
 def run(base, out):
     out = Path(out)
     report = {'files': validate_files(), 'cases': [], 'navigation': []}
+    (out / 'sandbox-files-report.json').write_text(json.dumps(report['files'], indent=2))
     with sync_playwright() as pw:
         args = ['--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader']
         executable = os.getenv('BROWSER_EXECUTABLE')
@@ -70,13 +71,14 @@ def run(base, out):
         page = context.new_page()
         page.on('pageerror', lambda error: errors.append(str(error)))
         for width in [390, 1440]:
+            print(f'Testing Research navigation and video at {width}px', flush=True)
             page.set_viewport_size({'width': width, 'height': 900})
-            page.goto(base + 'index.html', wait_until='networkidle')
+            page.goto(base + 'index.html', wait_until='domcontentloaded')
             page.evaluate('window.__researchSentinel = "same-document"')
             page.locator('.site-nav a[href="#research"]').click()
             page.wait_for_url(base + 'index.html#research')
             assert page.evaluate('window.__researchSentinel') == 'same-document'
-            assert page.locator('.site-nav a[href="#research"]').get_attribute('aria-current') == 'location'
+            expect(page.locator('.site-nav a[href="#research"]')).to_have_attribute('aria-current', 'location')
             header = page.locator('.site-topbar').bounding_box()['height']
             assert page.locator('#research-title').bounding_box()['y'] >= header
             page.screenshot(path=str(out / f'research-navigation-{width}.png'))
@@ -94,14 +96,15 @@ def run(base, out):
             assert page.evaluate('window.__researchSentinel') == 'same-document'
             page.go_back();page.wait_for_url(base + 'index.html#research')
             assert page.evaluate('window.__researchSentinel') == 'same-document'
-            page.goto(base + 'about.html', wait_until='networkidle')
+            page.goto(base + 'about.html', wait_until='domcontentloaded')
             page.locator('.site-nav a[href="index.html#research"]').click()
             page.wait_for_url(base + 'index.html#research')
             report['navigation'].append({'width': width, 'same_document': True, 'back_button': True,
                                          'heading_clear_of_header': True, 'from_about': True, 'video': info})
         page.set_viewport_size({'width': 1440, 'height': 1000})
         for case in CASES:
-            page.goto(base + f'projects/sandbox/rdf-viewer.html?case={case}&view=compare', wait_until='networkidle')
+            print(f'Testing point clouds: {case}', flush=True)
+            page.goto(base + f'projects/sandbox/rdf-viewer.html?case={case}&view=compare', wait_until='domcontentloaded')
             page.wait_for_function('!document.getElementById("play").disabled')
             assert page.locator('canvas[aria-label]').count() == 2
             assert not page.locator('#error').inner_text().strip()
@@ -123,12 +126,13 @@ def run(base, out):
                                     'timeline_next_previous': True, 'rgb_insets_loaded': True, 'error': None})
         # Both single-stream modes must also initialize and remain usable.
         for mode in ['pred', 'obs']:
-            page.goto(base + f'projects/sandbox/rdf-viewer.html?case=pose-1&view={mode}', wait_until='networkidle')
+            print(f'Testing single-stream mode: {mode}', flush=True)
+            page.goto(base + f'projects/sandbox/rdf-viewer.html?case=pose-1&view={mode}', wait_until='domcontentloaded')
             page.wait_for_function('!document.getElementById("play").disabled')
             assert page.locator('canvas[aria-label]').count() == 1
             assert re.search(r'[1-9][0-9,]* /', page.locator('#count-' + mode).inner_text())
         page.set_viewport_size({'width': 390, 'height': 900})
-        page.goto(base + 'projects/sandbox/rdf-viewer.html?case=pose-1', wait_until='networkidle')
+        page.goto(base + 'projects/sandbox/rdf-viewer.html?case=pose-1', wait_until='domcontentloaded')
         page.wait_for_function('!document.getElementById("play").disabled')
         assert page.evaluate('document.documentElement.scrollWidth - innerWidth') <= 1
         first = page.locator('#stamp').inner_text()
@@ -139,9 +143,10 @@ def run(base, out):
         page.screenshot(path=str(out / 'interactive-4d-mobile.png'), full_page=True)
         # Check all six in-page gallery choices, not just the full-screen link.
         page.set_viewport_size({'width': 1440, 'height': 1000})
-        page.goto(base + 'projects/sandbox/#rdf-single-view', wait_until='networkidle')
+        page.goto(base + 'projects/sandbox/#rdf-single-view', wait_until='domcontentloaded')
         report['project_gallery_cases'] = []
         for case in CASES:
+            print(f'Testing project gallery: {case}', flush=True)
             page.locator(f'[data-rdf-case="{case}"]').click()
             frame = page.frame_locator('#rdf-cloud')
             frame.locator('#play:not([disabled])').wait_for()
@@ -155,7 +160,7 @@ def run(base, out):
         context.close()
         # Autoplay with normal preferences, off-screen pause, and manual pause.
         normal = browser.new_context(reduced_motion='no-preference')
-        p = normal.new_page();p.goto(base + 'index.html', wait_until='networkidle')
+        p = normal.new_page();p.goto(base + 'index.html', wait_until='domcontentloaded')
         v = p.locator('.research-video');v.scroll_into_view_if_needed()
         p.wait_for_function('!document.querySelector(".research-video").paused')
         v.evaluate('(v) => v.pause()')

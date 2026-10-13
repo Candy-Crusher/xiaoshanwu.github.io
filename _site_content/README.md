@@ -66,3 +66,20 @@ link label is `CV`; the destination remains `Xiaoshan_Wu_CV.pdf`.
 publication heading. Existing personal-page navigation and resume layout stay
 unchanged. Tests check the overview, real example links, metadata/order
 preservation, plain CV labels and the future-only co-evolution framing.
+
+## Research navigation and S4NDBOX media (2026-10-14)
+
+Navigation is now **Home → Research → Resume → About**, with the first three
+using native homepage anchors. The S4NDBOX publication cover uses the original
+`disco_light_10x.mp4` and its matching poster, with native play/pause controls.
+The redundant Robot demo resource link is removed. Quiet, reduced-motion and
+data-saving behavior are handled without changing the clip or its playback speed.
+
+The missing S4NDBOX static assets were restored from commit
+`0ac8073ef92ce5f84828f8a9f4a4c3e398f55793`, before the Overleaf sync deletion
+in `5e0e4d52cd34e42c34f745380df937d45fb047af`. Existing static files were
+verified unchanged; no paper prose, experiments or research data were rewritten.
+`test-sandbox-media.py` validates every manifest frame and exercises all six
+interactive cases, both point-cloud streams, timeline navigation, source RGB
+insets, and the inline video's decode/playback. It runs as part of personal-site
+validation so a surviving HTML shell alone can no longer pass the media check.

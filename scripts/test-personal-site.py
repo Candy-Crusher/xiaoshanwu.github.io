@@ -19,7 +19,7 @@ OUT=ROOT/'personal-site-qa'
 PAGES=['index.html','about.html']
 ALIASES=['research.html','publications.html','resume.html']
 DESIGN='academic-home-research-20261014'
-NAV=['Home','Resume','About']
+NAV=['Home','Research','Resume','About']
 
 
 def text(node): return ' '.join(node.stripped_strings)
@@ -42,7 +42,7 @@ def static_checks():
         ids=[n['id'] for n in doc.select('[id]')]
         assert len(ids)==len(set(ids)), (name,'duplicate IDs')
         assert not doc.select('.cinematic-shell, .hero-scrim, details'), name
-        for a in doc.select('a[href], main img[src], script[src], link[rel="stylesheet"][href]'):
+        for a in doc.select('a[href], main img[src], main source[src], script[src], link[rel="stylesheet"][href]'):
             url=urlsplit(a.get('href',a.get('src','')))
             if url.scheme or url.netloc:continue
             local=ROOT/unquote(url.path or name)
@@ -116,6 +116,8 @@ def static_checks():
     assert 'Harvard' in text(home.select_one('#experience'))
     assert 'Harvard' not in text(home.select_one('#education'))
     assert home.select_one('#awards h3').get_text()=='Selected Awards'
+    assert home.select_one('nav[aria-label="Main navigation"] a[href="#research"]')
+    assert docs['about.html'].select_one('nav[aria-label="Main navigation"] a[href="index.html#research"]')
     assert home.select_one('nav[aria-label="Main navigation"] a[href="#resume"]')
     assert home.select_one('nav[aria-label="Main navigation"] a[href="#top"]')
     assert docs['about.html'].select_one('nav[aria-label="Main navigation"] a[href="index.html#resume"]')
@@ -247,7 +249,12 @@ def main():
     server=ThreadingHTTPServer(('127.0.0.1',0),partial(QuietHandler,directory=str(ROOT)))
     Thread(target=server.serve_forever,daemon=True).start()
     try:
-        report['browser']=browser_checks(f'http://127.0.0.1:{server.server_port}/',args.inline_preview);report['status']='PASS'
+        report['browser']=browser_checks(f'http://127.0.0.1:{server.server_port}/',args.inline_preview)
+        if not args.inline_preview:
+            spec=importlib.util.spec_from_file_location('sandbox_media',ROOT/'scripts/test-sandbox-media.py')
+            module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+            report['sandbox_media']=module.run(f'http://127.0.0.1:{server.server_port}/',OUT)
+        report['status']='PASS'
         report['preservation']=json.loads(Path('/tmp/personal-site-style-preservation.json').read_text())
     except Exception as exc:
         report['status']='FAIL';report['error']=str(exc);raise

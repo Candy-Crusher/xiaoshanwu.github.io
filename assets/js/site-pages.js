@@ -31,12 +31,15 @@
     let id;
     try { id = decodeURIComponent(location.hash.slice(1)); } catch (_) { id = ''; }
     const resumeSelected = resumeAnchors.has(id);
+    const targetNode = document.getElementById(id);
+    const researchSelected = !!targetNode?.closest('#research, #publications');
     document.querySelectorAll('.site-nav a, .site-footer nav a').forEach(a => {
       if (page !== 'index') return;
       a.removeAttribute('aria-current');
       const target = a.getAttribute('href');
       if (target === '#resume' && resumeSelected) a.setAttribute('aria-current', 'location');
-      if (target === '#top' && !resumeSelected) a.setAttribute('aria-current', 'location');
+      if (target === '#research' && researchSelected) a.setAttribute('aria-current', 'location');
+      if (target === '#top' && !resumeSelected && !researchSelected) a.setAttribute('aria-current', 'location');
     });
   }
   function measureHeader() {
@@ -47,6 +50,34 @@
   window.addEventListener('resize', measureHeader);
   updateNavigation();
   window.addEventListener('hashchange', () => { if (!routeLegacyHash()) updateNavigation(); });
+  // Play the original muted demo only while visible. Reduced-motion and
+  // data-saving users keep native click-to-play controls. A manual pause is
+  // respected until the user chooses to play again.
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll('video[data-autoplay-on-view]').forEach(video => {
+    let visible = false, manuallyPaused = false;
+    const play = () => {
+      if (visible && !document.hidden && !manuallyPaused && !motion.matches && !navigator.connection?.saveData) {
+        video.play().catch(() => {});
+      }
+    };
+    video.addEventListener('pause', () => {
+      if (visible && !document.hidden && !motion.matches) manuallyPaused = true;
+    });
+    video.addEventListener('play', () => { manuallyPaused = false; });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(entries => {
+        visible = entries[0].isIntersecting;
+        if (visible) play(); else video.pause();
+      }, {threshold: 0.3}).observe(video);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) video.pause(); else play();
+    });
+    motion.addEventListener('change', () => {
+      if (motion.matches) video.pause(); else play();
+    });
+  });
   const dialog = document.getElementById('research-figure');
   if (!dialog || typeof dialog.showModal !== 'function') return;
   let opener = null;
