@@ -16,13 +16,13 @@
     }
   ],
   "home": {
-    "identity": "I am a Visiting Scholar at <strong>Harvard University</strong>, working with Yilun Du and Mengyu Wang on 4D world models for robotic planning. I am also a fourth-year Ph.D. student at the <strong>University of Hong Kong</strong>, advised by <a href=\"https://xjqi.github.io/\">Xiaojuan Qi</a>, and a recipient of the <a href=\"resume.html#awards\">Hong Kong PhD Fellowship (HKPFS)</a> and the <a href=\"resume.html#awards\">HKU Presidential Scholarship (HKUPS)</a>. Previously, I received dual B.S. degrees in Computer Engineering from Zhejiang University and the University of Illinois Urbana-Champaign.",
+    "identity": "I am a Visiting Scholar at <strong>Harvard University</strong>, working with Yilun Du and Mengyu Wang on 4D world models for robotic planning. I am in the fourth year of my Ph.D. at the <strong>University of Hong Kong</strong>, under the supervision of <a href=\"https://xjqi.github.io/\">Xiaojuan Qi</a>. I have been awarded the <a href=\"https://www.ugc.edu.hk/eng/rgc/hkphd/\" target=\"_blank\" rel=\"noopener\">Hong Kong PhD Fellowship (HKPFS)</a> and the <a href=\"https://gradsch.hku.hk/prospective_students/fees_scholarships_and_financial_support/hku_presidential_phd_scholar_programme\" target=\"_blank\" rel=\"noopener\">HKU Presidential Scholarship (HKUPS)</a>. Previously, I received dual B.S. degrees in Computer Engineering from Zhejiang University and the University of Illinois Urbana-Champaign.",
     "interest_indices": [
       0,
       1,
       3
     ],
-    "identity_source": "User-approved Harvard-first biography (2026-10-14); fourth-year status and the HKPFS/HKUPS abbreviations were explicitly supplied. Other academic details match CV02.",
+    "identity_source": "User-supplied Harvard-first biography; fourth-year status and HKPFS/HKUPS retained. Revised Ph.D. wording and replaced internal award anchors with verified official RGC/HKU programme links (2026-10-14). Other academic details match CV02.",
     "interest_source": "Sentences 1, 2 and 4 of CV02 Research Interests, joined as the second introductory paragraph; sim-to-real evidence remains in the research entries."
   },
   "research": {

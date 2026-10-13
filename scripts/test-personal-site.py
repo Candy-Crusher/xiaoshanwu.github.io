@@ -62,10 +62,23 @@ def static_checks():
     assert not docs['index.html'].select('.selected-entry')
     assert len(docs['index.html'].select('[data-paper]')) == 15
     assert len(docs['index.html'].select('.profile-copy > p')) == 2
-    bio = text(docs['index.html'].select_one('.biography'))
+    biography = docs['index.html'].select_one('.biography')
+    bio = text(biography)
     assert bio.startswith('I am a Visiting Scholar at Harvard University')
     assert bio.index('Harvard') < bio.index('University of Hong Kong') < bio.index('Zhejiang University')
-    assert all(x in bio for x in ['Yilun Du', 'Mengyu Wang', 'fourth-year', 'HKPFS', 'HKUPS', 'University of Illinois Urbana-Champaign'])
+    assert all(x in bio for x in ['Yilun Du', 'Mengyu Wang', 'fourth year', 'HKPFS', 'HKUPS', 'University of Illinois Urbana-Champaign'])
+    assert 'I am also a fourth-year' not in bio
+    # These names must lead to the programmes, not back to our own awards list.
+    award_urls = {
+        'Hong Kong PhD Fellowship (HKPFS)': 'https://www.ugc.edu.hk/eng/rgc/hkphd/',
+        'HKU Presidential Scholarship (HKUPS)': 'https://gradsch.hku.hk/prospective_students/fees_scholarships_and_financial_support/hku_presidential_phd_scholar_programme',
+    }
+    for label, destination in award_urls.items():
+        anchors = [a for a in biography.select('a') if text(a) == label]
+        assert len(anchors) == 1 and anchors[0]['href'] == destination, label
+        assert anchors[0].get('target') == '_blank' and 'noopener' in anchors[0].get('rel', []), label
+    for label, destination in builder.MENTOR_PROFILES.items():
+        assert any(text(a) == label and a['href'] == destination for a in biography.select('a')), label
     interests = text(docs['index.html'].select_one('.research-lead'))
     assert norm(interests) == norm(builder.plain(' '.join(cv['interests'][i] for i in [0,1,3])))
     for name in ALIASES:
@@ -82,7 +95,7 @@ def static_checks():
         assert 'agent–world model co-evolution' not in text(docs[name].main), name
     assert 'agent–world model co-evolution' in text(docs['about.html'].main)
     assert 'agent–world model co-evolution' in text(docs['index.html'].select_one('.research-lead'))
-    return {'navigation':NAV,'unique_publications':15,'first_author_work':8,'collaborative_work':7,'homepage_research_records':15,'intro_paragraphs':2,'harvard_first':True,'research_interest_source':'CV02 sentences 1, 2 and 4','metadata_matches_cv02':True,'standalone_awards':True,'no_duplicate_project_list':True,'legacy_fallbacks':True,'internal_resources':'PASS','repeat_build':'PASS'}
+    return {'navigation':NAV,'unique_publications':15,'first_author_work':8,'collaborative_work':7,'homepage_research_records':15,'intro_paragraphs':2,'harvard_first':True,'official_scholarship_links':True,'mentor_links_preserved':True,'research_interest_source':'CV02 sentences 1, 2 and 4','metadata_matches_cv02':True,'standalone_awards':True,'no_duplicate_project_list':True,'legacy_fallbacks':True,'internal_resources':'PASS','repeat_build':'PASS'}
 
 
 def inline_doc(name):
