@@ -10,6 +10,10 @@ import json,os,sys
 from publication_style import load_details,authors_markup,venue_markup,VERSION
 from site_favicon import apply_favicon
 ROOT=Path(__file__).resolve().parents[1]
+SANDBOX_AUTHORS = ['Xiaoshan Wu', 'Ruojin Cai', 'Yiming Bao', 'Zihan Su',
+                   'Anne Wu', 'Feiyang Wu', 'Zhiyi Li', 'Zhenting Qi',
+                   'Haonan Chen', 'Weirui Ye', 'Jing Zhang', 'Kaichen Zhou',
+                   'Mengyu Wang', 'Yilun Du']
 
 def compact(text):return ''.join(text.split())
 def check_document(doc):
@@ -40,8 +44,16 @@ def check_document(doc):
         assert len(labels)==len(set(labels)) and labels
         if 'Project' in labels:assert labels[0]=='Project'
         if 'Paper' in labels:assert labels.index('Paper')==(1 if 'Project' in labels else 0)
-        if key!='pub-world-action-model':assert not e.select('[data-full-name-pending]'),key
-    assert len(record.select('[data-full-name-pending]'))==9
+        assert not e.select('[data-full-name-pending]'),key
+    # The author's supplied OpenReview record resolves the last nine initials.
+    sandbox=data['papers']['pub-world-action-model']
+    assert [a['name'] for a in sandbox['authors']]==SANDBOX_AUTHORS
+    assert list(sandbox['openreview_author_profiles'])==SANDBOX_AUTHORS
+    assert [a['marks'] for a in sandbox['authors']]==['*','*']+['']*12
+    assert len(record.select('#pub-world-action-model .pub-author a'))==14
+    for name in ['Feiyang Wu','Jing Zhang']:
+        assert data['profiles'][name]==sandbox['openreview_author_profiles'][name]
+    assert not record.select('[data-full-name-pending]')
     assert not record.select('.research-evidence, .research-role')
     assert 'Oral' not in record.get_text() and 'top 1%' not in record.get_text()
     assert len(record.select('.pub-distinction'))==1
@@ -57,7 +69,9 @@ def main():
     server=ThreadingHTTPServer(('127.0.0.1',0),partial(Quiet,directory=str(ROOT)))
     Thread(target=server.serve_forever,daemon=True).start()
     base=sys.argv[1].rstrip('/')+'/' if len(sys.argv)>1 else f'http://127.0.0.1:{server.server_port}/'
-    report={'status':'PASS','url':base,'views':[],'author_entries':182,'full_name_pending':{'pub-world-action-model':9}}
+    report={'status':'PASS','url':base,'views':[],
+            'author_entries':sum(len(r['authors']) for r in load_details()['papers'].values()),
+            'full_name_pending':{},'sandbox_full_names':SANDBOX_AUTHORS,'sandbox_author_links':14}
     try:
         with sync_playwright() as pw:
             exe=os.getenv('BROWSER_EXECUTABLE')
@@ -72,14 +86,16 @@ def main():
                 assert page.evaluate("document.fonts.check('15px Lato')")
                 assert page.locator('#pub-eag3r .pub-title').evaluate('(e)=>getComputedStyle(e).fontFamily').startswith('Lato')
                 assert page.locator('#pub-eag3r .pub-title').evaluate('(e)=>getComputedStyle(e).fontSize')=='15px'
+                colors=page.locator('#pub-world-action-model .pub-authors, #pub-world-action-model .pub-authors *').evaluate_all('(els)=>els.map(e=>getComputedStyle(e).color)')
+                assert all(c=='rgb(0, 0, 0)' for c in colors),colors
                 page.locator('#publications .research-media img').evaluate_all('(images)=>images.forEach(i=>i.loading="eager")')
                 for image in page.locator('#publications .research-media img').all():
                     image.evaluate('(i)=>i.decode()')
                     d=image.evaluate('(i)=>({w:i.clientWidth,h:i.clientHeight,nw:i.naturalWidth,nh:i.naturalHeight})')
                     assert abs(d['h']-d['w']*d['nh']/d['nw'])<2
                 page.locator('#publications').screenshot(path=str(out/f'publications-{width}.png'))
-                for key in ['lifr-seg','eag3r','ugg','neural-field-memory']:
-                    page.locator('#pub-'+key).screenshot(path=str(out/f'{key}-{width}.png'))
+                for key in ['world-action-model','lifr-seg','eag3r','ugg','neural-field-memory']:
+                    page.locator('#pub-'+key).screenshot(path=str(out/f'{key}-{width}.png'),style='.site-topbar{visibility:hidden!important}')
                 assert page.evaluate('document.documentElement.scrollWidth-innerWidth')<=1
                 if width==1440:
                     for entry in page.locator('.publication-entry').all():
@@ -90,7 +106,7 @@ def main():
                     r=page.request.get(url);assert r.status==200,url
                 svg=page.request.get(base+'assets/icons/mountain.svg')
                 assert '<title>⛰️</title>' in svg.text()
-                report['views'].append({'width':width,'font':'Lato','icons_loaded':True,'uncropped_covers':True,'resource_rows':True})
+                report['views'].append({'width':width,'font':'Lato','icons_loaded':True,'uncropped_covers':True,'resource_rows':True,'sandbox_names_all_black':True})
             assert not errors,errors
             browser.close()
     finally:server.shutdown()

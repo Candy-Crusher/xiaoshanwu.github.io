@@ -1,5 +1,5 @@
 {
-  "version": "recent-projects-20261015-v1",
+  "version": "sandbox-full-byline-20261015-v3",
   "reference": "https://www.jienengchen.com/",
   "reference_font": "Lato",
   "policy": "Website-only presentation. Preserve author order and every author; link verified personal homepages. Never expand ambiguous initials by guessing. No review destinations, invented honors or acceptance percentages. No CV/PDF edits.",
@@ -33,9 +33,25 @@
       "source_title": "Verifiable 4D World–Action Model for Robust Robot Control",
       "venue": null, "year": null, "status": "under_review",
       "tldr": "Explicit 4D futures connect visual prediction with robot control and support pre-execution geometric consistency checks.",
-      "sources": ["CV02 author order; Ruojin Cai, Yiming Bao and advisor names verified against supplied records and personal sites."],
-      "note": "Nine initials retained pending author confirmation: Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou. Public project byline is anonymous; do not infer identities from unrelated papers.",
-      "byline": "Xiaoshan Wu* | Ruojin Cai* | Yiming Bao | Z. Su | A. Wu | F. Wu | Z. Li | Z. Qi | H. Chen | W. Ye | J. Zhang | K. Zhou | Mengyu Wang | Yilun Du"
+      "sources": ["User-provided OpenReview author list for 8afp5PuOg2 in this website-editing conversation, 2026-10-15", "https://openreview.net/forum?id=8afp5PuOg2"],
+      "note": "All 14 full names and their order are confirmed by the author's supplied OpenReview record. The existing equal-contribution asterisks on Xiaoshan Wu and Ruojin Cai are retained. CV/PDF files and the anonymous project page are unchanged.",
+      "byline": "Xiaoshan Wu* | Ruojin Cai* | Yiming Bao | Zihan Su | Anne Wu | Feiyang Wu | Zhiyi Li | Zhenting Qi | Haonan Chen | Weirui Ye | Jing Zhang | Kaichen Zhou | Mengyu Wang | Yilun Du",
+      "openreview_author_profiles": {
+        "Xiaoshan Wu": "https://openreview.net/profile?id=~Xiaoshan_Wu1",
+        "Ruojin Cai": "https://openreview.net/profile?id=~Ruojin_Cai1",
+        "Yiming Bao": "https://openreview.net/profile?id=~Yiming_Bao2",
+        "Zihan Su": "https://openreview.net/profile?id=~Zihan_Su5",
+        "Anne Wu": "https://openreview.net/profile?id=~Anne_Wu1",
+        "Feiyang Wu": "https://openreview.net/profile?id=~Feiyang_Wu2",
+        "Zhiyi Li": "https://openreview.net/profile?id=~Zhiyi_Li2",
+        "Zhenting Qi": "https://openreview.net/profile?id=~Zhenting_Qi1",
+        "Haonan Chen": "https://openreview.net/profile?id=~Haonan_Chen6",
+        "Weirui Ye": "https://openreview.net/profile?id=~Weirui_Ye1",
+        "Jing Zhang": "https://openreview.net/profile?id=~Jing_Zhang37",
+        "Kaichen Zhou": "https://openreview.net/profile?id=~Kaichen_Zhou1",
+        "Mengyu Wang": "https://openreview.net/profile?id=~Mengyu_Wang4",
+        "Yilun Du": "https://openreview.net/profile?id=~Yilun_Du1"
+      }
     },
     "pub-game": {
       "source_title": "GaMe: Geometry as Memory for Multi-View Spatial Reasoning",

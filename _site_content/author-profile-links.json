@@ -1,6 +1,6 @@
 {
-  "version": "author-links-black-20261015-v2",
-  "policy": "Use a personal or faculty website where identified. Otherwise use only an author-linked academic profile, label its type in the link tooltip, and never infer a personal URL from a name. These additions do not change any paper byline or author order.",
+  "version": "sandbox-full-byline-20261015-v3",
+  "policy": "Use a personal or faculty website where identified. Otherwise use only an author-linked academic profile, label its type in the link tooltip, and never infer a personal URL from a name. Full S4NDBOX names and their OpenReview IDs are confirmed by the author-provided record.",
   "profiles": {
     "Tao Hu": {
       "url": "https://tau-yihouxiang.github.io/",
@@ -109,12 +109,62 @@
       "kind": "google_scholar",
       "sources": ["https://cvmi.hku.hk/wp-content/uploads/cvmi/team.html"],
       "identity_basis": "Exact profile linked by the CVMI co-design team for the 2022 PhD member, not same-name NLP researchers."
+    },
+    "Zihan Su": {
+      "url": "https://zihan-su.com/",
+      "kind": "homepage",
+      "sources": ["https://zihan-su.com/", "https://openreview.net/profile?id=~Zihan_Su5", "User-provided S4NDBOX author record"],
+      "identity_basis": "Personal site identifies the Harvard Data Science student working with Yilun Du and Ruojin Cai on video world models; distinct from the same-name Tsinghua student. Full name and OpenReview ID supplied by the user."
+    },
+    "Anne Wu": {
+      "url": "https://annshin.github.io/",
+      "kind": "homepage",
+      "sources": ["https://kempnerinstitute.harvard.edu/people/our-people/anne-wu/", "https://annshin.github.io/", "https://openreview.net/profile?id=~Anne_Wu1"],
+      "identity_basis": "Kempner's named Anne Wu biography directly links this personal website; user confirms the author and OpenReview ID."
+    },
+    "Feiyang Wu": {
+      "url": "https://openreview.net/profile?id=~Feiyang_Wu2",
+      "kind": "openreview_profile",
+      "sources": ["User-provided author byline for https://openreview.net/forum?id=8afp5PuOg2"],
+      "identity_basis": "Exact OpenReview profile supplied by the paper's author. No unverified same-name personal website substituted."
+    },
+    "Zhenting Qi": {
+      "url": "https://zhentingqi.github.io/",
+      "kind": "homepage",
+      "sources": ["https://embodied-minds-lab.github.io/people/", "https://zhentingqi.github.io/", "https://openreview.net/profile?id=~Zhenting_Qi1"],
+      "identity_basis": "Yilun Du's lab directory directly links this website for Zhenting Qi; full name and OpenReview ID supplied by the user."
+    },
+    "Haonan Chen": {
+      "url": "https://haonan16.github.io/",
+      "kind": "homepage",
+      "sources": ["https://embodied-minds-lab.github.io/people/", "https://haonan16.github.io/", "https://openreview.net/profile?id=~Haonan_Chen6"],
+      "identity_basis": "Lab directory directly links the Harvard robotics postdoc's page, distinguishing him from same-name NUS and Renmin researchers; user confirms the OpenReview ID."
+    },
+    "Weirui Ye": {
+      "url": "https://yewr.github.io/",
+      "kind": "homepage",
+      "sources": ["https://embodied-minds-lab.github.io/people/", "https://yewr.github.io/", "https://openreview.net/profile?id=~Weirui_Ye1"],
+      "identity_basis": "Lab directory and personal page identify the MIT/Harvard robotics collaborator; full name and OpenReview ID supplied by the user."
+    },
+    "Jing Zhang": {
+      "url": "https://openreview.net/profile?id=~Jing_Zhang37",
+      "kind": "openreview_profile",
+      "sources": ["User-provided author byline for https://openreview.net/forum?id=8afp5PuOg2"],
+      "identity_basis": "Exact OpenReview profile supplied by the paper's author; avoids substituting a same-name researcher's website."
+    },
+    "Kaichen Zhou": {
+      "url": "https://kaichen-z.github.io/",
+      "kind": "homepage",
+      "sources": ["https://kaichen-z.github.io/", "https://openreview.net/profile?id=~Kaichen_Zhou1", "https://www.cs.ox.ac.uk/people/kaichen.zhou/"],
+      "identity_basis": "Personal page and OpenReview record agree on Oxford doctoral training and MIT postdoctoral work; personal site names Mengyu Wang and Yilun Du as collaborators."
     }
   },
-  "unresolved_full_names": {
+  "unresolved_full_names": {},
+  "resolved_author_record": {
     "paper": "pub-world-action-model",
-    "names": ["Z. Su", "A. Wu", "F. Wu", "Z. Li", "Z. Qi", "H. Chen", "W. Ye", "J. Zhang", "K. Zhou"],
-    "reason": "The available CV gives only these initials; the supplied paper and project page are anonymous. The coauthor's public page also explicitly withholds the byline. A non-anonymous author line or BibTeX is required to expand these names without guessing.",
-    "sources": ["cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex", "projects/sandbox/index.html", "https://chillinfree.github.io/"]
+    "source": "https://openreview.net/forum?id=8afp5PuOg2",
+    "basis": "Complete 14-author line and exact OpenReview profile IDs supplied by the user on 2026-10-15.",
+    "full_name_count": 14,
+    "unresolved_count": 0
   }
 }
