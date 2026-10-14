@@ -18,7 +18,7 @@ OUT = ROOT/'personal-site-qa'
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
-LAYOUT = 'personal-about-20261015-v1'
+LAYOUT = 'monthly-news-review-20261015-v1'
 
 
 def text(node):
@@ -34,6 +34,12 @@ def static_checks():
     builder = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(builder)
     cv = builder.parse_cv()
+    raw_cv = builder.core.parse_cv()
+    for visible, original in zip(cv['papers'], raw_cv['papers']):
+        expected = 'Under review' if 'under review' in builder.plain(original['venue']).lower() else original['venue']
+        assert visible['venue'] == expected
+        assert {k:v for k,v in visible.items() if k!='venue'} == {k:v for k,v in original.items() if k!='venue'}
+
     before = {n: hashlib.sha256((ROOT/n).read_bytes()).hexdigest() for n in PAGES}
     builder.main()
     assert all(hashlib.sha256((ROOT/n).read_bytes()).hexdigest() == h for n, h in before.items()), 'Build is not idempotent'
@@ -93,6 +99,23 @@ def static_checks():
             assert text(item.select_one('div > p')) == topic['text']
         assert doc.select_one('video.research-video source')['src'] == 'projects/sandbox/static/videos/disco_light_10x.mp4'
         assert doc.select_one('a[href="projects/sandbox/rdf-viewer.html?case=pose-1"]')
+    news = json.loads((ROOT/'_site_content/news.json').read_text())
+    events = sorted(news['entries'], key=lambda e:e['month'], reverse=True)
+    assert [time['datetime'] for time in home.select('#news time')] == [event['month'] for event in events]
+    assert [time.get_text() for time in home.select('#news time')] == [event['month'].replace('-', '.') for event in events]
+    assert [dd['data-news-id'] for dd in home.select('#news dd')] == [event['id'] for event in events]
+    for row, event in zip(home.select('#news dd'), events):
+        assert norm(text(row)) == norm(builder.plain(event['html']))
+        assert event['sources'] and event['month_basis']
+        if event['kind'] == 'conference_acceptance':
+            assert len(event['paper_ids']) == 1 and 'One paper accepted' in text(row)
+    assert next(e for e in events if e['id']=='harvard-arrival')['month'] == '2026-05'
+    assert next(e for e in events if e['id']=='nature-acceptance')['month'] == '2026-05'
+    assert not any('pub-videossm' in e['paper_ids'] for e in events)
+    assert len(home.select('.publication-list .research-meta > span:first-child')) == 15
+    for node in home.select('.publication-list .research-meta > span:first-child'):
+        if 'under review' in text(node).lower():
+            assert text(node) == 'Under review'
     entries = home.select('.experience-timeline > li')
     assert [e['data-institution'] for e in entries] == ['harvard', 'hku', 'zjui']
     assert len(home.select('.institution-tile img')) == 4
@@ -184,6 +207,8 @@ def browser_checks(base):
                     top = page.locator('#'+anchor).bounding_box()['y']
                     header_bottom = page.locator('.site-topbar').bounding_box()['height']
                     assert top >= header_bottom-2, (width, label, 'Heading obscured', top, header_bottom)
+                if label == 'News':
+                    page.locator('#news').screenshot(path=str(OUT/f'news-{width}.png'))
                 if label == 'About':
                     page.locator('#about').screenshot(path=str(OUT/f'about-{width}.png'))
                 if label == 'Experience':

@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "order": "newest_first",
+  "date_precision": "month",
+  "count_scope": "The confirmed accepted papers in the current CV02-backed publication catalog. Counts are not inferred from coauthors' total publication counts. VideoSSM remains a preprint and is not counted as a conference acceptance.",
+  "entries": [
+    {
+      "id": "corl-2026",
+      "month": "2026-09",
+      "kind": "conference_acceptance",
+      "venue": "CoRL 2026",
+      "paper_ids": ["pub-optigeo"],
+      "html": "One paper accepted to <strong>CoRL 2026</strong>: <a href=\"#pub-optigeo\">OptiGeo</a>.",
+      "month_basis": "Conference-wide paper acceptance notification: 2026-09-04; not an individual acceptance email.",
+      "sources": ["https://www.corl.org/contributions/call-for-demos", "https://github.com/mx-liu6/FoundationGeo", "_site_content/resume-cv02.json"]
+    },
+    {
+      "id": "eccv-2026",
+      "month": "2026-06",
+      "kind": "conference_acceptance",
+      "venue": "ECCV 2026",
+      "paper_ids": ["pub-foundationgeo"],
+      "html": "One paper accepted to <strong>ECCV 2026</strong>: <a href=\"#pub-foundationgeo\">FoundationGeo</a>.",
+      "month_basis": "Conference-wide final decisions: 2026-06-17; not the September conference date or the July preprint date.",
+      "sources": ["https://eccv.ecva.net/Conferences/2026/Dates", "https://github.com/mx-liu6/FoundationGeo", "_site_content/resume-cv02.json"]
+    },
+    {
+      "id": "harvard-arrival",
+      "month": "2026-05",
+      "kind": "arrival",
+      "paper_ids": [],
+      "html": "I arrived at <strong>Harvard University</strong> as a Visiting Scholar, working with Yilun Du and Mengyu Wang.",
+      "month_basis": "User explicitly confirmed May 2026 as the arrival month. This news item does not change the appointment dates in the CV.",
+      "sources": ["User instruction in this website-editing conversation"]
+    },
+    {
+      "id": "nature-acceptance",
+      "month": "2026-05",
+      "kind": "journal_acceptance",
+      "venue": "Nature",
+      "paper_ids": ["pub-neural-field-memory"],
+      "html": "Our work on <a href=\"#pub-neural-field-memory\">neural-field reconstruction using resistive memory</a> was accepted by <strong>Nature</strong>.",
+      "month_basis": "Publisher article history: accepted 2026-05-12; published 2026-06-10. News records acceptance, not publication.",
+      "sources": ["https://www.nature.com/articles/s41586-026-10646-w"]
+    },
+    {
+      "id": "cvpr-2026",
+      "month": "2026-02",
+      "kind": "conference_acceptance",
+      "venue": "CVPR 2026",
+      "paper_ids": ["pub-streaming-geometry"],
+      "html": "One paper accepted to <strong>CVPR 2026</strong>: <a href=\"#pub-streaming-geometry\">DyFN</a> for stable streaming video geometry.",
+      "month_basis": "Conference-wide final decisions: 2026-02-20; not the June conference date or the May preprint date.",
+      "sources": ["https://cvpr.thecvf.com/Conferences/2026/Dates", "https://shawlyu.github.io/DyFN/", "_site_content/resume-cv02.json"]
+    },
+    {
+      "id": "iclr-2026",
+      "month": "2026-01",
+      "kind": "conference_acceptance",
+      "venue": "ICLR 2026",
+      "paper_ids": ["pub-lifr-seg"],
+      "html": "One paper accepted to <strong>ICLR 2026</strong>: <a href=\"#pub-lifr-seg\">LiFR-Seg</a>.",
+      "month_basis": "Conference-wide decision notification: 2026-01-25; not the April conference date or the March preprint date.",
+      "sources": ["https://iclr.cc/Conferences/2026/Dates", "https://proceedings.iclr.cc/paper_files/paper/2026/hash/620221d506055afba5ee7ab895277233-Abstract-Conference.html"]
+    },
+    {
+      "id": "neurips-2025",
+      "month": "2025-09",
+      "kind": "conference_acceptance",
+      "venue": "NeurIPS 2025",
+      "paper_ids": ["pub-eag3r"],
+      "html": "One paper accepted to <strong>NeurIPS 2025</strong>: <a href=\"#pub-eag3r\">EAG3R</a> (<span class=\"highlight\">Spotlight</span>).",
+      "month_basis": "Conference-wide author notification: 2025-09-18; the coauthor announcement also records September 2025.",
+      "sources": ["https://neurips.cc/Conferences/2025/Dates", "https://proceedings.neurips.cc/paper_files/paper/2025/hash/6a0480190bbe6b622c7f1d3aa9be9c0f-Abstract-Conference.html", "https://yfyu.netlify.app/news/announcement_1/"]
+    }
+  ]
+}

@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 import personal_site_core as core
 
 ROOT = Path(__file__).resolve().parents[1]
-LAYOUT = 'personal-about-20261015-v1'
+LAYOUT = 'monthly-news-review-20261015-v1'
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
@@ -28,7 +28,7 @@ def fragment(value):
 
 
 def parse_cv():
-    """Read a website-only view of CV02, omitting GPA and class rank.
+    """Read a website-only CV02 view without GPA, rank or review destinations.
 
     The underlying parser and all CV TeX/PDF files remain unchanged. Both the
     homepage and legacy resume use this view, as does the generated site cache.
@@ -44,7 +44,42 @@ def parse_cv():
             if visible:
                 visible_details.append(visible)
         entry['details'] = visible_details
+    # A public status is not a disclosure of the venue currently reviewing it.
+    # Keep accepted venues, preprints, authors, order and all resource links.
+    for paper in cv['papers']:
+        if re.search(r'\bunder review\b', plain(paper['venue']), re.I):
+            paper['venue'] = 'Under review'
     return cv
+
+
+def news_feed(papers):
+    """Render month-level milestones; retain source/date provenance in JSON."""
+    data = json.loads((ROOT/'_site_content/news.json').read_text())
+    entries = data['entries']
+    if len({item['id'] for item in entries}) != len(entries):
+        raise ValueError('Duplicate news event IDs')
+    rows = []
+    for item in sorted(entries, key=lambda item: item['month'], reverse=True):
+        month = item['month']
+        if not re.fullmatch(r'20\d{2}-(?:0[1-9]|1[0-2])', month):
+            raise ValueError('News must use YYYY-MM dates: ' + month)
+        if not item.get('sources') or not item.get('month_basis'):
+            raise ValueError('News needs explicit source/date provenance')
+        for paper_id in item['paper_ids']:
+            if paper_id not in papers:
+                raise ValueError('Unknown news paper: ' + paper_id)
+            status = plain(papers[paper_id]['venue'])
+            if 'acceptance' in item['kind']:
+                if item['venue'] not in status or 'under review' in status.lower():
+                    raise ValueError('Acceptance news conflicts with publication: ' + paper_id)
+        markup = fragment(item['html'])
+        for anchor in markup.select('a[href^="#pub-"]'):
+            if anchor['href'][1:] not in item['paper_ids']:
+                raise ValueError('Untracked paper in news: ' + anchor['href'])
+        rows.append('<dt><time datetime="' + month + '">' + month.replace('-', '.') +
+                    '</time></dt><dd data-news-id="' + core.esc(item['id']) + '">' +
+                    core.mentor_links(item['html']) + '</dd>')
+    return '<dl class="news news-monthly">' + ''.join(rows) + '</dl>'
 
 
 def timeline(cv):
@@ -114,6 +149,8 @@ def document(name, body, cfg, cv):
     if name == 'index.html':
         doc.select_one('.site-nav a')['aria-current'] = 'location'
     doc.head.append(doc.new_tag('link', rel='stylesheet', href='assets/css/single-page.css?v=' + LAYOUT))
+    if name == 'index.html':
+        doc.head.append(doc.new_tag('link', rel='stylesheet', href='assets/css/news.css?v=' + LAYOUT))
     for node in doc.select('script[src^="assets/js/site-pages.js"]'):
         node['src'] = 'assets/js/site-pages.js?v=' + LAYOUT
     doc.head.append(doc.new_tag('link', rel='preconnect', href='https://fonts.googleapis.com'))
@@ -138,6 +175,7 @@ def main():
     (ROOT/'_site_content/site-presentation.json').write_text(json.dumps(cfg, ensure_ascii=False, indent=2) + '\n')
     lookup = {core.normalized(v['source_title']): key for key, v in cfg['papers'].items()}
     papers = {lookup[core.normalized(p['title'])]: p for p in cv['papers']}
+    data['news'] = news_feed(papers)
     about = (ROOT/'_site_content/about-personal.html').read_text()
     assert fragment(about).select_one('article.about-essay[data-about-version]'), 'Missing personal About essay'
     bodies = {'index.html': compose_home(core.home_page(cfg, papers, cv, data), about, cv),

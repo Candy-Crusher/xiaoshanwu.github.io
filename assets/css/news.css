@@ -1,0 +1,6 @@
+/* Month-level milestones, matching the existing restrained academic layout. */
+.news.news-monthly{grid-template-columns:72px minmax(0,1fr);gap:11px 22px;align-items:baseline}
+.news-monthly time{white-space:nowrap;font-variant-numeric:tabular-nums}
+.news-monthly dd{min-width:0;overflow-wrap:break-word}
+.news-monthly strong{color:var(--ink)}
+@media(max-width:600px){.news.news-monthly{grid-template-columns:59px minmax(0,1fr);gap:12px 15px}}
