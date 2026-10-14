@@ -18,3 +18,7 @@
 @media(max-width:800px){.research-direction{grid-template-columns:178px minmax(0,1fr);gap:25px}}
 @media(max-width:600px){.research-question{font-size:16px;line-height:1.75;margin-bottom:21px}.research-directions{gap:22px}.research-direction{grid-template-columns:minmax(0,1fr);gap:7px}.research-direction h3{font-size:16px}.research-direction p{font-size:14px}.research-direction .direction-examples{font-size:12px}.research-jump{font-size:12px}.publications-record{margin-top:26px;padding-top:24px}}
 @media print{.research-jump{display:none}.research-direction{break-inside:avoid}.publications-record{margin-top:20px}}
+
+/* Anchor navigation should not turn a publication into a boxed card.
+   Keep native fragment links and the existing keyboard focus rings on links. */
+.publication-entry:target{background:transparent;outline:none;outline-offset:0}
