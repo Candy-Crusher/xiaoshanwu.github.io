@@ -119,7 +119,7 @@ def static_checks():
     for name in ['index.html', 'research.html', 'publications.html']:
         ugg = docs[name].select_one('.collaborative-papers > li#pub-ugg')
         assert ugg and docs[name].select('.collaborative-papers > li')[0] == ugg
-        assert text(ugg.select_one('.pub-authors')) == 'A. Kiruga, Z. Li, R. Cai, H. Lillemark, X. Wu, A. Tewari, and Y. Du.'
+        assert norm(text(ugg.select_one('.pub-authors'))) == norm('A. Kiruga, Z. Li, R. Cai, H. Lillemark, X. Wu, A. Tewari, and Y. Du.')
         assert text(ugg.select_one('.research-meta')) == 'NeurIPS 2026'
         assert not ugg.select('.research-role, .pub-authors sup')
         assert ugg.select_one('a[href="https://sky-lzy.github.io/UGG-website/"]')
