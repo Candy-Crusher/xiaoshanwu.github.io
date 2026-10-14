@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 import personal_site_core as core
 
 ROOT = Path(__file__).resolve().parents[1]
-LAYOUT = 'ugg-neurips-2026-v1'
+LAYOUT = 'teaser-covers-20261015-v1'
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']

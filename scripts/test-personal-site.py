@@ -18,7 +18,7 @@ OUT = ROOT/'personal-site-qa'
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
-LAYOUT = 'ugg-neurips-2026-v1'
+LAYOUT = 'teaser-covers-20261015-v1'
 
 
 def text(node):

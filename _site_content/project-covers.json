@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "display": "complete image, original aspect ratio, no crop",
+  "covers": {
+    "pub-game": {
+      "src": "projects/game/assets/teaser.webp",
+      "width": 1440,
+      "height": 502,
+      "sha256": "dd9948b15abf2edf6400d4553a90226133a7a458f90f256a3192f8b3ec7e6c18"
+    },
+    "pub-eag3r": {
+      "src": "projects/eag3r/assets/concept.webp",
+      "width": 1440,
+      "height": 320,
+      "sha256": "b844e59354eb525233747174efdf2f709ac423a22c093adcfbaef52b27bb7d82"
+    },
+    "pub-videossm": {
+      "src": "projects/videossm/assets/overview.webp",
+      "width": 1440,
+      "height": 474,
+      "sha256": "fb1fe55cea5e1523c7c6548cb9b5bf8f51766d9af70b9dbeaf1bb926b88f463b"
+    },
+    "pub-lifr-seg": {
+      "src": "projects/lifr-seg/assets/teaser.webp",
+      "width": 1440,
+      "height": 864,
+      "sha256": "c381139d7a97b1835b9cfec7d4cb62045f3b9acd32ed993e18cf890c19066911"
+    },
+    "pub-evsplat": {
+      "src": "projects/evsplat/assets/method.png",
+      "width": 1200,
+      "height": 420,
+      "sha256": "6dd360a379c2bdada003484263447fdfc38b5e7ac1805995cee62f4c76eb9b83"
+    },
+    "pub-lifr-v2": {
+      "src": "projects/lifr-v2/assets/teaser.webp",
+      "width": 1440,
+      "height": 455,
+      "sha256": "acf365df5114cd5cbaa3cbb269f3e6a698513723195e6bde3895620749b4b85d"
+    }
+  },
+  "sandbox": "existing video and media metadata unchanged",
+  "evsplat_upload": {
+    "name": "method.jpg",
+    "original_width": 2048,
+    "original_height": 717,
+    "original_jpeg_sha256": "2c2ceb806c594ddc6d85d547d934792d2b6d527f24e6aac5084602a60d60f80c",
+    "transfer": "Flat raster resized to 1200 pixels wide; tiled transfer reassembled without cropping the final image. No AI reconstruction.",
+    "published_image": "projects/evsplat/assets/method.png"
+  }
+}
