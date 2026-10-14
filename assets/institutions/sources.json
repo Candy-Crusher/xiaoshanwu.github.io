@@ -1,0 +1,26 @@
+{
+  "zju": {
+    "institution_domain": "www.zju.edu.cn",
+    "source": "https://www.google.com/s2/favicons?domain=www.zju.edu.cn&sz=128",
+    "sha256": "603b62e6ee42477c83b506b4218a75d27417aff39010f813c617f1eb5b7b16c6",
+    "usage": "Website icon identifying education/research affiliation; not an endorsement."
+  },
+  "uiuc": {
+    "institution_domain": "illinois.edu",
+    "source": "https://www.google.com/s2/favicons?domain=illinois.edu&sz=128",
+    "sha256": "3b43277f86965ee3b16a2d70a4a6215aeda803b52413c841b6895f652fcd18bf",
+    "usage": "Website icon identifying education/research affiliation; not an endorsement."
+  },
+  "hku": {
+    "institution_domain": "www.hku.hk",
+    "source": "https://www.google.com/s2/favicons?domain=www.hku.hk&sz=128",
+    "sha256": "7e75fb1f3989eea1bf926b2ddfca78d7574ba641a2236a076d5470a94978edfc",
+    "usage": "Website icon identifying education/research affiliation; not an endorsement."
+  },
+  "harvard": {
+    "institution_domain": "www.harvard.edu",
+    "source": "https://www.google.com/s2/favicons?domain=www.harvard.edu&sz=128",
+    "sha256": "cec1d548f47f228777bec40b1bed2bddee9e45054d0c66390bb8d04df21c12b4",
+    "usage": "Website icon identifying education/research affiliation; not an endorsement."
+  }
+}
