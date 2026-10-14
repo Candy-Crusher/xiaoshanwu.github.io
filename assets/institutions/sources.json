@@ -1,9 +1,11 @@
 {
   "zju": {
     "institution_domain": "www.zju.edu.cn",
-    "source": "https://www.google.com/s2/favicons?domain=www.zju.edu.cn&sz=128",
-    "sha256": "603b62e6ee42477c83b506b4218a75d27417aff39010f813c617f1eb5b7b16c6",
-    "usage": "Website icon identifying education/research affiliation; not an endorsement."
+    "source": "https://www.zju.edu.cn/_upload/article/images/c3/98/1fb1d281492eb477a098ef7a2901/05966b26-ab45-470d-94c1-99b1e02d12f4.png",
+    "source_page": "https://www.zju.edu.cn/572/main.htm",
+    "sha256": "8de29255d17bdb96d09e5faced1846de68d2e0190fee6d0c916eb3c251a4d339",
+    "processing": "Blank outer margins cropped and resized; mark itself unchanged.",
+    "usage": "Institution mark identifying education/research affiliation; not an endorsement."
   },
   "uiuc": {
     "institution_domain": "illinois.edu",
