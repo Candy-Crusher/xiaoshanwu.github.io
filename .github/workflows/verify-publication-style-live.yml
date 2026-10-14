@@ -1,0 +1,80 @@
+name: Verify published publication layout
+on:
+  push:
+    branches: [publication-style-20261015]
+    paths: [.github/workflows/verify-publication-style-live.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: a8167c4c50b7224875fa459a3ffdbc89d041c1e2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser validation dependencies
+        run: |
+          python -m pip install beautifulsoup4 playwright
+          python -m playwright install --with-deps chromium
+      - name: Verify the public HTML and exact icon bytes
+        run: |
+          python -u - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request,urlopen
+          from bs4 import BeautifulSoup
+          import hashlib,json,sys,time
+          sys.path.insert(0,'scripts')
+          from publication_style import VERSION
+          base='https://candy-crusher.github.io/xiaoshanwu.github.io/'
+          def get(path):
+              req=Request(base+path+'?publication-check='+str(time.time_ns()),headers={'User-Agent':'PublicationValidation/1.0','Cache-Control':'no-cache'})
+              with urlopen(req,timeout=12) as response:
+                  assert response.status==200
+                  return response.read()
+          for attempt in range(24):
+              try:
+                  for name in ['index.html','about.html','resume.html','research.html','publications.html']:
+                      doc=BeautifulSoup(get(name),'html.parser')
+                      assert doc.select_one('head link[rel="icon"][href*="mountain.svg"]'),name
+                      if name in ['index.html','research.html','publications.html']:
+                          assert doc.select_one('#publications').get('data-publication-style')==VERSION,name
+                  for path in ['assets/icons/mountain.svg','assets/icons/mountain-32.png','assets/icons/mountain-180.png','assets/icons/mountain.ico']:
+                      assert hashlib.sha256(get(path)).digest()==hashlib.sha256(Path(path).read_bytes()).digest(),path
+                  Path('publication-style-review').mkdir(exist_ok=True)
+                  Path('publication-style-review/live-verification.json').write_text(json.dumps({'status':'PASS','version':VERSION,'pages':5,'icon_hashes_verified':4},indent=2))
+                  print('PASS: published metadata and all favicon formats');break
+              except Exception as exc:
+                  print('Waiting for Pages:',attempt+1,str(exc));time.sleep(10)
+          else:raise SystemExit('Published version not observed')
+          PY
+      - name: Test the actual public page in desktop and mobile browsers
+        run: python scripts/test-publication-details.py https://candy-crusher.github.io/xiaoshanwu.github.io/
+      - name: Capture clean section previews without the floating header overlay
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          base='https://candy-crusher.github.io/xiaoshanwu.github.io/'
+          out=Path('publication-style-review')
+          with sync_playwright() as pw:
+              browser=pw.chromium.launch()
+              page=browser.new_page(reduced_motion='reduce')
+              for width in [390,1440]:
+                  page.set_viewport_size({'width':width,'height':1000})
+                  page.goto(base+'index.html#publications',wait_until='networkidle')
+                  page.evaluate('document.fonts.ready')
+                  page.locator('#publications img').evaluate_all('(imgs)=>imgs.forEach(i=>i.loading="eager")')
+                  for img in page.locator('#publications img').all():img.evaluate('(i)=>i.decode()')
+                  page.locator('#publications').screenshot(path=str(out/f'publications-clean-{width}.png'),style='.site-topbar{visibility:hidden!important}')
+              browser.close()
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: published-publication-style-review
+          path: publication-style-review/
+          retention-days: 7
