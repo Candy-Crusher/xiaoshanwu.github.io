@@ -18,7 +18,7 @@ OUT = ROOT/'personal-site-qa'
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
-LAYOUT = 'monthly-news-review-20261015-v1'
+LAYOUT = 'ugg-neurips-2026-v1'
 
 
 def text(node):
@@ -35,7 +35,11 @@ def static_checks():
     spec.loader.exec_module(builder)
     cv = builder.parse_cv()
     raw_cv = builder.core.parse_cv()
-    for visible, original in zip(cv['papers'], raw_cv['papers']):
+    visible_by_title = {p['title']: p for p in cv['papers']}
+    assert len(visible_by_title) == len(cv['papers']) == 16
+    assert [p['title'] for p in cv['papers'] if p['title'] != 'UGG: Unified Generative Geometry Model'] == [p['title'] for p in raw_cv['papers']]
+    for original in raw_cv['papers']:
+        visible = visible_by_title[original['title']]
         expected = 'Under review' if 'under review' in builder.plain(original['venue']).lower() else original['venue']
         assert visible['venue'] == expected
         assert {k:v for k,v in visible.items() if k!='venue'} == {k:v for k,v in original.items() if k!='venue'}
@@ -85,7 +89,7 @@ def static_checks():
     for name in ['index.html', 'research.html', 'publications.html']:
         doc = docs[name]
         items = doc.select('.publication-list > li')
-        assert len(items) == 15 and len(doc.select('.lead-papers > li')) == 8 and len(doc.select('.collaborative-papers > li')) == 7
+        assert len(items) == 16 and len(doc.select('.lead-papers > li')) == 8 and len(doc.select('.collaborative-papers > li')) == 8
         for item, paper in zip(items, cv['papers']):
             assert text(item.select_one('.pub-title')) == paper['title']
             assert norm(text(item.select_one('.pub-authors'))) == norm(builder.plain(paper['authors']))
@@ -109,10 +113,23 @@ def static_checks():
         assert event['sources'] and event['month_basis']
         if event['kind'] == 'conference_acceptance':
             assert len(event['paper_ids']) == 1 and 'One paper accepted' in text(row)
+    ugg_news = next(e for e in events if e['id'] == 'neurips-2026')
+    assert ugg_news['month'] == '2026-09' and ugg_news['paper_ids'] == ['pub-ugg']
+    assert next(e for e in events if e['id'] == 'neurips-2025')['paper_ids'] == ['pub-eag3r']
+    for name in ['index.html', 'research.html', 'publications.html']:
+        ugg = docs[name].select_one('.collaborative-papers > li#pub-ugg')
+        assert ugg and docs[name].select('.collaborative-papers > li')[0] == ugg
+        assert text(ugg.select_one('.pub-authors')) == 'A. Kiruga, Z. Li, R. Cai, H. Lillemark, X. Wu, A. Tewari, and Y. Du.'
+        assert text(ugg.select_one('.research-meta')) == 'NeurIPS 2026'
+        assert not ugg.select('.research-role, .pub-authors sup')
+        assert ugg.select_one('a[href="https://sky-lzy.github.io/UGG-website/"]')
+        assert ugg.select_one('a[href="assets/bibtex/kiruga2026ugg.bib"]')
+    bibtex = (ROOT/'assets/bibtex/kiruga2026ugg.bib').read_text()
+    assert '@inproceedings{kiruga2026ugg,' in bibtex and 'year={2026}' in bibtex
     assert next(e for e in events if e['id']=='harvard-arrival')['month'] == '2026-05'
     assert next(e for e in events if e['id']=='nature-acceptance')['month'] == '2026-05'
     assert not any('pub-videossm' in e['paper_ids'] for e in events)
-    assert len(home.select('.publication-list .research-meta > span:first-child')) == 15
+    assert len(home.select('.publication-list .research-meta > span:first-child')) == 16
     for node in home.select('.publication-list .research-meta > span:first-child'):
         if 'under review' in text(node).lower():
             assert text(node) == 'Under review'
@@ -167,14 +184,9 @@ def static_checks():
         assert len(story.select('p')) == 6
     assert 'Blade Runner 2049' in text(home.select_one('#about'))
     assert not home.select('details, .selected-entry')
-    return {'static': 'PASS', 'publication_metadata': 'CV02: 15 papers, authors/status/order unchanged',
+    return {'static': 'PASS', 'publication_metadata': '15 CV02 papers preserved plus UGG (NeurIPS 2026), collaborative work',
             'experience_order': ['Harvard', 'HKU', 'ZJU & UIUC'], 'repeatable_build': True,
             'internal_links': 'PASS', 'source_git_blob': cv['source_git_blob']}
-
-
-class QuietHandler(SimpleHTTPRequestHandler):
-    def log_message(self, *args):
-        pass
 
 
 def browser_checks(base):
@@ -214,6 +226,11 @@ def browser_checks(base):
                 if label == 'Experience':
                     page.screenshot(path=str(OUT/f'experience-{width}.png'))
                 report['native_navigation'].append({'width': width, 'section': label, 'same_document': True})
+            page.locator('#news a[href="#pub-ugg"]').click()
+            assert urlsplit(page.url).fragment == 'pub-ugg'
+            assert page.evaluate('window.__sameDocument') == 'preserved'
+            assert page.locator('#pub-ugg').is_visible()
+            page.locator('#pub-ugg').screenshot(path=str(OUT/f'ugg-publication-{width}.png'))
             page.locator('.wordmark').click()
             assert page.evaluate('scrollY') < 4
             page.screenshot(path=str(OUT/f'header-{width}.png'))
@@ -260,7 +277,7 @@ def browser_checks(base):
         nojs = browser.new_context(java_script_enabled=False, reduced_motion='reduce', viewport={'width':390,'height':1000})
         p = nojs.new_page()
         p.goto(base+'index.html', wait_until='networkidle')
-        assert p.locator('.publication-list > li').count() == 15
+        assert p.locator('.publication-list > li').count() == 16
         for label, anchor in NAV:
             p.locator('.site-nav a').filter(has_text=label).click()
             assert p.url == base+'index.html#'+anchor
@@ -271,7 +288,13 @@ def browser_checks(base):
         browser.close()
     report['no_javascript'] = 'PASS'
     report['back_forward_keyboard_dialog'] = 'PASS'
+    report['news_to_ugg_same_document'] = 'PASS'
     return report
+
+
+class QuietHandler(SimpleHTTPRequestHandler):
+    def log_message(self, *args):
+        pass
 
 
 def main():

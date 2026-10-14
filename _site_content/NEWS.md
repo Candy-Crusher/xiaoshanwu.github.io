@@ -17,3 +17,15 @@ arrival is the user's explicit update, separate from the April appointment start
 in the unchanged CV. The old year-only news fragment in `personal-site.json` is
 archival and is no longer rendered. `assets/css/news.css` provides the wider
 month column without changing the surrounding layout.
+
+## UGG update
+
+UGG: Unified Generative Geometry Model is a user-confirmed NeurIPS 2026
+collaborative paper. Its complete supplied BibTeX is preserved at
+`assets/bibtex/kiruga2026ugg.bib`. The website supplement
+`publication-additions.json` supplies the title, all seven authors in order,
+venue, and project link without changing any CV TeX or PDF. It is inserted at
+the top of Collaborative Work; all original 15 records retain their order.
+The new September 2026 News item is distinct from EAG3R's September 2025
+acceptance. Its month follows the official September 24, 2026 notification
+schedule; it is not a claim about the date of an individual email.

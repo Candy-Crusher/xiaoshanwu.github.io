@@ -63,7 +63,7 @@ jobs:
           for file in index.html about.html resume.html research.html publications.html; do
             if [ -f "$file" ]; then cp "$file" personal-site-review/site/; fi
           done
-          for folder in css js institutions; do
+          for folder in css js institutions bibtex; do
             if [ -d assets/$folder ]; then cp -R assets/$folder personal-site-review/site/assets/; fi
           done
           if [ -d _site_content ]; then cp -R _site_content personal-site-review/source/; fi
@@ -102,6 +102,7 @@ jobs:
           import time,json
           config=json.loads(Path('_site_content/site-presentation.json').read_text())
           expected_nav=[item['label'] for item in config['navigation']]
+          expected_count=len(json.loads(Path('_site_content/resume-cv02.json').read_text())['papers'])
           base='https://candy-crusher.github.io/xiaoshanwu.github.io/'
           for attempt in range(42):
               reports=[]
@@ -117,7 +118,10 @@ jobs:
                       ok=doc.body.get('data-single-page')==config['layout'] and labels==expected_nav and [a['href'] for a in nav]==expected_links
                       ok=ok and doc.select_one('.wordmark').get_text()=="Xiaoshan's Homepage"
                       if name=='index.html':
-                          ok=ok and len(doc.select('.timeline-entry'))==3 and len(doc.select('.publication-list>li'))==15 and doc.select_one('#about') is not None
+                          ok=ok and len(doc.select('.timeline-entry'))==3 and len(doc.select('.publication-list>li'))==expected_count and doc.select_one('#about') is not None
+                          ugg=doc.select_one('.collaborative-papers #pub-ugg')
+                          ok=ok and ugg is not None and ugg.select_one('.research-meta').get_text(strip=True)=='NeurIPS 2026'
+                          ok=ok and doc.select_one('#news [data-news-id="neurips-2026"] a[href="#pub-ugg"]') is not None
                       reports.append({'page':name,'status':status,'navigation':labels,'updated':bool(ok)})
                   except Exception as exc:reports.append({'page':name,'error':str(exc)})
               if all(r.get('updated') for r in reports):

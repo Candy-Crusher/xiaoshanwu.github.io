@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "scope": "User-confirmed website publications not yet in the unchanged CV02. No CV TeX or PDF is edited.",
+  "papers": [
+    {
+      "id": "pub-ugg",
+      "source": "User-supplied kiruga2026ugg BibTeX and explicit NeurIPS 2026 acceptance confirmation; project website corroborates title, author order and venue.",
+      "source_url": "https://sky-lzy.github.io/UGG-website/",
+      "bibtex_file": "assets/bibtex/kiruga2026ugg.bib",
+      "paper": {
+        "title": "UGG: Unified Generative Geometry Model",
+        "authors": "A. Kiruga, Z. Li, R. Cai, H. Lillemark, <strong>X. Wu</strong>, A. Tewari, and Y. Du.",
+        "venue": "<strong>NeurIPS 2026</strong>.",
+        "role": "",
+        "summary": "",
+        "project_url": "https://sky-lzy.github.io/UGG-website/",
+        "group": 1
+      },
+      "presentation": {
+        "source_title": "UGG: Unified Generative Geometry Model",
+        "resources": [
+          {
+            "label": "Project",
+            "url": "https://sky-lzy.github.io/UGG-website/",
+            "home": true,
+            "figure": false
+          },
+          {
+            "label": "BibTeX",
+            "url": "assets/bibtex/kiruga2026ugg.bib",
+            "home": true,
+            "figure": false
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -2,8 +2,18 @@
   "version": 1,
   "order": "newest_first",
   "date_precision": "month",
-  "count_scope": "The confirmed accepted papers in the current CV02-backed publication catalog. Counts are not inferred from coauthors' total publication counts. VideoSSM remains a preprint and is not counted as a conference acceptance.",
+  "count_scope": "Confirmed accepted papers in CV02 plus user-confirmed publication-additions.json records. Counts are per conference edition. VideoSSM remains a preprint and is not counted as an acceptance.",
   "entries": [
+    {
+      "id": "neurips-2026",
+      "month": "2026-09",
+      "kind": "conference_acceptance",
+      "venue": "NeurIPS 2026",
+      "paper_ids": ["pub-ugg"],
+      "html": "One paper accepted to <strong>NeurIPS 2026</strong>: <a href=\"#pub-ugg\">UGG: Unified Generative Geometry Model</a>.",
+      "month_basis": "Conference-wide paper author notification: 2026-09-24 (AoE), as listed on the official 2026 dates page. The user confirmed acceptance, but did not supply the individual notification date. Kept separate from EAG3R at NeurIPS 2025.",
+      "sources": ["User-supplied kiruga2026ugg BibTeX and acceptance confirmation in this conversation", "https://sky-lzy.github.io/UGG-website/", "https://neurips.cc/Conferences/2026/Dates", "_site_content/publication-additions.json"]
+    },
     {
       "id": "corl-2026",
       "month": "2026-09",

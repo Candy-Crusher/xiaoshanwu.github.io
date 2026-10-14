@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 import personal_site_core as core
 
 ROOT = Path(__file__).resolve().parents[1]
-LAYOUT = 'monthly-news-review-20261015-v1'
+LAYOUT = 'ugg-neurips-2026-v1'
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
@@ -27,6 +27,21 @@ def fragment(value):
     return BeautifulSoup(value, 'html.parser')
 
 
+def publication_additions():
+    """User-confirmed website additions, kept separate from downloadable CVs."""
+    entries = json.loads((ROOT/'_site_content/publication-additions.json').read_text())['papers']
+    ids = [entry['id'] for entry in entries]
+    titles = [core.normalized(entry['paper']['title']) for entry in entries]
+    if len(set(ids)) != len(ids) or len(set(titles)) != len(titles):
+        raise ValueError('Duplicate supplemental publication')
+    for entry in entries:
+        if entry['paper']['group'] != 1 or not entry.get('source'):
+            raise ValueError('Review supplemental collaborative publication metadata')
+        if entry['presentation']['source_title'] != entry['paper']['title']:
+            raise ValueError('Supplemental publication title mismatch')
+    return entries
+
+
 def parse_cv():
     """Read a website-only CV02 view without GPA, rank or review destinations.
 
@@ -34,6 +49,17 @@ def parse_cv():
     homepage and legacy resume use this view, as does the generated site cache.
     """
     cv = core.parse_cv()
+    # Insert new collaborative work ahead of older collaborative records without
+    # changing the order of the CV-backed papers or giving a coauthor a lead role.
+    known = {core.normalized(p['title']) for p in cv['papers']}
+    insert_at = next((i for i, p in enumerate(cv['papers']) if p['group'] == 1), len(cv['papers']))
+    for entry in publication_additions():
+        paper = entry['paper']
+        title = core.normalized(paper['title'])
+        if title not in known:
+            cv['papers'].insert(insert_at, paper)
+            insert_at += 1
+            known.add(title)
     for entry in cv['education']:
         visible_details = []
         for detail in entry['details']:
@@ -169,6 +195,8 @@ def main():
     cv = parse_cv()
     cfg = json.loads((ROOT/'_site_content/site-presentation.json').read_text())
     data = json.loads((ROOT/'_site_content/personal-site.json').read_text())
+    for entry in publication_additions():
+        cfg['papers'][entry['id']] = entry['presentation']
     cfg['navigation'] = [{'label': label, 'url': 'index.html#' + anchor} for label, anchor in NAV]
     cfg['layout'] = LAYOUT
     cfg['version'] = max(cfg.get('version', 0), 5)
