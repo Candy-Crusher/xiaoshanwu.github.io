@@ -1,0 +1,171 @@
+name: Stage project teaser covers
+on:
+  push:
+    branches: [teaser-covers-20261015]
+    paths: [.github/workflows/stage-project-covers.yml]
+permissions:
+  contents: write
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: teaser-covers-20261015
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install beautifulsoup4 Pillow playwright
+          python -m playwright install --with-deps chromium
+      - name: Update cover presentation from existing artwork
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          from bs4 import BeautifulSoup
+          import hashlib,json,copy,re,shutil
+          out=Path('cover-review');out.mkdir(exist_ok=True)
+          def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+          protected=[Path('cv.tex'),Path('Xiaoshan_Wu_CV.pdf'),Path('ia8eshfzfsvn.pdf'),*Path('cv/2027-internships').glob('*.tex'),*Path('projects').glob('*/index.html')]
+          before={str(p):digest(p) for p in protected if p.is_file() and str(p)!='projects/evsplat/index.html'}
+          changed=['_site_content/site-presentation.json','scripts/build-personal-site.py','scripts/test-personal-site.py','.github/workflows/build-personal-site.yml','projects/evsplat/index.html','_site_content/project-sources/evsplat.html']
+          originals={p:digest(Path(p)) for p in changed}
+          image_path=Path('projects/evsplat/assets/method.png')
+          with Image.open(image_path) as image:ew,eh=image.size
+          assert ew>=1024 and abs(ew/eh-2048/717)<.005
+          def fragment(s):return BeautifulSoup(s,'html.parser')
+          figure=f'<figure class="figure hero-figure" id="evsplat-method-figure"><a class="figure-link" href="assets/method.png" aria-label="Enlarge EVSplat method overview" data-caption="EVSplat method overview"><img src="assets/method.png" alt="EVSplat method overview: event-guided motion prediction, pose and depth initialization, and dynamics-aware Gaussian splatting." width="{ew}" height="{eh}" loading="eager" decoding="async" style="display:block;width:100%;height:auto;object-fit:contain"/></a><figcaption>EVSplat method overview.</figcaption></figure>'
+          for name in ['projects/evsplat/index.html','_site_content/project-sources/evsplat.html']:
+              p=Path(name);doc=fragment(p.read_text())
+              if not doc.select_one('#evsplat-method-figure'):
+                  if doc.select_one('body.ugg-page'):
+                      doc.main.insert(0,fragment('<section class="ugg-section hero-teaser" id="teaser"><div class="ugg-wrap">'+figure+'</div></section>').section)
+                  else:
+                      doc.select_one('main > .tldr').insert_after(fragment(figure).figure)
+              for prop in ['og:image','twitter:image']:
+                  attr='property' if prop.startswith('og:') else 'name'
+                  tag=doc.find('meta',attrs={attr:prop})
+                  if not tag:tag=doc.new_tag('meta');tag[attr]=prop;doc.head.append(tag)
+                  tag['content']='https://candy-crusher.github.io/xiaoshanwu.github.io/projects/evsplat/assets/method.png'
+              p.write_text(str(doc)+'\n')
+          sources={
+            'pub-game':('projects/game/assets/teaser.webp','GaMe original teaser','Teaser'),
+            'pub-eag3r':('projects/eag3r/assets/concept.webp','EAG3R original teaser: event-augmented scene geometry','Teaser · Figure 1'),
+            'pub-videossm':('projects/videossm/assets/overview.webp','VideoSSM original project overview','Project overview'),
+            'pub-lifr-seg':('projects/lifr-seg/assets/teaser.webp','LiFR-Seg original teaser','Teaser'),
+            'pub-evsplat':('projects/evsplat/assets/method.png','EVSplat method overview supplied by the author','Method overview'),
+            'pub-lifr-v2':('projects/lifr-v2/assets/teaser.webp','LiFR v2 original teaser','Teaser')}
+          cfgpath=Path('_site_content/site-presentation.json');cfg=json.loads(cfgpath.read_text());original=copy.deepcopy(cfg);covers={}
+          for key,(src,alt,caption) in sources.items():
+              with Image.open(src) as image:image.load();w,h=image.size
+              cfg['papers'][key]['media']={'src':src,'width':w,'height':h,'alt':alt,'caption':caption}
+              cfg['papers'][key]['media_source']='Complete author-provided teaser/project overview; no crop. '+src
+              covers[key]={'src':src,'width':w,'height':h,'sha256':digest(Path(src))}
+              shutil.copy(src,out/(key+Path(src).suffix))
+          assert cfg['papers']['pub-world-action-model']==original['papers']['pub-world-action-model']
+          for key in original['papers']:
+              a=copy.deepcopy(cfg['papers'][key]);b=copy.deepcopy(original['papers'][key])
+              if key in sources:
+                  for field in ['media','media_source']:a.pop(field,None);b.pop(field,None)
+              assert a==b,key
+          cfgpath.write_text(json.dumps(cfg,ensure_ascii=False,indent=2)+'\n')
+          for name in ['scripts/build-personal-site.py','scripts/test-personal-site.py']:
+              p=Path(name);s=p.read_text();s,n=re.subn(r"^LAYOUT = '[^']+'", "LAYOUT = 'teaser-covers-20261015-v1'",s,count=1,flags=re.M);assert n==1;p.write_text(s)
+          p=Path('.github/workflows/build-personal-site.yml');s=p.read_text();needle='      - name: Preserve original video and all interactive 4D cases'
+          if 'python scripts/test-project-covers.py' not in s:
+              assert needle in s;s=s.replace(needle,'      - name: Validate complete teaser covers\n        run: python scripts/test-project-covers.py\n'+needle)
+          p.write_text(s)
+          manifest={'version':1,'display':'complete image, original aspect ratio, no crop','covers':covers,'sandbox':'existing video and media metadata unchanged','evsplat_upload':{'name':'method.jpg','original_width':2048,'original_height':717,'original_jpeg_sha256':'2c2ceb806c594ddc6d85d547d934792d2b6d527f24e6aac5084602a60d60f80c','transfer':'Flat raster resized to 1200 pixels wide; tiled transfer reassembled without cropping the final image. No AI reconstruction.','published_image':str(image_path)}}
+          Path('_site_content/project-covers.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          Path('_site_content/PROJECT-COVERS.md').write_text('# Project covers\n\nKeep S4NDBOX as its existing native-controls video. GaMe, EAG3R, LiFR-Seg and LiFR v2 use complete original teaser figures. VideoSSM uses its complete project overview. EVSplat uses the author-provided method diagram, also displayed as the project hero. Never crop these figures or substitute unrelated results. project-covers.json records dimensions and source hashes. CVs, publication text, statuses and other project pages are unchanged.\n')
+          assert all(digest(Path(p))==h for p,h in before.items())
+          (out/'preservation.json').write_text(json.dumps({'protected':before,'modified_inputs_before':originals,'covers':covers},indent=2))
+          PY
+      - name: Add cover regression test
+        run: |
+          cat > scripts/test-project-covers.py <<'PY'
+          #!/usr/bin/env python3
+          """Validate complete project covers, clickable links and EVSplat hero."""
+          from pathlib import Path
+          from functools import partial
+          from http.server import ThreadingHTTPServer,SimpleHTTPRequestHandler
+          from threading import Thread
+          import hashlib,json,os,sys
+          from bs4 import BeautifulSoup
+          from playwright.sync_api import sync_playwright
+          ROOT=Path(__file__).resolve().parents[1]
+          def main():
+              covers=json.loads((ROOT/'_site_content/project-covers.json').read_text())['covers']
+              out=ROOT/'cover-review';out.mkdir(exist_ok=True)
+              for name in ['index.html','research.html','publications.html']:
+                  doc=BeautifulSoup((ROOT/name).read_text(),'html.parser')
+                  for key,m in covers.items():
+                      node=doc.select_one('#'+key+' .research-media img')
+                      assert node and node['src']==m['src'],(name,key)
+                      assert 'position:absolute' not in node.get('style','')
+                      assert int(node['width'])==m['width'] and int(node['height'])==m['height']
+                      assert hashlib.sha256((ROOT/m['src']).read_bytes()).hexdigest()==m['sha256']
+                  assert doc.select_one('#pub-world-action-model video source')['src']=='projects/sandbox/static/videos/disco_light_10x.mp4'
+              class Quiet(SimpleHTTPRequestHandler):
+                  def log_message(self,*args):pass
+              server=ThreadingHTTPServer(('127.0.0.1',0),partial(Quiet,directory=str(ROOT)))
+              Thread(target=server.serve_forever,daemon=True).start()
+              base=sys.argv[1].rstrip('/')+'/' if len(sys.argv)>1 else f'http://127.0.0.1:{server.server_port}/'
+              report=[]
+              try:
+                  with sync_playwright() as pw:
+                      exe=os.getenv('BROWSER_EXECUTABLE')
+                      browser=pw.chromium.launch(**({'executable_path':exe} if exe else {}))
+                      ctx=browser.new_context(reduced_motion='reduce');page=ctx.new_page();errors=[]
+                      page.on('pageerror',lambda err:errors.append(str(err)))
+                      for width in [390,1440]:
+                          page.set_viewport_size({'width':width,'height':1000})
+                          page.goto(base+'index.html',wait_until='domcontentloaded')
+                          for key,m in covers.items():
+                              entry=page.locator('#'+key);entry.scroll_into_view_if_needed()
+                              image=entry.locator('.research-media img');image.evaluate('(i)=>i.decode()')
+                              dims=image.evaluate('(i)=>({w:i.clientWidth,h:i.clientHeight,nw:i.naturalWidth,nh:i.naturalHeight})')
+                              assert dims['nw']==m['width'] and dims['nh']==m['height'],(key,dims)
+                              assert abs(dims['h']-dims['w']*m['height']/m['width'])<2,(key,dims)
+                              assert entry.locator('a.media-link').get_attribute('href')
+                              entry.screenshot(path=str(out/f'{key}-{width}.png'))
+                          assert page.evaluate('document.documentElement.scrollWidth-innerWidth')<=1
+                          page.goto(base+'index.html#pub-ugg',wait_until='domcontentloaded')
+                          assert page.locator('#pub-ugg').evaluate('(e)=>getComputedStyle(e).outlineStyle')=='none'
+                          page.goto(base+'projects/evsplat/',wait_until='domcontentloaded')
+                          image=page.locator('#evsplat-method-figure img');image.evaluate('(i)=>i.decode()')
+                          assert image.evaluate('(i)=>i.naturalWidth>0')
+                          page.locator('#evsplat-method-figure').screenshot(path=str(out/f'evsplat-project-{width}.png'))
+                          assert page.evaluate('document.documentElement.scrollWidth-innerWidth')<=1
+                          report.append({'width':width,'covers':len(covers),'uncropped':True,'evsplat_hero':True})
+                      assert not errors,errors
+                      browser.close()
+              finally:server.shutdown()
+              (out/'covers-report.json').write_text(json.dumps({'status':'PASS','checks':report,'sandbox_video_preserved':True},indent=2))
+              print(json.dumps(report,indent=2))
+          if __name__=='__main__':main()
+          PY
+      - name: Generate and validate
+        run: |
+          python scripts/build-personal-site.py
+          python scripts/test-personal-site.py
+          python scripts/test-project-covers.py
+          python scripts/test-sandbox-media.py
+      - name: Save validated files on review branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add _site_content/site-presentation.json _site_content/project-covers.json _site_content/PROJECT-COVERS.md _site_content/project-sources/evsplat.html projects/evsplat/index.html scripts/build-personal-site.py scripts/test-personal-site.py scripts/test-project-covers.py .github/workflows/build-personal-site.yml index.html about.html resume.html research.html publications.html
+          git diff --cached --stat > cover-review/changes.txt
+          git commit -m 'Use complete teaser covers and the supplied EVSplat method hero'
+          git push origin HEAD:teaser-covers-20261015
+          git rev-parse HEAD > cover-review/commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: project-covers-review
+          path: cover-review/
+          retention-days: 7
