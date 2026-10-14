@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Check real media, not just HTML links: original demo + all six RDF cases.
 
-Called by test-personal-site.py after its ordinary responsive/content checks.
-Requires a local HTTP server, Chromium and the original restored assets.
+Import run(base, out), or execute directly to start a temporary local server.
+Requires Chromium and the original restored assets.
 """
 from pathlib import Path
 import gzip
@@ -97,7 +97,8 @@ def run(base, out):
             page.go_back();page.wait_for_url(base + 'index.html#research')
             assert page.evaluate('window.__researchSentinel') == 'same-document'
             page.goto(base + 'about.html', wait_until='domcontentloaded')
-            page.locator('.site-nav a[href="index.html#research"]').click()
+            page.wait_for_url(base + 'index.html#about')
+            page.locator('.site-nav a[href="#research"]').click()
             page.wait_for_url(base + 'index.html#research')
             report['navigation'].append({'width': width, 'same_document': True, 'back_button': True,
                                          'heading_clear_of_header': True, 'from_about': True, 'video': info})
@@ -173,3 +174,21 @@ def run(base, out):
                    'http_errors': failures, 'javascript_errors': errors})
     (out / 'sandbox-media-report.json').write_text(json.dumps(report, indent=2))
     return report
+
+
+if __name__ == '__main__':
+    from functools import partial
+    from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
+    from threading import Thread
+    class QuietHandler(SimpleHTTPRequestHandler):
+        def log_message(self, *args):
+            pass
+    output = ROOT / 'personal-site-qa'
+    output.mkdir(exist_ok=True)
+    server = ThreadingHTTPServer(('127.0.0.1', 0), partial(QuietHandler, directory=str(ROOT)))
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        print(json.dumps(run(f'http://127.0.0.1:{server.server_port}/', output), indent=2))
+    finally:
+        server.shutdown()

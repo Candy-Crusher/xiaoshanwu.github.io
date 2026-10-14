@@ -60,6 +60,9 @@ project, advisor, profile and CV resource links keep their original destinations
 
 Run `python scripts/build-personal-site.py`, then
 `python scripts/test-personal-site.py` and `python scripts/test-sandbox-media.py`.
+The media checker can run directly: it starts a temporary local HTTP server,
+checks every original point-cloud frame, and opens all six interactive cases.
+Its legacy-About test follows the redirect before exercising Research navigation.
 The existing personal-site workflow installs dependencies, caches missing icons,
 builds and checks the pages, verifies deterministic regeneration, and only then
 commits generated HTML and requests GitHub Pages publication. The workflow name
