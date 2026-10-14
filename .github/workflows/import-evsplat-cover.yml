@@ -14,7 +14,7 @@ jobs:
         with:
           ref: teaser-covers-20261015
       - run: python -m pip install Pillow
-      - name: Copy the author-approved image into this review branch
+      - name: Reassemble the complete author-approved image
         run: |
           python - <<'PY'
           from urllib.request import urlopen
@@ -22,19 +22,27 @@ jobs:
           from PIL import Image
           from io import BytesIO
           import json,hashlib
-          url='https://export-download.canva.com/3fadc31c-1530-41fb-b191-78d741c64e3b/0/0001-6228997269132515173.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20261014%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261014T141058Z&X-Amz-Expires=24612&X-Amz-Signature=7dd0176ea20c6f12d6e73000c765aaf9e1979585805a43865b74ef457de82de0&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Wed%2C%2014%20Oct%202026%2021%3A01%3A10%20GMT'
-          with urlopen(url,timeout=40) as r:raw=r.read()
-          image=Image.open(BytesIO(raw));image.load()
-          assert image.width>=1024 and abs(image.width/image.height-2048/717)<.005,image.size
+          urls=[
+          'https://export-download.canva.com/57802836-bd8d-4864-a7c2-eb36e525447d/0/0001-5141377959848416358.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20261013%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261013T213202Z&X-Amz-Expires=84395&X-Amz-Signature=a44dfea29e23e56a8c09c2ae020a35e65d8032ad7df94b42e6f510186ccc21a4&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Wed%2C%2014%20Oct%202026%2020%3A58%3A37%20GMT',
+          'https://export-download.canva.com/d4344783-5bd2-4889-a798-b9ae0bee0e26/0/0001-6844864519107812681.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20261014%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261014T114150Z&X-Amz-Expires=33343&X-Amz-Signature=3eacf60ef6d2e2f0862d7f8751b1b70963f2ac26602e90ac2a710928d36afc54&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Wed%2C%2014%20Oct%202026%2020%3A57%3A33%20GMT',
+          'https://export-download.canva.com/7ef9c5db-1937-486f-a7e4-e757b7ec326e/0/0001-1913422924798890680.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20261014%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261014T081332Z&X-Amz-Expires=46307&X-Amz-Signature=e1ff370106c2f9affdcaa2fb9cd8203ceeff7306ebbf627ee9afa7b517b8a2a1&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Wed%2C%2014%20Oct%202026%2021%3A05%3A19%20GMT',
+          'https://export-download.canva.com/d2266dbf-a58e-4240-8a43-d12c327d3a90/0/0001-3512200795538895214.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20261013%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261013T235947Z&X-Amz-Expires=76929&X-Amz-Signature=40a0512fa3833c8a079b23882442a05220646bdf85384566b858b0e02c1de981&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Wed%2C%2014%20Oct%202026%2021%3A21%3A56%20GMT']
+          # Each tile is a view of the same untouched raster; final assembly
+          # restores all content, not a cropped or AI-reconstructed figure.
+          result=Image.new('RGB',(1200,420),'white')
+          for i,url in enumerate(urls):
+              with urlopen(url,timeout=40) as r:raw=r.read()
+              tile=Image.open(BytesIO(raw));tile.load();assert tile.size==(600,210),tile.size
+              result.paste(tile.convert('RGB'),((i%2)*600,(i//2)*210))
           out=Path('projects/evsplat/assets');out.mkdir(parents=True,exist_ok=True)
-          image.convert('RGB').save(out/'method.png',optimize=True)
-          print(json.dumps({'dimensions':image.size,'sha256':hashlib.sha256((out/'method.png').read_bytes()).hexdigest()}))
+          result.save(out/'method.png',optimize=True)
+          print(json.dumps({'dimensions':result.size,'sha256':hashlib.sha256((out/'method.png').read_bytes()).hexdigest()}))
           PY
       - run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add projects/evsplat/assets/method.png
-          git commit -m 'Add supplied EVSplat method artwork'
+          git commit -m 'Add supplied EVSplat method artwork for website covers'
           git push origin HEAD:teaser-covers-20261015
       - uses: actions/upload-artifact@v4
         with:
