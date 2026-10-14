@@ -52,7 +52,7 @@
     {
       "title": "Verifiable 4D World–Action Model for Robust Robot Control",
       "authors": "<strong>X. Wu<sup>*</sup></strong>, R. Cai<sup>*</sup>, Y. Bao, Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou, M. Wang, and Y. Du.",
-      "venue": "Under review at ICLR 2027.",
+      "venue": "Under review",
       "role": "First author",
       "summary": "<span>S4NDBOX bridges visual imagination and robot control through explicit 4D futures, improving <strong>physical plausibility</strong> (+11.2% relative spatiotemporal IoU vs. RGB-only) and enabling <strong>pre-execution geometric verification</strong> (observed +7.9 pp success within three attempts vs. random ordering).</span> <strong>OOD generalization</strong> over RGB-only: <strong>+13.3 pp</strong> success on RoboTwin Hard (clean-only training); <strong>+40.0</strong> task-score points on single-view <strong>zero-shot sim-to-real</strong> settings.",
       "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/sandbox/",
@@ -61,7 +61,7 @@
     {
       "title": "GaMe: Geometry as Memory for Multi-View Spatial Reasoning",
       "authors": "<strong>X. Wu</strong>, X. Lyu, Y. Yu, M. Liu, S. Shi, Z. Wang, and X. Qi.",
-      "venue": "Under review at ICRA 2027.",
+      "venue": "Under review",
       "role": "First author",
       "summary": "<span>Geometric working memory aggregates multi-view evidence for spatial question answering.</span>",
       "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/game/",
@@ -97,7 +97,7 @@
     {
       "title": "EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera",
       "authors": "Y. Yu<sup>*</sup>, <strong>X. Wu<sup>*†</sup></strong>, X. Lyu, Z. Wang, and X. Qi.",
-      "venue": "Under review at AAAI 2027.",
+      "venue": "Under review",
       "role": "Co-first author; project lead",
       "summary": "",
       "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/evsplat/",
@@ -106,7 +106,7 @@
     {
       "title": "LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction",
       "authors": "T. Wan<sup>*</sup>, <strong>X. Wu<sup>*†</sup></strong>, Y. Yu, et al.",
-      "venue": "Under review at IEEE TPAMI; arXiv:2609.25803, 2026.",
+      "venue": "Under review",
       "role": "Co-first author; project lead",
       "summary": "",
       "project_url": "https://candy-crusher.github.io/xiaoshanwu.github.io/projects/lifr-v2/",
