@@ -72,6 +72,7 @@ def main():
                 assert page.evaluate("document.fonts.check('15px Lato')")
                 assert page.locator('#pub-eag3r .pub-title').evaluate('(e)=>getComputedStyle(e).fontFamily').startswith('Lato')
                 assert page.locator('#pub-eag3r .pub-title').evaluate('(e)=>getComputedStyle(e).fontSize')=='15px'
+                page.locator('#publications .research-media img').evaluate_all('(images)=>images.forEach(i=>i.loading="eager")')
                 for image in page.locator('#publications .research-media img').all():
                     image.evaluate('(i)=>i.decode()')
                     d=image.evaluate('(i)=>({w:i.clientWidth,h:i.clientHeight,nw:i.naturalWidth,nh:i.naturalHeight})')
