@@ -1,0 +1,155 @@
+{
+  "version": "recent-projects-20261015-v1",
+  "reference": "https://www.jienengchen.com/",
+  "reference_font": "Lato",
+  "policy": "Website-only presentation. Preserve author order and every author; link verified personal homepages. Never expand ambiguous initials by guessing. No review destinations, invented honors or acceptance percentages. No CV/PDF edits.",
+  "profiles": {
+    "Xiaoshan Wu": "https://candy-crusher.github.io/xiaoshanwu.github.io/",
+    "Ruojin Cai": "https://ruojincai.github.io/",
+    "Yiming Bao": "https://chillinfree.github.io/",
+    "Mengyu Wang": "https://eye.hms.harvard.edu/mengyuwang",
+    "Yilun Du": "https://yilundu.github.io/",
+    "Xiaoyang Lyu": "https://shawlyu.github.io/",
+    "Yifei Yu": "https://yfyu.netlify.app/",
+    "Xiaojuan Qi": "https://xjqi.github.io/",
+    "Zhongrui Wang": "https://zhongruiwang.github.io/",
+    "Yi-Hua Huang": "https://yihua7.github.io/",
+    "Yangtian Sun": "https://sunyangtian.github.io/",
+    "Yang-Tian Sun": "https://sunyangtian.github.io/",
+    "Shaoshuai Shi": "https://shishaoshuai.com/",
+    "Xinting Hu": "https://joyhuyy1412.github.io/",
+    "Peng Dai": "https://daipengwa.github.io/",
+    "Tianhe Ren": "https://rentainhe.github.io/",
+    "Jiehong Lin": "https://jiehonglin.github.io/",
+    "Ruicheng Wang": "https://wangrc.site/",
+    "Amani Kiruga": "https://amanikiruga.github.io/",
+    "Zhiyi Li": "https://sky-lzy.github.io/",
+    "Hansen Lillemark": "https://hansenlillemark.com/",
+    "Ayush Tewari": "https://ayushtewari.com/",
+    "Guoqi Li": "https://casialiguoqi.github.io/"
+  },
+  "papers": {
+    "pub-world-action-model": {
+      "source_title": "Verifiable 4D World–Action Model for Robust Robot Control",
+      "venue": null, "year": null, "status": "under_review",
+      "tldr": "Explicit 4D futures connect visual prediction with robot control and support pre-execution geometric consistency checks.",
+      "sources": ["CV02 author order; Ruojin Cai, Yiming Bao and advisor names verified against supplied records and personal sites."],
+      "note": "Nine initials retained pending author confirmation: Z. Su, A. Wu, F. Wu, Z. Li, Z. Qi, H. Chen, W. Ye, J. Zhang, K. Zhou. Public project byline is anonymous; do not infer identities from unrelated papers.",
+      "byline": "Xiaoshan Wu* | Ruojin Cai* | Yiming Bao | Z. Su | A. Wu | F. Wu | Z. Li | Z. Qi | H. Chen | W. Ye | J. Zhang | K. Zhou | Mengyu Wang | Yilun Du"
+    },
+    "pub-game": {
+      "source_title": "GaMe: Geometry as Memory for Multi-View Spatial Reasoning",
+      "venue": null, "year": null, "status": "under_review",
+      "tldr": "Geometric working memory brings multi-view spatial evidence into vision–language reasoning.",
+      "sources": ["projects/game/index.html"],
+      "byline": "Xiaoshan Wu | Xiaoyang Lyu | Yifei Yu | Muxin Liu | Shaoshuai Shi | Zhongrui Wang | Xiaojuan Qi"
+    },
+    "pub-eag3r": {
+      "source_title": "EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes",
+      "venue": "NeurIPS", "year": 2025, "status": "published", "distinction": "Spotlight",
+      "tldr": "RGB–event fusion recovers scene geometry under fast motion and difficult lighting, including daytime-to-nighttime transfer.",
+      "sources": ["https://arxiv.org/abs/2512.00771", "projects/eag3r/index.html"],
+      "byline": "Xiaoshan Wu* | Yifei Yu* | Xiaoyang Lyu | Yi-Hua Huang | Bo Wang | Baoheng Zhang | Zhongrui Wang | Xiaojuan Qi"
+    },
+    "pub-videossm": {
+      "source_title": "VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory",
+      "venue": "arXiv", "year": 2025, "status": "preprint",
+      "tldr": "Local attention and recurrent state-space memory retain recent detail and long-range context for autoregressive video generation.",
+      "sources": ["https://arxiv.org/abs/2512.04519"],
+      "byline": "Yifei Yu* | Xiaoshan Wu* | Xinting Hu | Tao Hu | Yangtian Sun | Xiaoyang Lyu | Bo Wang | Lin Ma | Yuewen Ma | Zhongrui Wang | Xiaojuan Qi"
+    },
+    "pub-lifr-seg": {
+      "source_title": "LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation",
+      "venue": "ICLR", "year": 2026, "status": "published",
+      "tldr": "Event-guided propagation and temporal memory keep semantic predictions up to date between RGB frames, without requiring an image at each query time.",
+      "sources": ["https://arxiv.org/abs/2603.21115"],
+      "byline": "Xiaoshan Wu | Xiaoyang Lyu | Yifei Yu | Bo Wang | Zhongrui Wang | Xiaojuan Qi"
+    },
+    "pub-evsplat": {
+      "source_title": "EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera",
+      "venue": null, "year": null, "status": "under_review",
+      "tldr": "Uncertainty-aware Gaussian splatting reconstructs dynamic scenes from event-camera observations.",
+      "sources": ["projects/evsplat/index.html"],
+      "byline": "Yifei Yu* | Xiaoshan Wu*† | Xiaoyang Lyu | Zhongrui Wang | Xiaojuan Qi"
+    },
+    "pub-lifr-v2": {
+      "source_title": "LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction",
+      "venue": null, "year": null, "status": "under_review",
+      "tldr": "Propagation reuses observed content, event-guided completion recovers missing source support, and memory retains inferred content for later queries.",
+      "sources": ["https://arxiv.org/abs/2609.25803"],
+      "byline": "Tao Wan* | Xiaoshan Wu*† | Yifei Yu | Bo Wang | Xiaoyang Lyu | Muxin Liu | Aoxuan Pan | Zhongrui Wang | Xiaojuan Qi"
+    },
+    "pub-spiking-depth": {
+      "source_title": "Event-Based Depth Prediction With Deep Spiking Neural Network",
+      "venue": "IEEE TCDS", "year": 2024, "status": "published",
+      "tldr": "A deep spiking neural network predicts scene depth from event-camera observations.",
+      "sources": ["https://doi.org/10.1109/TCDS.2024.3406168"],
+      "resources": [{"label": "Paper", "url": "https://doi.org/10.1109/TCDS.2024.3406168"}],
+      "byline": "Xiaoshan Wu | Weihua He | Man Yao | Ziyang Zhang | Yaoyuan Wang | Bo Xu | Guoqi Li"
+    },
+    "pub-ugg": {
+      "source_title": "UGG: Unified Generative Geometry Model",
+      "venue": "NeurIPS", "year": 2026, "status": "published",
+      "tldr": "A single generative model completes RGB video, depth, and camera geometry from partial observations.",
+      "sources": ["https://sky-lzy.github.io/UGG-website/", "assets/bibtex/kiruga2026ugg.bib"],
+      "resources": [{"label": "Paper", "url": "https://sky-lzy.github.io/UGG-website/assets/ugg-paper.pdf"}],
+      "byline": "Amani Kiruga* | Zhiyi Li* | Ruojin Cai* | Hansen Lillemark | Xiaoshan Wu | Ayush Tewari | Yilun Du"
+    },
+    "pub-neural-field-memory": {
+      "source_title": "Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory",
+      "venue": "Nature", "year": 2026, "status": "published",
+      "tldr": "Compressed neural fields and resistive-memory computing enable efficient reconstruction from sparse observations.",
+      "sources": ["https://www.nature.com/articles/s41586-026-10646-w"],
+      "byline": "Yifei Yu | Xinyuan Zhang | Shaocong Wang | Woyu Zhang | Xiuzhe Wu | Yangu He | Jichang Yang | Yue Zhang | Ning Lin | Bo Wang | Xi Chen | Songqi Wang | Xiaoshan Wu | Shihao Han | Yi Li | Meng Xu | Hegan Chen | Wenkui Zhang | Jingyi Chen | Xumeng Zhang | Xiaojuan Qi | Dashan Shang | Qi Liu | Zhongrui Wang | Kwang-Ting Cheng | Ming Liu"
+    },
+    "pub-optigeo": {
+      "source_title": "OptiGeo: Efficient Monocular Geometry for Embodied Perception in Optically Challenging Scenes",
+      "venue": "CoRL", "year": 2026, "status": "published",
+      "tldr": "Bias-aware monocular geometry estimation improves 3D perception of transparent and reflective objects.",
+      "sources": ["https://arxiv.org/abs/2608.29881", "https://mx-liu6.github.io/OptiGeo-web/"],
+      "resources": [{"label": "Project", "url": "https://mx-liu6.github.io/OptiGeo-web/"}],
+      "byline": "Muxin Liu* | Tianbo Liu* | Jing Xia* | Xiaoyang Lyu | Xiaoshan Wu | Bo Wang | Peng Dai | Zhongrui Wang | Shaoshuai Shi | Xiaojuan Qi"
+    },
+    "pub-foundationgeo": {
+      "source_title": "FoundationGeo: Learning Spatial Pixel-Wise Fields for Monocular Metric Geometry",
+      "venue": "ECCV", "year": 2026, "status": "published",
+      "tldr": "Pixel-wise spatial calibration turns relative geometry into metric 3D predictions across cameras and domains.",
+      "sources": ["https://arxiv.org/abs/2607.11588", "https://mx-liu6.github.io/FoundationGeo-web/"],
+      "resources": [{"label": "Project", "url": "https://mx-liu6.github.io/FoundationGeo-web/"}],
+      "byline": "Muxin Liu* | Xiaoyang Lyu* | Tianhe Ren | Peng Dai | Xiaoshan Wu | Zhiyue Zhang | Jiaqi Zhang | Jiehong Lin | Shaoshuai Shi | Xiaojuan Qi"
+    },
+    "pub-streaming-geometry": {
+      "source_title": "Stabilizing Streaming Video Geometry via Dynamic Feature Normalization",
+      "venue": "CVPR", "year": 2026, "status": "published",
+      "tldr": "Dynamic feature normalization stabilizes scale and geometry in causal streaming-video reconstruction.",
+      "sources": ["https://arxiv.org/abs/2605.25308", "https://shawlyu.github.io/DyFN/"],
+      "resources": [{"label": "Project", "url": "https://shawlyu.github.io/DyFN/"}],
+      "byline": "Xiaoyang Lyu* | Muxin Liu* | Xiaoshan Wu | Ruicheng Wang | Yi-Hua Huang | Yang-Tian Sun | Shaoshuai Shi | Xiaojuan Qi"
+    },
+    "pub-digital-twin": {
+      "source_title": "Continuous-Time Digital Twin with Analog Memristive Neural Ordinary Differential Equation Solver",
+      "venue": "Science Advances", "year": 2025, "status": "published",
+      "tldr": "An analog memristive neural ODE solver models continuous-time dynamics for efficient digital twins.",
+      "sources": ["https://pubmed.ncbi.nlm.nih.gov/40435243/", "https://doi.org/10.1126/sciadv.adr7571"],
+      "resources": [{"label": "Paper", "url": "https://doi.org/10.1126/sciadv.adr7571"}],
+      "note": "The final published byline includes two separate authors named Yi Li. Preserve both original positions and do not attach an ambiguous profile.",
+      "byline": "Hegan Chen | Jichang Yang | Jia Chen | Songqi Wang | Shaocong Wang | Dingchen Wang | Xinyu Tian | Yifei Yu | Xi Chen | Yinan Lin | Qifan Zhu | Yangu He | Xiaoshan Wu | Yi Li | Xinyuan Zhang | Ning Lin | Meng Xu | Yi Li | Xumeng Zhang | Xiaojuan Qi | Zhongrui Wang | Han Wang | Dashan Shang | Qi Liu | Kwang-Ting Cheng | Ming Liu"
+    },
+    "pub-dynamic-snn": {
+      "source_title": "Topology Optimization of Random Memristors for Input-Aware Dynamic SNN",
+      "venue": "Science Advances", "year": 2025, "status": "published",
+      "tldr": "Topology optimization and input-aware computation make memristive spiking networks adaptive and energy-efficient.",
+      "sources": ["https://pubmed.ncbi.nlm.nih.gov/40238875/", "https://doi.org/10.1126/sciadv.ads5340"],
+      "resources": [{"label": "Paper", "url": "https://doi.org/10.1126/sciadv.ads5340"}],
+      "byline": "Bo Wang | Xinyuan Zhang | Shaocong Wang | Ning Lin | Yi Li | Yifei Yu | Yue Zhang | Jichang Yang | Xiaoshan Wu | Yangu He | Songqi Wang | Tao Wan | Rui Chen | Guoqi Li | Yue Deng | Xiaojuan Qi | Zhongrui Wang | Dashan Shang"
+    },
+    "pub-floating-gate-memory": {
+      "source_title": "Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing",
+      "venue": "Nano Letters", "year": 2024, "status": "published",
+      "tldr": "A charge-selective 2D heterointerface combines sensing, memory, and in-situ computing in one device.",
+      "sources": ["https://pubs.acs.org/doi/10.1021/acs.nanolett.4c03828"],
+      "resources": [{"label": "Paper", "url": "https://pubs.acs.org/doi/10.1021/acs.nanolett.4c03828"}],
+      "byline": "Ce Li | Xi Chen | Zirui Zhang | Xiaoshan Wu | Tianze Yu | Ruitong Bie | Dongliang Yang | Yugui Yao | Zhongrui Wang | Linfeng Sun"
+    }
+  }
+}

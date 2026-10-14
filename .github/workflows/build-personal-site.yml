@@ -5,9 +5,14 @@ on:
     paths:
       - scripts/build-personal-site.py
       - scripts/personal_site_core.py
+      - scripts/publication_style.py
+      - scripts/site_favicon.py
       - scripts/test-personal-site.py
+      - scripts/test-publication-details.py
       - scripts/fetch-institution-icons.py
       - assets/css/single-page.css
+      - assets/css/publications-classic.css
+      - assets/icons/**
       - assets/js/site-pages.js
       - _site_content/**
       - .github/workflows/build-personal-site.yml
@@ -44,11 +49,13 @@ jobs:
       - name: Build single-page homepage and legacy fallbacks
         run: |
           sha256sum Xiaoshan_Wu_CV.pdf cv.tex > /tmp/original-cv.sha256
-          python -m py_compile scripts/build-personal-site.py scripts/personal_site_core.py scripts/test-personal-site.py
+          python -m py_compile scripts/build-personal-site.py scripts/personal_site_core.py scripts/test-personal-site.py scripts/publication_style.py scripts/site_favicon.py
           python scripts/build-personal-site.py
           sha256sum --check /tmp/original-cv.sha256
       - name: Check native navigation, chronology, research and responsive layout
         run: python scripts/test-personal-site.py
+      - name: Check complete bylines, publication typography and mountain favicon
+        run: python scripts/test-publication-details.py
       - name: Preserve original video and all interactive 4D cases
         run: python scripts/test-sandbox-media.py
       - name: Check that regeneration is repeatable
@@ -63,12 +70,13 @@ jobs:
           for file in index.html about.html resume.html research.html publications.html; do
             if [ -f "$file" ]; then cp "$file" personal-site-review/site/; fi
           done
-          for folder in css js institutions bibtex; do
+          for folder in css js institutions bibtex icons; do
             if [ -d assets/$folder ]; then cp -R assets/$folder personal-site-review/site/assets/; fi
           done
           if [ -d _site_content ]; then cp -R _site_content personal-site-review/source/; fi
-          cp scripts/build-personal-site.py scripts/personal_site_core.py scripts/test-personal-site.py personal-site-review/source/scripts/
+          cp scripts/build-personal-site.py scripts/personal_site_core.py scripts/test-personal-site.py scripts/publication_style.py scripts/site_favicon.py personal-site-review/source/scripts/
           if [ -d personal-site-qa ]; then cp -R personal-site-qa personal-site-review/; fi
+          if [ -d publication-style-review ]; then cp -R publication-style-review personal-site-review/; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -81,7 +89,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html about.html resume.html research.html publications.html _site_content assets/institutions
           if ! git diff --cached --quiet; then
-            git commit -m "Publish single-page homepage with chronological education and research timeline"
+            git commit -m "Publish validated single-page personal website"
             git pull --rebase origin master
             git push origin HEAD:master
           fi
@@ -99,7 +107,9 @@ jobs:
           from urllib.request import Request,urlopen
           from bs4 import BeautifulSoup
           from pathlib import Path
-          import time,json
+          import time,json,sys
+          sys.path.insert(0,'scripts')
+          from publication_style import load_details,VERSION
           config=json.loads(Path('_site_content/site-presentation.json').read_text())
           expected_nav=[item['label'] for item in config['navigation']]
           expected_count=len(json.loads(Path('_site_content/resume-cv02.json').read_text())['papers'])
@@ -117,11 +127,16 @@ jobs:
                       expected_links=[prefix+'#'+s for s in ['top','news','research','experience','awards','about']]
                       ok=doc.body.get('data-single-page')==config['layout'] and labels==expected_nav and [a['href'] for a in nav]==expected_links
                       ok=ok and doc.select_one('.wordmark').get_text()=="Xiaoshan's Homepage"
+                      ok=ok and doc.select_one('head link[rel="icon"][href*="mountain.svg"]') is not None
                       if name=='index.html':
                           ok=ok and len(doc.select('.timeline-entry'))==3 and len(doc.select('.publication-list>li'))==expected_count and doc.select_one('#about') is not None
+                          ok=ok and doc.select_one('#publications').get('data-publication-style')==VERSION
                           ugg=doc.select_one('.collaborative-papers #pub-ugg')
-                          ok=ok and ugg is not None and ugg.select_one('.research-meta').get_text(strip=True)=='NeurIPS 2026'
+                          ok=ok and ugg is not None and ''.join(ugg.select_one('.research-meta').get_text().split())=='NeurIPS,2026.'
                           ok=ok and doc.select_one('#news [data-news-id="neurips-2026"] a[href="#pub-ugg"]') is not None
+                          for key,r in load_details()['papers'].items():
+                              ok=ok and len(doc.select('#'+key+' .pub-author'))==len(r['authors'])
+                              ok=ok and doc.select_one('#'+key+' .pub-tldr') is not None
                       reports.append({'page':name,'status':status,'navigation':labels,'updated':bool(ok)})
                   except Exception as exc:reports.append({'page':name,'error':str(exc)})
               if all(r.get('updated') for r in reports):

@@ -1,0 +1,88 @@
+name: Stage publication typography and favicon
+on:
+  push:
+    branches: [publication-style-20261015]
+    paths:
+      - .github/workflows/stage-publication-style.yml
+      - scripts/install-publication-style.py
+      - scripts/publication_style.py
+      - scripts/test-publication-details.py
+      - assets/css/publications-classic.css
+      - _site_content/publication-details.json
+permissions:
+  contents: write
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: publication-style-20261015
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser and image validation dependencies
+        run: |
+          python -m pip install beautifulsoup4 Pillow CairoSVG playwright
+          python -m playwright install --with-deps chromium
+      - name: Snapshot content that must not change
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+          import hashlib,json
+          paths=[Path('cv.tex'),Path('Xiaoshan_Wu_CV.pdf'),Path('ia8eshfzfsvn.pdf'),Path('scripts/personal_site_core.py'),*Path('cv/2027-internships').glob('*.tex'),*Path('projects').glob('*/index.html')]
+          files={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths if p.is_file()}
+          doc=BeautifulSoup(Path('index.html').read_text(),'html.parser')
+          sections={s:str(doc.select_one(s)) for s in ['#welcome','#news','#research','#experience','#awards','#about']}
+          media={e['id']:str(e.select_one('.research-media')) for e in doc.select('.publication-entry')}
+          Path('/tmp/publication-before.json').write_text(json.dumps({'files':files,'sections':sections,'media':media}))
+          PY
+      - name: Install the scoped renderer and favicon, then build
+        run: |
+          python scripts/install-publication-style.py
+          python scripts/site_favicon.py
+          python -m py_compile scripts/publication_style.py scripts/site_favicon.py scripts/build-personal-site.py scripts/test-personal-site.py scripts/test-publication-details.py
+          python scripts/build-personal-site.py
+      - name: Full single-page navigation and metadata regressions
+        run: python scripts/test-personal-site.py
+      - name: Verify reference typography, all authors, links, teaser covers and icon
+        run: |
+          python scripts/test-publication-details.py
+          python scripts/test-project-covers.py
+          python scripts/test-sandbox-media.py
+      - name: Verify unrelated content and repeatability
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+          import hashlib,json
+          old=json.loads(Path('/tmp/publication-before.json').read_text())
+          for path,h in old['files'].items():assert hashlib.sha256(Path(path).read_bytes()).hexdigest()==h,path
+          doc=BeautifulSoup(Path('index.html').read_text(),'html.parser')
+          for s,html in old['sections'].items():assert str(doc.select_one(s))==html,s
+          for key,html in old['media'].items():assert str(doc.select_one('#'+key+' .research-media'))==html,key
+          Path('publication-style-review/preservation.json').write_text(json.dumps({'protected_files':old['files'],'sections_unchanged':list(old['sections']),'media_unchanged':list(old['media'])},indent=2))
+          PY
+          sha256sum index.html about.html resume.html research.html publications.html > /tmp/publication-pages.sha256
+          python scripts/build-personal-site.py
+          sha256sum --check /tmp/publication-pages.sha256
+      - name: Save tested generated files to the review branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/build-personal-site.py scripts/test-personal-site.py assets/icons/mountain-32.png assets/icons/mountain-64.png assets/icons/mountain-180.png assets/icons/mountain.ico index.html about.html resume.html research.html publications.html _site_content/site-presentation.json
+          git diff --cached --stat > publication-style-review/changes.txt
+          if ! git diff --cached --quiet; then
+            git commit -m 'Render complete publication bylines with Lato and a mountain favicon'
+            git push origin HEAD:publication-style-20261015
+          fi
+          git rev-parse HEAD > publication-style-review/commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: publication-style-review
+          path: publication-style-review/
+          retention-days: 7
