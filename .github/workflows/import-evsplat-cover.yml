@@ -1,0 +1,43 @@
+name: Import EVSplat cover
+on:
+  push:
+    branches: [teaser-covers-20261015]
+    paths: [.github/workflows/import-evsplat-cover.yml]
+permissions:
+  contents: write
+jobs:
+  import-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: teaser-covers-20261015
+      - run: python -m pip install Pillow
+      - name: Copy the author-approved image into this review branch
+        run: |
+          python - <<'PY'
+          from urllib.request import urlopen
+          from pathlib import Path
+          from PIL import Image
+          from io import BytesIO
+          import json,hashlib
+          url='https://export-download.canva.com/3fadc31c-1530-41fb-b191-78d741c64e3b/0/0001-6228997269132515173.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20261014%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261014T141058Z&X-Amz-Expires=24612&X-Amz-Signature=7dd0176ea20c6f12d6e73000c765aaf9e1979585805a43865b74ef457de82de0&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Wed%2C%2014%20Oct%202026%2021%3A01%3A10%20GMT'
+          with urlopen(url,timeout=40) as r:raw=r.read()
+          image=Image.open(BytesIO(raw));image.load()
+          assert image.width>=1024 and abs(image.width/image.height-2048/717)<.005,image.size
+          out=Path('projects/evsplat/assets');out.mkdir(parents=True,exist_ok=True)
+          image.convert('RGB').save(out/'method.png',optimize=True)
+          print(json.dumps({'dimensions':image.size,'sha256':hashlib.sha256((out/'method.png').read_bytes()).hexdigest()}))
+          PY
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add projects/evsplat/assets/method.png
+          git commit -m 'Add supplied EVSplat method artwork'
+          git push origin HEAD:teaser-covers-20261015
+      - uses: actions/upload-artifact@v4
+        with:
+          name: evsplat-image-review
+          path: projects/evsplat/assets/method.png
+          retention-days: 2
