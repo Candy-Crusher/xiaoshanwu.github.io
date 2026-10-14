@@ -1,17 +1,24 @@
 {
   "zju": {
     "institution_domain": "www.zju.edu.cn",
-    "source": "https://www.zju.edu.cn/_upload/article/images/c3/98/1fb1d281492eb477a098ef7a2901/05966b26-ab45-470d-94c1-99b1e02d12f4.png",
+    "source": "https://www.zju.edu.cn/_upload/article/files/c3/98/1fb1d281492eb477a098ef7a2901/ee6d4e77-ffef-4e32-b76b-be8658698d98.zip",
     "source_page": "https://www.zju.edu.cn/572/main.htm",
-    "sha256": "8de29255d17bdb96d09e5faced1846de68d2e0190fee6d0c916eb3c251a4d339",
-    "processing": "Blank outer margins cropped and resized; mark itself unchanged.",
-    "usage": "Institution mark identifying education/research affiliation; not an endorsement."
+    "source_archive_sha256": "04f8d224d03f4a16e2cdc889eb57cbf8cf23829fcc6ae4850468273944e87607",
+    "sha256": "fa828fa2f07c54c08e061badbb2335c6e93768a1e2775b2ed4461d089cda7e07",
+    "processing": "Original 37 vector paths of the standalone emblem from xiaobiao.ai; official RGB #003f88; transparent background.",
+    "format": "svg",
+    "file": "assets/institutions/zju.svg",
+    "usage": "Affiliation identification only; no institutional endorsement."
   },
   "uiuc": {
     "institution_domain": "illinois.edu",
-    "source": "https://www.google.com/s2/favicons?domain=illinois.edu&sz=128",
-    "sha256": "3b43277f86965ee3b16a2d70a4a6215aeda803b52413c841b6895f652fcd18bf",
-    "usage": "Website icon identifying education/research affiliation; not an endorsement."
+    "source": "https://cdn.brand.illinois.edu/logos/block-i.svg",
+    "source_page": "https://web.brand.illinois.edu/logos/",
+    "sha256": "52d845d2bd8875782c9d095a74085f3c98e03802b2aa7522e95342be239b9995",
+    "processing": "Official Block I SVG, unchanged.",
+    "format": "svg",
+    "file": "assets/institutions/uiuc.svg",
+    "usage": "Affiliation identification only; no institutional endorsement."
   },
   "hku": {
     "institution_domain": "www.hku.hk",

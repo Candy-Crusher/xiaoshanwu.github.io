@@ -348,5 +348,5 @@
     }
   },
   "source_policy": "Tex02 is authoritative for factual CV information, authors, statuses, roles, awards, publication ordering and the downloadable PDF. This configuration controls web-specific paraphrases, research framing, existing-media crops and links. Future co-evolution is not presented as completed work. No TeX, model-scale claim, paper status or experimental result is changed.",
-  "layout": "single-page-timeline-20261014"
+  "layout": "harvard-first-vector-logos-v1"
 }
