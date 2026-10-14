@@ -18,7 +18,7 @@ OUT = ROOT/'personal-site-qa'
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
-LAYOUT = 'harvard-first-vector-logos-v1'
+LAYOUT = 'personal-about-20261015-v1'
 
 
 def text(node):
@@ -120,6 +120,28 @@ def static_checks():
         assert norm(builder.plain(skill)) in norm(text(home.select_one('#skills')))
     for anchor in ['resume', 'education', 'background', 'inspiration', 'skills']:
         assert home.find(id=anchor)
+    # Website-only omissions must not remove the surrounding honors or advisor.
+    for name in ['index.html', 'resume.html']:
+        visible = text(docs[name].main)
+        assert 'GPA' not in visible and 'Rank 5' not in visible
+        assert 'Outstanding Graduate' in visible and "Dean's List" in visible
+    advisor = home.select_one('[data-institution="hku"] a[href="https://xjqi.github.io/"]')
+    assert advisor and text(advisor) == 'Xiaojuan Qi'
+    about_source = BeautifulSoup((ROOT/'_site_content/about-personal.html').read_text(), 'html.parser')
+    for name in ['index.html', 'about.html']:
+        about = docs[name].select_one('[data-about-version="science-fiction-to-physical-agents-v1"]')
+        assert about is not None
+        story = about.select_one('.about-story')
+        assert text(story) == text(about_source.select_one('.about-story'))
+        assert not about.select('.about-background-link')
+        assert not any(text(h) in ['Research perspective', 'Looking ahead'] for h in about.select('h2,h3'))
+        assert 'Visiting Scholar' not in text(about) and 'fourth-year' not in text(about)
+        assert 'Science fiction has fascinated me since childhood.' in text(story)
+        assert 'I believe that LLM-based AGI may arrive soon.' in text(story)
+        assert 'not be tied to a single body' in text(story)
+        assert 'under human supervision' in text(story)
+        assert all(title in text(story) for title in ['Hyperion', 'Foundation', 'WALL-E', 'Interstellar', 'Ready Player One', 'Pantheon', 'The Matrix', 'Blade Runner 2049'])
+        assert len(story.select('p')) == 6
     assert 'Blade Runner 2049' in text(home.select_one('#about'))
     assert not home.select('details, .selected-entry')
     return {'static': 'PASS', 'publication_metadata': 'CV02: 15 papers, authors/status/order unchanged',
@@ -162,6 +184,8 @@ def browser_checks(base):
                     top = page.locator('#'+anchor).bounding_box()['y']
                     header_bottom = page.locator('.site-topbar').bounding_box()['height']
                     assert top >= header_bottom-2, (width, label, 'Heading obscured', top, header_bottom)
+                if label == 'About':
+                    page.locator('#about').screenshot(path=str(OUT/f'about-{width}.png'))
                 if label == 'Experience':
                     page.screenshot(path=str(OUT/f'experience-{width}.png'))
                 report['native_navigation'].append({'width': width, 'section': label, 'same_document': True})

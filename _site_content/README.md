@@ -8,12 +8,13 @@ wordmark reads **Xiaoshan's Homepage** and returns to the top.
 
 The homepage contains the approved Harvard-first biography, News, the existing
 question-first Research overview and all 15 publications, Experience, Awards,
-and the complete original About essay. Technical skills remain at the end of
+and a personal About essay about science fiction and physical agents. Technical skills remain at the end of
 About; the introduction and Experience heading retain their CV links.
 
 **Experience is newest first: Harvard → HKU → ZJU & UIUC.** Keep the dual-degree
 institutions together as one node. All institution names, roles, dates,
-advisors, honors and GPAs remain sourced from CV02.
+advisors and honors remain sourced from CV02. GPA and “Rank 5” are omitted
+from the website-only view; the authoritative CV TeX/PDF files are unchanged.
 
 `cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex` is the factual
 CV source; `cv.tex` must match it. Layout changes never modify TeX, PDF files,
@@ -76,3 +77,20 @@ metadata preservation, 320–1440 px layouts, original robot playback and all si
 interactive 4D cases. Logo checks reject raster images wrapped in SVG, verify
 source hashes and render a 3x-density mobile screenshot. Screenshots/reports are
 saved in the `single-page-website-review` Actions artifact.
+
+## Personal About essay (2026-10-15)
+
+`_site_content/about-personal.html` is the active, editable About source. Both
+`index.html#about` and the legacy `about.html` fallback use it. The old biography,
+Research perspective and Looking ahead blocks in the archival `about` config
+are no longer rendered. Do not restore them during regeneration.
+
+The essay follows the author's own account: childhood interest in science
+fiction; imagined superintelligence and worlds; a personal belief that LLM-based
+AGI may arrive soon; Joi as inspiration; and an agent with continuous memory
+that can act through different physical embodiments. Domestic help, vehicles
+and clinician-supervised surgical assistance are future aspirations, not claims
+about implemented systems. The existing film still and its attribution remain.
+Technical skills are retained; publication prose and CV files are not rewritten.
+The former `#perspective`, `#future` and `#inspiration` fragments remain usable
+as locations within the new essay, without the removed section titles or copy.

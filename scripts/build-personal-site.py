@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 import personal_site_core as core
 
 ROOT = Path(__file__).resolve().parents[1]
-LAYOUT = 'harvard-first-vector-logos-v1'
+LAYOUT = 'personal-about-20261015-v1'
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
@@ -28,7 +28,7 @@ def fragment(value):
 
 
 def parse_cv():
-    """Read a website-only view of CV02, omitting GPA but retaining other facts.
+    """Read a website-only view of CV02, omitting GPA and class rank.
 
     The underlying parser and all CV TeX/PDF files remain unchanged. Both the
     homepage and legacy resume use this view, as does the generated site cache.
@@ -38,8 +38,9 @@ def parse_cv():
         visible_details = []
         for detail in entry['details']:
             visible = re.sub(r'\s*<strong>GPA:</strong>[^<]*', ' ', detail).strip()
-            if re.search(r'\bGPA\b', plain(visible), re.I):
-                raise ValueError('Review GPA field formatting before publishing')
+            visible = re.sub(r'\s*\(Rank\s+5\)', '', visible, flags=re.I)
+            if re.search(r'\bGPA\b|\bRank\s+5\b', plain(visible), re.I):
+                raise ValueError('Review GPA/rank field formatting before publishing')
             if visible:
                 visible_details.append(visible)
         entry['details'] = visible_details
@@ -137,13 +138,14 @@ def main():
     (ROOT/'_site_content/site-presentation.json').write_text(json.dumps(cfg, ensure_ascii=False, indent=2) + '\n')
     lookup = {core.normalized(v['source_title']): key for key, v in cfg['papers'].items()}
     papers = {lookup[core.normalized(p['title'])]: p for p in cv['papers']}
-    about = core.about_page(cfg, papers, cv)
+    about = (ROOT/'_site_content/about-personal.html').read_text()
+    assert fragment(about).select_one('article.about-essay[data-about-version]'), 'Missing personal About essay'
     bodies = {'index.html': compose_home(core.home_page(cfg, papers, cv, data), about, cv),
               'about.html': about, 'resume.html': core.resume_page(cfg, papers, cv),
               'research.html': core.research_page(cfg, papers, cv)}
     bodies['publications.html'] = bodies['research.html']
     for name, body in bodies.items():
-        assert not re.search(r'\bGPA\b', plain(body), re.I), 'GPA leaked into ' + name
+        assert not re.search(r'\bGPA\b|\bRank\s+5\b', plain(body), re.I), 'GPA/rank leaked into ' + name
         (ROOT/name).write_text(document(name, body, cfg, cv))
     cv['publication_anchors'] = list(papers)
     (ROOT/'_site_content/resume-cv02.json').write_text(json.dumps(cv, ensure_ascii=False, indent=2) + '\n')
