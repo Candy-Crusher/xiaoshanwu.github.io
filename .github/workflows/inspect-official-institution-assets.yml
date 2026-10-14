@@ -1,0 +1,31 @@
+name: Inspect official institution assets
+on:
+  push:
+    branches: [fix/experience-order-hd-logos]
+    paths: [.github/workflows/inspect-official-institution-assets.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Fetch official university identity resources
+        run: |
+          mkdir -p institution-source-review
+          curl --fail --location --retry 2 --max-time 60 'https://www.zju.edu.cn/_upload/article/files/c3/98/1fb1d281492eb477a098ef7a2901/ee6d4e77-ffef-4e32-b76b-be8658698d98.zip' -o institution-source-review/zju-official.zip
+          curl --fail --location --retry 2 --max-time 60 'https://cdn.brand.illinois.edu/logos/block-i.svg' -o institution-source-review/uiuc.svg
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import json
+          with ZipFile('institution-source-review/zju-official.zip') as archive:
+              manifest=[{'name':i.filename,'size':i.file_size} for i in archive.infolist()]
+          print(json.dumps(manifest,ensure_ascii=False,indent=2))
+          Path('institution-source-review/manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: official-institution-source-review
+          path: institution-source-review/
+          retention-days: 2
