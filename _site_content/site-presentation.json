@@ -151,20 +151,15 @@
       "summary": "Geometric working memory brings multi-view spatial evidence into vision–language reasoning.",
       "short_title": "GaMe: Geometry as memory",
       "media": {
-        "src": "projects/game/assets/teaser-hd.webp",
+        "src": "projects/game/assets/teaser.webp",
         "width": 1440,
         "height": 502,
-        "crop": [
-          1025,
-          222,
-          396,
-          198
-        ],
-        "alt": "Annotated room illustrating the reference-frame question in GaMe",
-        "caption": "Cross-view reasoning · illustrative example"
+        "alt": "GaMe original teaser",
+        "caption": "Teaser"
       },
       "evidence_source": "Tex02 GaMe note and the existing project teaser. The image is conceptual, not a measured prediction.",
-      "source_title": "GaMe: Geometry as Memory for Multi-View Spatial Reasoning"
+      "source_title": "GaMe: Geometry as Memory for Multi-View Spatial Reasoning",
+      "media_source": "Complete author-provided teaser/project overview; no crop. projects/game/assets/teaser.webp"
     },
     "pub-eag3r": {
       "resources": [
@@ -196,14 +191,15 @@
       "summary": "RGB–event fusion recovers scene geometry under fast motion and difficult lighting, including daytime-to-nighttime transfer.",
       "short_title": "EAG3R: 3D geometry in challenging light",
       "media": {
-        "src": "images/research/eag3r-night-depth.webp",
-        "width": 848,
-        "height": 284,
-        "alt": "Nighttime RGB input, RGB-only depth and EAG3R depth compared side by side",
-        "caption": "RGB input · RGB-only depth · EAG3R"
+        "src": "projects/eag3r/assets/concept.webp",
+        "width": 1440,
+        "height": 320,
+        "alt": "EAG3R original teaser: event-augmented scene geometry",
+        "caption": "Teaser · Figure 1"
       },
       "evidence_source": "Existing EAG3R project and the original research poster crop.",
-      "source_title": "EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes"
+      "source_title": "EAG3R: Event-Augmented 3D Geometry Estimation for Dynamic and Extreme-Lighting Scenes",
+      "media_source": "Complete author-provided teaser/project overview; no crop. projects/eag3r/assets/concept.webp"
     },
     "pub-videossm": {
       "resources": [
@@ -223,20 +219,15 @@
       "summary": "Local attention and recurrent state-space memory retain recent detail and long-range context for autoregressive video generation.",
       "short_title": "VideoSSM: Long-video generation with memory",
       "media": {
-        "src": "projects/videossm/assets/overview-hd.webp",
+        "src": "projects/videossm/assets/overview.webp",
         "width": 1440,
         "height": 474,
-        "crop": [
-          10,
-          324,
-          504,
-          98
-        ],
-        "alt": "Three generated frames from the VideoSSM row of the original overview",
-        "caption": "Generated frames 0 · 480 · 960"
+        "alt": "VideoSSM original project overview",
+        "caption": "Project overview"
       },
       "evidence_source": "Existing VideoSSM project overview and Figure 1. Crop includes only the Ours row; frame indices refer to the original figure.",
-      "source_title": "VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory"
+      "source_title": "VideoSSM: Autoregressive Long Video Generation with Hybrid State-Space Memory",
+      "media_source": "Complete author-provided teaser/project overview; no crop. projects/videossm/assets/overview.webp"
     },
     "pub-lifr-seg": {
       "resources": [
@@ -254,7 +245,15 @@
         }
       ],
       "summary": "Event-guided propagation and temporal memory keep semantic predictions up to date between RGB frames, without requiring an image at each query time.",
-      "source_title": "LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation"
+      "source_title": "LiFR-Seg: Anytime High-Frame-Rate Segmentation via Event-Guided Propagation",
+      "media": {
+        "src": "projects/lifr-seg/assets/teaser.webp",
+        "width": 1440,
+        "height": 864,
+        "alt": "LiFR-Seg original teaser",
+        "caption": "Teaser"
+      },
+      "media_source": "Complete author-provided teaser/project overview; no crop. projects/lifr-seg/assets/teaser.webp"
     },
     "pub-evsplat": {
       "resources": [
@@ -266,7 +265,15 @@
         }
       ],
       "summary": "Uncertainty-aware Gaussian splatting for dynamic-scene reconstruction with an event camera.",
-      "source_title": "EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera"
+      "source_title": "EVSplat: Uncertainty-Aware Gaussian Splatting for Dynamic Scenes with Event Camera",
+      "media": {
+        "src": "projects/evsplat/assets/method.png",
+        "width": 1200,
+        "height": 420,
+        "alt": "EVSplat method overview supplied by the author",
+        "caption": "Method overview"
+      },
+      "media_source": "Complete author-provided teaser/project overview; no crop. projects/evsplat/assets/method.png"
     },
     "pub-lifr-v2": {
       "resources": [
@@ -284,7 +291,15 @@
         }
       ],
       "summary": "Propagation reuses observed content, event-guided completion recovers missing source support, and memory retains inferred content for later queries.",
-      "source_title": "LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction"
+      "source_title": "LiFR v2: Completion-Augmented Event Propagation for High-Rate Dense Prediction",
+      "media": {
+        "src": "projects/lifr-v2/assets/teaser.webp",
+        "width": 1440,
+        "height": 455,
+        "alt": "LiFR v2 original teaser",
+        "caption": "Teaser"
+      },
+      "media_source": "Complete author-provided teaser/project overview; no crop. projects/lifr-v2/assets/teaser.webp"
     },
     "pub-spiking-depth": {
       "resources": [],
@@ -365,5 +380,5 @@
     }
   },
   "source_policy": "Tex02 is authoritative for factual CV information, authors, statuses, roles, awards, publication ordering and the downloadable PDF. This configuration controls web-specific paraphrases, research framing, existing-media crops and links. Future co-evolution is not presented as completed work. No TeX, model-scale claim, paper status or experimental result is changed.",
-  "layout": "ugg-neurips-2026-v1"
+  "layout": "teaser-covers-20261015-v1"
 }
