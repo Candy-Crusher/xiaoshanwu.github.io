@@ -21,11 +21,20 @@
 .publications-record .pub-title{font-size:15px;font-weight:700;line-height:1.5;letter-spacing:0;margin:0 0 4px;color:#111}
 .publications-record .pub-title a{font-size:inherit;font-weight:inherit;color:inherit}
 .publications-record .pub-title a:hover{color:#f09228}
-.publications-record .pub-authors{font-size:13px;color:#555;line-height:1.6;margin:0 0 4px}
-.publications-record .pub-authors a{font-size:inherit;color:#002d72}
-.publications-record .pub-authors a:hover{color:#f09228}
-.publications-record .pub-author-self a,.publications-record .pub-author-self strong{color:#1c1c1c}
-.publications-record .pub-author-self a:hover,.publications-record .pub-author-self a:hover strong{color:#f09228}
+/* An author's color does not encode whether a verified profile was found.
+   Hover/focus uses an underline, not blue/orange; retain keyboard focus rings. */
+.publications-record .pub-authors{font-size:13px;color:#000;line-height:1.6;margin:0 0 4px}
+.publications-record .pub-authors .pub-author,
+.publications-record .pub-authors strong,
+.publications-record .pub-authors sup{color:inherit}
+.publications-record .pub-authors a,
+.publications-record .pub-authors a:link,
+.publications-record .pub-authors a:visited,
+.publications-record .pub-authors a:hover,
+.publications-record .pub-authors a:focus,
+.publications-record .pub-authors a:active{font-size:inherit;color:#000}
+.publications-record .pub-authors a:hover,
+.publications-record .pub-authors a:focus-visible{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .publications-record .pub-author{white-space:normal}
 .publications-record .pub-authors sup{font-size:.72em;vertical-align:super;line-height:0;margin-left:1px}
 .publications-record .research-meta{display:block;font-size:15px;line-height:1.5;color:#1c1c1c;margin:4px 0}

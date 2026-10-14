@@ -1,0 +1,120 @@
+{
+  "version": "author-links-black-20261015-v2",
+  "policy": "Use a personal or faculty website where identified. Otherwise use only an author-linked academic profile, label its type in the link tooltip, and never infer a personal URL from a name. These additions do not change any paper byline or author order.",
+  "profiles": {
+    "Tao Hu": {
+      "url": "https://tau-yihouxiang.github.io/",
+      "kind": "homepage",
+      "sources": ["https://tau-yihouxiang.github.io/", "https://arxiv.org/abs/2512.04519"],
+      "identity_basis": "Personal page identifies Tao Hu as a ByteDance PICO scientist working on 3D reconstruction and generation, matching the VideoSSM coauthor."
+    },
+    "Man Yao": {
+      "url": "https://manyao4179.github.io/",
+      "kind": "homepage",
+      "sources": ["https://manyao4179.github.io/", "https://brain-ai.ia.ac.cn/en/people/assistantProfessor/202508/t20250812_654673.html"],
+      "identity_basis": "CASIA researcher in spiking neural networks working with Guoqi Li; matches the event-based spiking depth paper."
+    },
+    "Kwang-Ting Cheng": {
+      "url": "https://vsdl.hkust.edu.hk/members/tim-cheng.html",
+      "kind": "faculty_profile",
+      "sources": ["https://ece.hkust.edu.hk/timcheng", "https://vsdl.hkust.edu.hk/members/tim-cheng.html"],
+      "identity_basis": "HKUST faculty page links to the Vision and System Design Lab; this is its named principal-investigator biography."
+    },
+    "Linfeng Sun": {
+      "url": "https://sunlinfeng87.wixsite.com/2dmaterials",
+      "kind": "homepage",
+      "sources": ["https://sunlinfeng87.wixsite.com/2dmaterials", "https://www.qfmda.com/en/people"],
+      "identity_basis": "BIT School of Physics professor in 2D materials and memory devices, not the same-name USTC biologist."
+    },
+    "Yugui Yao": {
+      "url": "https://physics.bit.edu.cn/en/szdw/szml/jsyjy/8ecd2051fcba422fb20630d77b70308b.htm",
+      "kind": "faculty_profile",
+      "sources": ["https://physics.bit.edu.cn/en/szdw/szml/jsyjy/8ecd2051fcba422fb20630d77b70308b.htm", "https://www.qfmda.com/en/people"],
+      "identity_basis": "Named BIT School of Physics professor and quantum-materials laboratory principal investigator."
+    },
+    "Bo Xu": {
+      "url": "https://people.ucas.ac.cn/~xubo",
+      "kind": "faculty_profile",
+      "sources": ["https://www.ia.ac.cn/rcdw/yjy/202404/t20240425_7131767.html", "https://people.ucas.ac.cn/~xubo"],
+      "identity_basis": "CASIA official biography explicitly lists this as the personal homepage of Bo Xu."
+    },
+    "Yue Deng": {
+      "url": "https://iai.buaa.edu.cn/info/1013/3252.htm",
+      "kind": "faculty_profile",
+      "sources": ["https://iai.buaa.edu.cn/info/1013/3252.htm"],
+      "identity_basis": "Beihang professor in brain-inspired AI; not the same-name economics researcher."
+    },
+    "Ming Liu": {
+      "url": "https://ime.cas.cn/rcdw/yszj_143323/201809/t20180929_5115396.html",
+      "kind": "faculty_profile",
+      "sources": ["https://ime.cas.cn/rcdw/yszj_143323/201809/t20180929_5115396.html", "https://www.nature.com/articles/s41586-026-10646-w"],
+      "identity_basis": "CAS Institute of Microelectronics researcher in resistive memory; not same-name robotics or XJTU researchers."
+    },
+    "Muxin Liu": {
+      "url": "https://github.com/mx-liu6",
+      "kind": "github_profile",
+      "sources": ["https://github.com/mx-liu6/FoundationGeo-web/blob/main/index.html", "https://github.com/mx-liu6/OptiGeo-web/blob/main/index.html"],
+      "identity_basis": "Both official project author bylines explicitly link Muxin Liu to this account; no independent personal homepage is inferred."
+    },
+    "Jing Xia": {
+      "url": "https://github.com/JINGERGER",
+      "kind": "github_profile",
+      "sources": ["https://github.com/mx-liu6/OptiGeo-web/blob/main/index.html"],
+      "identity_basis": "Exact author hyperlink in OptiGeo's official project page."
+    },
+    "Bo Wang": {
+      "url": "https://scholar.google.com/citations?user=xgUW0ZEAAAAJ&hl=en",
+      "kind": "google_scholar",
+      "sources": ["https://github.com/mx-liu6/OptiGeo-web/blob/main/index.html", "https://cvmi.hku.hk/wp-content/uploads/cvmi/team.html"],
+      "identity_basis": "Exact scholar ID linked by OptiGeo and CVMI's co-design team, not the same-name HKU theory student supervised by Hubert Chan."
+    },
+    "Jiaqi Zhang": {
+      "url": "https://scholar.google.com/citations?user=V1zSNIYAAAAJ&hl=en",
+      "kind": "google_scholar",
+      "sources": ["https://github.com/mx-liu6/FoundationGeo-web/blob/main/index.html"],
+      "identity_basis": "Exact author hyperlink in FoundationGeo's official project page."
+    },
+    "Lin Ma": {
+      "url": "https://scholar.google.com/citations?hl=en&user=S4HGIIUAAAAJ",
+      "kind": "google_scholar",
+      "sources": ["https://zju3dv.github.io/coin3d/"],
+      "identity_basis": "Coin3D's PICO/ByteDance coauthor byline explicitly supplies this profile, distinct from the Michigan database researcher and Meituan researcher."
+    },
+    "Yuewen Ma": {
+      "url": "https://scholar.google.com/citations?user=VG_cdLAAAAAJ",
+      "kind": "google_scholar",
+      "sources": ["https://zju3dv.github.io/coin3d/"],
+      "identity_basis": "Exact named ByteDance coauthor hyperlink on the official Coin3D page."
+    },
+    "Baoheng Zhang": {
+      "url": "https://openreview.net/profile?id=~Baoheng_Zhang1",
+      "kind": "openreview_profile",
+      "sources": ["https://cvmi.hku.hk/wp-content/uploads/cvmi/team.html"],
+      "identity_basis": "Exact profile linked by the CVMI co-supervised-members list."
+    },
+    "Shihao Han": {
+      "url": "https://openreview.net/profile?id=~Shihao_Han2",
+      "kind": "openreview_profile",
+      "sources": ["https://cvmi.hku.hk/wp-content/uploads/cvmi/team.html"],
+      "identity_basis": "Exact profile linked by the CVMI AI software-hardware co-design team."
+    },
+    "Meng Xu": {
+      "url": "https://scholar.google.com.hk/citations?hl=zh-CN&user=zjemTzoAAAAJ",
+      "kind": "google_scholar",
+      "sources": ["https://cvmi.hku.hk/wp-content/uploads/cvmi/team.html"],
+      "identity_basis": "Exact profile linked by the CVMI co-design team for its postdoctoral researcher."
+    },
+    "Yue Zhang": {
+      "url": "https://scholar.google.com/citations?hl=en&user=SqVdeGwAAAAJ",
+      "kind": "google_scholar",
+      "sources": ["https://cvmi.hku.hk/wp-content/uploads/cvmi/team.html"],
+      "identity_basis": "Exact profile linked by the CVMI co-design team for the 2022 PhD member, not same-name NLP researchers."
+    }
+  },
+  "unresolved_full_names": {
+    "paper": "pub-world-action-model",
+    "names": ["Z. Su", "A. Wu", "F. Wu", "Z. Li", "Z. Qi", "H. Chen", "W. Ye", "J. Zhang", "K. Zhou"],
+    "reason": "The available CV gives only these initials; the supplied paper and project page are anonymous. The coauthor's public page also explicitly withholds the byline. A non-anonymous author line or BibTeX is required to expand these names without guessing.",
+    "sources": ["cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex", "projects/sandbox/index.html", "https://chillinfree.github.io/"]
+  }
+}

@@ -1,4 +1,4 @@
-"""Website-only publication typography and complete, source-checked bylines."""
+"""Website-only publication typography and source-checked bylines/profile links."""
 from __future__ import annotations
 from copy import deepcopy
 from functools import lru_cache
@@ -10,7 +10,21 @@ from urllib.parse import urlsplit
 from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = 'recent-projects-20261015-v1'
+VERSION = 'author-links-black-20261015-v2'
+PROFILE_LABELS = {'homepage': 'Personal website', 'faculty_profile': 'Faculty website',
+                  'github_profile': 'GitHub profile', 'google_scholar': 'Google Scholar',
+                  'openreview_profile': 'OpenReview profile'}
+
+@lru_cache(maxsize=1)
+def load_profile_additions():
+    records = json.loads((ROOT/'_site_content/author-profile-links.json').read_text())['profiles']
+    for name, profile in records.items():
+        assert profile['kind'] in PROFILE_LABELS, name
+        assert profile['sources'] and profile['identity_basis'], name
+        url = urlsplit(profile['url'])
+        assert url.scheme == 'https' and url.netloc, name
+        assert not re.match(r'^[A-Z]\. ', name), 'Never link an unresolved initial: ' + name
+    return records
 
 @lru_cache(maxsize=1)
 def load_details():
@@ -30,12 +44,17 @@ def load_details():
             assert record['venue'] and isinstance(record['year'], int), key
         assert record.get('distinction') in (None, 'Spotlight'), key
         assert not record.get('percentile'), key
+    known_names = {a['name'] for r in data['papers'].values() for a in r['authors']}
+    for name, profile in load_profile_additions().items():
+        assert name in known_names, 'Profile has no matching publication author: ' + name
+        data['profiles'][name] = profile['url']
     for name, url in data['profiles'].items():
         assert urlsplit(url).scheme == 'https' and urlsplit(url).netloc, name
     return data
 
 def authors_markup(record, profiles):
     authors = []
+    additions = load_profile_additions()
     for author in record['authors']:
         name = author['name']
         label = html.escape(name)
@@ -47,7 +66,9 @@ def authors_markup(record, profiles):
         if url:
             href = '#top' if name == 'Xiaoshan Wu' else url
             external = '' if name == 'Xiaoshan Wu' else ' target="_blank" rel="noopener"'
-            label = f'<a href="{html.escape(href, quote=True)}"{external}>' + label + '</a>'
+            kind = additions.get(name, {}).get('kind', 'homepage')
+            title = html.escape(name + ' — ' + PROFILE_LABELS[kind], quote=True)
+            label = f'<a href="{html.escape(href, quote=True)}" title="{title}" data-profile-kind="{kind}"{external}>' + label + '</a>'
         if author.get('marks'):
             label += '<sup>' + html.escape(author['marks']) + '</sup>'
         pending = ' data-full-name-pending="true"' if author.get('full_name_pending') else ''
