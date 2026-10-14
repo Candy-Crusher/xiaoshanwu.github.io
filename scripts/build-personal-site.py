@@ -8,6 +8,7 @@ individual project pages. Legacy documents keep complete no-JavaScript content.
 from pathlib import Path
 import hashlib
 import json
+import re
 from bs4 import BeautifulSoup
 import personal_site_core as core
 
@@ -16,7 +17,6 @@ LAYOUT = 'harvard-first-vector-logos-v1'
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
-parse_cv = core.parse_cv
 plain = core.plain
 MENTOR_PROFILES = core.MENTOR_PROFILES
 # Share the verified advisor link with the timeline and legacy-page renderers.
@@ -25,6 +25,25 @@ MENTOR_PROFILES['Xiaojuan Qi'] = 'https://xjqi.github.io/'
 
 def fragment(value):
     return BeautifulSoup(value, 'html.parser')
+
+
+def parse_cv():
+    """Read a website-only view of CV02, omitting GPA but retaining other facts.
+
+    The underlying parser and all CV TeX/PDF files remain unchanged. Both the
+    homepage and legacy resume use this view, as does the generated site cache.
+    """
+    cv = core.parse_cv()
+    for entry in cv['education']:
+        visible_details = []
+        for detail in entry['details']:
+            visible = re.sub(r'\s*<strong>GPA:</strong>[^<]*', ' ', detail).strip()
+            if re.search(r'\bGPA\b', plain(visible), re.I):
+                raise ValueError('Review GPA field formatting before publishing')
+            if visible:
+                visible_details.append(visible)
+        entry['details'] = visible_details
+    return cv
 
 
 def timeline(cv):
@@ -124,6 +143,7 @@ def main():
               'research.html': core.research_page(cfg, papers, cv)}
     bodies['publications.html'] = bodies['research.html']
     for name, body in bodies.items():
+        assert not re.search(r'\bGPA\b', plain(body), re.I), 'GPA leaked into ' + name
         (ROOT/name).write_text(document(name, body, cfg, cv))
     cv['publication_anchors'] = list(papers)
     (ROOT/'_site_content/resume-cv02.json').write_text(json.dumps(cv, ensure_ascii=False, indent=2) + '\n')
