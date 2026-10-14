@@ -19,6 +19,8 @@ PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publicatio
 parse_cv = core.parse_cv
 plain = core.plain
 MENTOR_PROFILES = core.MENTOR_PROFILES
+# Share the verified advisor link with the timeline and legacy-page renderers.
+MENTOR_PROFILES['Xiaojuan Qi'] = 'https://xjqi.github.io/'
 
 
 def fragment(value):
