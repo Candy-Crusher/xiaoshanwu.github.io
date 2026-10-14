@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Check author link destinations and black normal/hover/focus presentation."""
+"""Check live author names, link destinations and black normal/hover/focus presentation."""
 from pathlib import Path
 from functools import partial
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from threading import Thread
-import json, os, sys
+import json, os, sys, time
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from publication_style import load_details, load_profile_additions, VERSION, PROFILE_LABELS
@@ -12,23 +12,33 @@ from publication_style import load_details, load_profile_additions, VERSION, PRO
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def main():
-    data = load_details()
-    additions = load_profile_additions()
-    out = ROOT / 'author-links-review'
-    out.mkdir(exist_ok=True)
-    doc = BeautifulSoup((ROOT / 'index.html').read_text(), 'html.parser')
+def check_rendered_authors(doc, data, additions):
     for key, record in data['papers'].items():
         authors = doc.select('#' + key + ' .pub-author')
         assert len(authors) == len(record['authors']), key
         for node, author in zip(authors, record['authors']):
             name = author['name']
+            assert node.get_text().rstrip('*†') == name, (key, name, node.get_text())
+            expected = data['profiles'].get(name)
+            link = node.select_one('a')
+            if expected:
+                expected = '#top' if name == 'Xiaoshan Wu' else expected
+                assert link and link['href'] == expected, (key, name)
+            else:
+                assert link is None, (key, name)
             if name in additions:
                 profile = additions[name]
-                link = node.select_one('a')
-                assert link and link['href'] == profile['url'], name
                 assert link['data-profile-kind'] == profile['kind'], name
                 assert link['title'] == name + ' — ' + PROFILE_LABELS[profile['kind']], name
+    assert not doc.select('.pub-author[data-full-name-pending]')
+
+
+def main():
+    data = load_details()
+    additions = load_profile_additions()
+    out = ROOT / 'author-links-review'
+    out.mkdir(exist_ok=True)
+    check_rendered_authors(BeautifulSoup((ROOT / 'index.html').read_text(), 'html.parser'), data, additions)
     class Quiet(SimpleHTTPRequestHandler):
         def log_message(self, *args):
             pass
@@ -45,7 +55,15 @@ def main():
             page = browser.new_page(reduced_motion='reduce')
             for width in [390, 1440]:
                 page.set_viewport_size({'width': width, 'height': 1000})
-                assert page.goto(base + 'index.html', wait_until='networkidle').status == 200
+                for attempt in range(8):
+                    assert page.goto(base + 'index.html?author-check=' + str(time.time_ns()), wait_until='networkidle').status == 200
+                    try:
+                        check_rendered_authors(BeautifulSoup(page.content(), 'html.parser'), data, additions)
+                        break
+                    except AssertionError:
+                        if attempt == 7:
+                            raise
+                        page.wait_for_timeout(10000)
                 assert page.locator('#publications').get_attribute('data-publication-style') == VERSION
                 selector = '.pub-authors, .pub-authors .pub-author, .pub-authors a, .pub-authors strong, .pub-authors sup'
                 wrong = page.locator(selector).evaluate_all("els => els.filter(e => getComputedStyle(e).color !== 'rgb(0, 0, 0)').map(e => e.textContent)")
@@ -67,7 +85,7 @@ def main():
                         image.evaluate('(e) => e.decode()')
                     entry.screenshot(path=str(out / f'{key}-{width}.png'), style='.site-topbar{visibility:hidden!important}')
                 assert page.evaluate('document.documentElement.scrollWidth - innerWidth') <= 1
-                report['views'].append({'width': width, 'author_normal_hover_focus': 'black', 'resource_links_unchanged': True})
+                report['views'].append({'width': width, 'author_normal_hover_focus': 'black', 'resource_links_unchanged': True, 'live_author_names_and_links_verified': True})
             browser.close()
     finally:
         server.shutdown()
