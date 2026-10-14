@@ -9,6 +9,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
@@ -17,7 +18,7 @@ OUT = ROOT/'personal-site-qa'
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
-LAYOUT = 'single-page-timeline-20261014'
+LAYOUT = 'harvard-first-vector-logos-v1'
 
 
 def text(node):
@@ -93,9 +94,21 @@ def static_checks():
         assert doc.select_one('video.research-video source')['src'] == 'projects/sandbox/static/videos/disco_light_10x.mp4'
         assert doc.select_one('a[href="projects/sandbox/rdf-viewer.html?case=pose-1"]')
     entries = home.select('.experience-timeline > li')
-    assert [e['data-institution'] for e in entries] == ['zjui', 'hku', 'harvard']
+    assert [e['data-institution'] for e in entries] == ['harvard', 'hku', 'zjui']
     assert len(home.select('.institution-tile img')) == 4
-    for entry, school in zip(entries, reversed(cv['education'])):
+    manifest = json.loads((ROOT/'assets/institutions/sources.json').read_text())
+    for school in ['zju', 'uiuc']:
+        node = home.select_one('.logo-' + school)
+        assert node['src'] == 'assets/institutions/' + school + '.svg'
+        raw = (ROOT/node['src']).read_bytes()
+        svg = ET.fromstring(raw)
+        assert svg.tag.endswith('}svg') and svg.get('viewBox')
+        assert len(svg.findall('.//{http://www.w3.org/2000/svg}path')) >= 2
+        assert not svg.findall('.//{http://www.w3.org/2000/svg}image')
+        assert not svg.findall('.//{http://www.w3.org/2000/svg}script')
+        assert hashlib.sha256(raw).hexdigest() == manifest[school]['sha256']
+        assert manifest[school]['format'] == 'svg'
+    for entry, school in zip(entries, cv['education']):
         assert text(entry.h3) == school['school']
         assert text(entry.select_one('.timeline-position')) == school['role']
         assert school['dates'] in text(entry.select_one('.timeline-dates'))
@@ -110,7 +123,7 @@ def static_checks():
     assert 'Blade Runner 2049' in text(home.select_one('#about'))
     assert not home.select('details, .selected-entry')
     return {'static': 'PASS', 'publication_metadata': 'CV02: 15 papers, authors/status/order unchanged',
-            'experience_order': ['ZJU & UIUC', 'HKU', 'Harvard'], 'repeatable_build': True,
+            'experience_order': ['Harvard', 'HKU', 'ZJU & UIUC'], 'repeatable_build': True,
             'internal_links': 'PASS', 'source_git_blob': cv['source_git_blob']}
 
 
@@ -156,6 +169,18 @@ def browser_checks(base):
             assert page.evaluate('scrollY') < 4
             page.screenshot(path=str(OUT/f'header-{width}.png'))
             report['responsive'].append({'width': width, 'overflow_px': overflow, 'loaded_images': page.locator('main img').count()})
+        retina = browser.new_context(viewport={'width': 390, 'height': 1000},
+                                     device_scale_factor=3, reduced_motion='reduce')
+        rp = retina.new_page()
+        rp.goto(base+'index.html#experience', wait_until='networkidle')
+        for logo in rp.locator('.institution-pair img').all():
+            logo.evaluate('(i)=>i.decode()')
+            assert logo.evaluate('(i)=>i.complete && i.naturalWidth>0')
+            assert logo.get_attribute('src').endswith('.svg')
+        rp.screenshot(path=str(OUT/'experience-mobile-retina.png'))
+        assert rp.evaluate('document.documentElement.scrollWidth-innerWidth') <= 1
+        retina.close()
+        report['retina_vector_logos'] = 'PASS: 3x mobile display'
         # Back/forward, deep anchors, manually scrolling, keyboard, figure dialog.
         page.locator('.site-nav a[href="#news"]').click()
         page.locator('.site-nav a[href="#experience"]').click()
