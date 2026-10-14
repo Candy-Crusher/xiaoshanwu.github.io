@@ -12,11 +12,10 @@ from bs4 import BeautifulSoup
 import personal_site_core as core
 
 ROOT = Path(__file__).resolve().parents[1]
-LAYOUT = 'single-page-timeline-20261014'
+LAYOUT = 'harvard-first-vector-logos-v1'
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
-# Keep the parser available to validation and existing downstream callers.
 parse_cv = core.parse_cv
 plain = core.plain
 MENTOR_PROFILES = core.MENTOR_PROFILES
@@ -27,18 +26,19 @@ def fragment(value):
 
 
 def timeline(cv):
-    """Three chronological milestones; all dates and details come from CV02."""
+    """Three milestones, newest first; all dates and details come from CV02."""
     schools = cv['education']
-    specs = [('zjui', 'ZJU', [('zju', 'Zhejiang University'), ('uiuc', 'UIUC')]),
+    specs = [('harvard', 'Harvard', [('harvard', 'Harvard University')]),
              ('hku', 'Hong Kong', [('hku', 'The University of Hong Kong')]),
-             ('harvard', 'Harvard', [('harvard', 'Harvard University')])]
+             ('zjui', 'ZJU', [('zju', 'Zhejiang University'), ('uiuc', 'UIUC')])]
+    formats = {'zju': 'svg', 'uiuc': 'svg', 'hku': 'png', 'harvard': 'png'}
     entries = []
     for key, match, icons in specs:
         matches = [e for e in schools if match in e['school']]
         if len(matches) != 1:
             raise ValueError('Expected one CV02 education entry for ' + key)
         e = matches[0]
-        logos = ''.join(f'<img src="assets/institutions/{name}.png" alt="{core.esc(label)} website icon" width="64" height="64" loading="lazy" decoding="async">' for name, label in icons)
+        logos = ''.join(f'<img src="assets/institutions/{name}.{formats[name]}" class="logo-{name}" alt="{core.esc(label)} emblem" width="64" height="64" loading="lazy" decoding="async">' for name, label in icons)
         details = ''.join('<p class="timeline-detail">' + core.mentor_links(d) + '</p>' for d in e['details'])
         entries.append(f'''<li class="timeline-entry" data-institution="{key}">
 <div class="institution-tile {'institution-pair' if len(icons) == 2 else ''}">{logos}</div>
@@ -48,7 +48,7 @@ def timeline(cv):
     return '''<section class="experience-record" id="experience" aria-labelledby="experience-title">
 <span class="anchor-alias" id="resume"></span><span class="anchor-alias" id="background"></span><span class="anchor-alias" id="education"></span>
 <header class="experience-heading"><h2 id="experience-title">Experience</h2><div class="download-links"><a href="Xiaoshan_Wu_CV.pdf" target="_blank" rel="noopener">View CV</a><a href="Xiaoshan_Wu_CV.pdf" download="Xiaoshan_Wu_CV.pdf">Download PDF</a></div></header>
-<ol class="experience-timeline" aria-label="Education and research experience, chronological order">''' + ''.join(entries) + '</ol></section>'
+<ol class="experience-timeline" aria-label="Education and research experience, newest first">''' + ''.join(entries) + '</ol></section>'
 
 
 def compose_home(old_home, old_about, cv):
@@ -60,7 +60,6 @@ def compose_home(old_home, old_about, cv):
     news['aria-labelledby'] = 'news-title'
     news.h2['id'] = 'news-title'
     news.h2.string = 'News'
-    # Preserve the entire research record, including original media and links.
     research = home.select_one('#research')
     publications = home.select_one('#publications')
     award = '<section class="award-record" id="awards" aria-labelledby="awards-title"><h2 id="awards-title">Awards</h2><ul class="awards">' + ''.join('<li>' + a.rstrip('.') + '</li>' for a in cv['awards']) + '</ul></section>'
@@ -69,7 +68,6 @@ def compose_home(old_home, old_about, cv):
     about['id'] = 'about'
     about['class'] = ['about-record', 'about-essay']
     about['aria-labelledby'] = 'about-title'
-    # One h1 for the person's name, with accessible nested section headings.
     for heading in about.select('h2'):
         heading.name = 'h3'
     about.h1.name = 'h2'
@@ -89,7 +87,6 @@ def document(name, body, cfg, cv):
     wordmark['class'] = ['wordmark', 'wordmark-script']
     wordmark['href'] = '#top' if name == 'index.html' else 'index.html#top'
     wordmark['aria-label'] = "Xiaoshan's Homepage, return to top"
-    # Static HTML supplies all links, including when JavaScript is disabled.
     for a in doc.select('.site-nav a, .site-footer nav a'):
         a.attrs.pop('aria-current', None)
     if name == 'index.html':
@@ -97,7 +94,6 @@ def document(name, body, cfg, cv):
     doc.head.append(doc.new_tag('link', rel='stylesheet', href='assets/css/single-page.css?v=' + LAYOUT))
     for node in doc.select('script[src^="assets/js/site-pages.js"]'):
         node['src'] = 'assets/js/site-pages.js?v=' + LAYOUT
-    # An optional web font; native cursive fallbacks preserve the wordmark.
     doc.head.append(doc.new_tag('link', rel='preconnect', href='https://fonts.googleapis.com'))
     doc.head.append(doc.new_tag('link', rel='preconnect', href='https://fonts.gstatic.com', crossorigin='anonymous'))
     doc.head.append(doc.new_tag('link', rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Allura&display=swap'))
@@ -114,7 +110,6 @@ def main():
     cv = parse_cv()
     cfg = json.loads((ROOT/'_site_content/site-presentation.json').read_text())
     data = json.loads((ROOT/'_site_content/personal-site.json').read_text())
-    # Navigation is structural; keep its human-readable presentation cache in sync.
     cfg['navigation'] = [{'label': label, 'url': 'index.html#' + anchor} for label, anchor in NAV]
     cfg['layout'] = LAYOUT
     cfg['version'] = max(cfg.get('version', 0), 5)
@@ -131,7 +126,7 @@ def main():
     cv['publication_anchors'] = list(papers)
     (ROOT/'_site_content/resume-cv02.json').write_text(json.dumps(cv, ensure_ascii=False, indent=2) + '\n')
     assert all(core.digest(ROOT/name) == digest for name, digest in protected.items()), 'Protected research or CV content changed'
-    report = {'layout': LAYOUT, 'navigation': NAV, 'experience_order': ['ZJU & UIUC', 'HKU', 'Harvard'],
+    report = {'layout': LAYOUT, 'navigation': NAV, 'experience_order': ['Harvard', 'HKU', 'ZJU & UIUC'],
               'publication_count': len(papers), 'source_git_blob': cv['source_git_blob'], 'protected_files': protected}
     Path('/tmp/personal-site-style-preservation.json').write_text(json.dumps(report, indent=2))
     print(json.dumps({k: v for k, v in report.items() if k != 'protected_files'}, indent=2))
