@@ -1,0 +1,43 @@
+/* Single-page navigation and a restrained, chronological experience timeline. */
+:root{--timeline-accent:#ad6544;--timeline-line:#dfbaa7;--tile-paper:#faf6f2}
+.wordmark.wordmark-script{font-family:"Allura","Snell Roundhand","Apple Chancery","URW Chancery L",cursive;font-size:34px;font-weight:400;line-height:1.35;letter-spacing:0;white-space:nowrap;color:var(--ink)}
+.wordmark-script:hover{text-decoration:none;color:var(--accent)}
+.site-header{column-gap:26px;padding-block:13px;min-height:78px}
+.site-nav{gap:25px;font-size:13px;flex-shrink:0}
+.site-nav a{min-height:40px;display:flex;align-items:center;white-space:nowrap}
+.site-nav a[aria-current]{color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:7px}
+.site-footer{align-items:baseline;flex-wrap:wrap}
+.news-section{margin:0 0 34px;padding-top:27px}
+.experience-record,.award-record,.about-record{margin-top:42px;padding-top:30px;border-top:1px solid var(--line);scroll-margin-top:16px}
+.experience-heading{display:flex;align-items:baseline;justify-content:space-between;gap:14px 25px;flex-wrap:wrap;margin-bottom:30px}
+.experience-heading h2{color:var(--timeline-accent);font-size:24px}
+.experience-timeline{list-style:none;margin:0;padding:0 0 0 33px;position:relative}
+.experience-timeline:before{content:"";position:absolute;left:7px;top:18px;bottom:38px;width:2px;background:var(--timeline-line)}
+.timeline-entry{display:grid;grid-template-columns:104px minmax(0,1fr);column-gap:28px;position:relative;align-items:start;padding-bottom:34px;min-height:148px}
+.timeline-entry:last-child{padding-bottom:8px}
+.timeline-entry:before{content:"";position:absolute;left:-30px;top:41px;width:10px;height:10px;border-radius:50%;background:var(--timeline-accent);box-shadow:0 0 0 4px var(--paper)}
+.institution-tile{width:104px;height:104px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #eddfd5;border-radius:9px;background:var(--tile-paper);padding:17px}
+.institution-tile img{display:block;width:68px;height:68px;object-fit:contain;flex:none}
+.institution-pair{padding:12px 7px;gap:7px}
+.institution-pair img{width:41px;height:57px}
+.timeline-copy{padding-top:0;min-width:0}
+.timeline-copy h3{font-size:17px;line-height:1.5;margin-bottom:6px;font-weight:600}
+.timeline-position{font-size:14px;line-height:1.7;margin-bottom:5px}
+.timeline-detail{font-size:12.5px;color:var(--muted);line-height:1.85;margin-top:3px}
+.timeline-dates{font-size:13px;color:var(--timeline-accent);line-height:1.8;margin-top:9px;font-variant-numeric:tabular-nums}
+.timeline-dates span{color:var(--muted);font-size:12px;margin-left:18px;white-space:nowrap}
+.award-record>h2{font-size:24px;margin-bottom:21px}
+.award-record .awards{gap:12px}
+.about-record.about-essay{max-width:none;margin-inline:0}
+.about-record .page-heading{padding-top:0;margin-bottom:22px}
+.about-record .page-heading h2{font:600 24px/1.35 var(--sans);letter-spacing:-.4px}
+.about-record h3{font-size:18px;line-height:1.5;margin-bottom:12px}
+.about-record>section{max-width:820px}
+.about-record .inspiration-figure{max-width:480px}
+.about-record .skill-line{font-size:14px}
+/* Keep header offsets stable before the optional font or JS is ready. */
+@media(max-width:850px){.site-nav{gap:18px}.wordmark.wordmark-script{font-size:31px}}
+@media(max-width:760px){:root{--navigation-height:117px}.site-header{flex-direction:column;align-items:flex-start;gap:3px;padding-block:10px 5px}.site-nav{width:100%;justify-content:space-between;gap:8px;font-size:12px}.wordmark.wordmark-script{font-size:32px}.site-nav a{min-height:42px}.timeline-entry{grid-template-columns:86px minmax(0,1fr);column-gap:22px}.institution-tile{width:86px;height:90px;padding:12px}.institution-tile img{width:62px;height:62px}.institution-pair{padding:10px 5px;gap:4px}.institution-pair img{width:34px;height:50px}.timeline-dates span{display:block;margin-left:0}}
+@media(max-width:600px){.news-section{margin-bottom:28px}.experience-record,.award-record,.about-record{margin-top:31px;padding-top:25px}.experience-heading{margin-bottom:24px}.experience-heading h2,.award-record>h2,.about-record .page-heading h2{font-size:22px}.experience-heading .download-links{gap:16px}.experience-timeline{padding-left:22px}.experience-timeline:before{left:4px;top:15px;bottom:33px}.timeline-entry{grid-template-columns:65px minmax(0,1fr);gap:16px;padding-bottom:29px}.timeline-entry:before{left:-22px;top:29px;width:9px;height:9px}.institution-tile{width:65px;height:73px;border-radius:7px;padding:9px}.institution-tile img{width:47px;height:52px}.institution-pair{gap:3px;padding:5px 3px}.institution-pair img{width:27px;height:42px}.timeline-copy h3{font-size:15px;line-height:1.5}.timeline-position{font-size:13px}.timeline-detail{font-size:12px;line-height:1.8}.timeline-dates{font-size:12px}.timeline-dates span{font-size:11px}.about-record h3{font-size:17px}.about-record .skill-line{font-size:13px}}
+@media(max-width:360px){.site-nav{font-size:11px;gap:7px}.wordmark.wordmark-script{font-size:30px}.timeline-entry{column-gap:12px;grid-template-columns:57px minmax(0,1fr)}.institution-tile{width:57px;height:65px;padding:7px}.institution-tile img{width:43px;height:47px}.institution-pair{padding:4px 2px;gap:2px}.institution-pair img{width:24px;height:39px}}
+@media print{.experience-record,.award-record,.about-record{margin-top:20px}.timeline-entry{break-inside:avoid}.institution-tile{print-color-adjust:exact}.site-topbar{display:none!important}}

@@ -1,85 +1,75 @@
-# Personal website: facts and presentation
+# Personal website: one page, six sections
 
-Navigation: **Home → Resume → About**. Home and Resume are positions on the
-same document, not separate pages. About remains a short personal essay.
+The main navigation is **Home · News · Research · Experience · Award · About**.
+Every item on `index.html` is a native fragment link in the same document.
+The cursive wordmark reads **Xiaoshan's Homepage** and returns to the top.
 
-- **Home**: Harvard-first biography and CV02 research interests, followed by
-  all 15 papers (8 first/co-first + 7 collaborative), the full Resume, and news.
-- **Resume (`index.html#resume`)**: research appointments, degrees, technical
-  skills, a standalone Selected Awards section, and CV PDF links. The navigation
-  uses native `#resume` / `#top` anchors, including without JavaScript.
-- **About**: background, research motivation, future co-evolution interests,
-  and the existing film inspiration. Its Resume link leads to the homepage.
+## Layout and sources
 
-## Sources
+The homepage contains the approved Harvard-first biography, News, the existing
+question-first Research overview and all 15 publications, a three-node
+chronological Experience timeline, Awards, and the complete original About essay.
+The timeline is **ZJU & UIUC → HKU → Harvard**. Institution names, roles, dates,
+advisors, honors and GPAs come from CV02 without rewriting the underlying facts.
+Technical skills are retained at the end of About; CV viewing/download remains
+available beside Experience and in the introduction.
 
 `cv/2027-internships/02_Xiaoshan_Wu_NVIDIA_Robotics_JR2025647.tex` is the source
-of factual CV information. `cv.tex` must match it exactly; the existing CV
-workflow builds the public PDF. This layout update changes no TeX, PDF, or
-individual research project page.
+of factual CV information. `cv.tex` must match it exactly. No TeX, PDF, paper,
+research video, experiment data or individual project page is modified by this
+layout update.
 
-`site-presentation.json` controls concise research descriptions, existing-image
-crops and resources. It does not mirror every CV paragraph. `source_title`
-matches each record to CV02; authors, status, order and role labels are parsed
-from TeX. `resume-cv02.json` is the generated factual cache. The user-approved
-biography, corrected official scholarship links and mentor links are retained.
+`site-presentation.json` supplies the approved biography, research directions,
+short summaries, crops and resources. `personal-site.json` retains approved
+news. `resume-cv02.json` is the generated factual cache. Navigation is structural:
+its six labels/anchors are defined in `scripts/build-personal-site.py`, which
+also updates the human-readable navigation cache in `site-presentation.json`.
 
-`personal-site.json` retains news and earlier approved material. The old
-cinematic fragment is archival, not rendered. Media are existing research
-assets; captions distinguish illustrative material from measured results.
+The previous factual parser, research renderer and legacy-page renderers are
+preserved verbatim in `scripts/personal_site_core.py`. The small
+`build-personal-site.py` entry point assembles semantic HTML sections around
+those unchanged research renderers. No client-side content hiding or page switcher
+is used. All sections and publications are readable without JavaScript.
 
-## Compatibility and checks
+## Presentation
 
-`research.html` and `publications.html` redirect to the matching homepage
-research anchor. `resume.html` redirects to `index.html#resume`, preserving
-old fragment links such as `#education`, `#experience`, `#skills`, `#awards`,
-and `#background`. All three legacy routes retain their complete content as a
-no-JavaScript fallback. Homepage anchors no longer redirect out to Resume.
+`assets/css/single-page.css` adds the cursive wordmark, six-link responsive
+header, a thin vertical timeline, institution-icon tiles and section spacing.
+The established white academic layout, portrait and research content remain.
+The optional Allura web font has native cursive fallbacks. No font files are
+bundled. Institution website icons are cached under `assets/institutions/`;
+`sources.json` records their retrieval URLs and hashes. They identify
+institutions, not institutional endorsement. The first build retrieves missing
+icons; subsequent builds use the existing versioned local assets.
 
-The modest sticky navigation stays accessible while reading. Header offsets
-keep anchor headings visible. There are no decorative or scrolling animations.
-CSS and JavaScript have a new cache key; the page-family marker and existing
-GitHub workflow stay unchanged.
+`assets/js/site-pages.js` progressively enhances active-section underlining,
+measures the sticky header, and preserves native scrolling and browser history.
+The original muted robot-video controls and figure enlargement behavior remain.
+Scrolling never rewrites the URL or adds browser-history entries.
 
-Run `python scripts/build-personal-site.py` and
-`python scripts/test-personal-site.py` to build and validate. Tests cover CV02
-metadata preservation, unique headings and anchors, 320–1440 px layouts,
-no-JavaScript content, native Resume navigation, browser Back, old routes,
-keyboard navigation and image enlargement. `--inline-preview` provides only
-static/offline visual validation; full navigation tests run in CI.
+## Compatibility
 
-## Research narrative
+Old `research.html`, `publications.html`, `resume.html` and `about.html` routes
+redirect to the appropriate homepage anchor, preserving fragments and queries.
+They retain their full no-JavaScript content as a fallback. Homepage aliases
+`#resume`, `#education`, `#background`, `#skills`, `#awards` and `#inspiration`
+remain valid. Top-level navigation never leads away from the homepage; paper,
+project, advisor, profile and CV resource links keep their original destinations.
 
-The homepage keeps the Harvard-first biography and uses a shorter, web-specific
-paraphrase of CV02 for the second introduction paragraph. Research then presents
-one central question and three connected lines of work, each with links to its
-actual publications. Publications remain a single, fully visible record below.
-This borrows the problem-first organization of https://yilundu.github.io/, not
-its prose, research claims or taxonomy. CV02 and its PDF are not rewritten.
+## Build and validation
 
-Edit `home.research_statement` and `research.question/directions` in
-`site-presentation.json`. Each direction records its supporting source and
-references publication anchors instead of duplicating entries. The short CV
-link label is `CV`; the destination remains `Xiaoshan_Wu_CV.pdf`.
+Run `python scripts/build-personal-site.py`, then
+`python scripts/test-personal-site.py` and `python scripts/test-sandbox-media.py`.
+The existing personal-site workflow installs dependencies, caches missing icons,
+builds and checks the pages, verifies deterministic regeneration, and only then
+commits generated HTML and requests GitHub Pages publication. The workflow name
+is retained for compatibility with existing automation.
 
-`assets/css/research-overview.css` styles only the new overview and its adjacent
-publication heading. Existing personal-page navigation and resume layout stay
-unchanged. Tests check the overview, real example links, metadata/order
-preservation, plain CV labels and the future-only co-evolution framing.
-
-## Research navigation and S4NDBOX media (2026-10-14)
-
-Navigation is now **Home → Research → Resume → About**, with the first three
-using native homepage anchors. The S4NDBOX publication cover uses the original
-`disco_light_10x.mp4` and its matching poster, with native play/pause controls.
-The redundant Robot demo resource link is removed. Quiet, reduced-motion and
-data-saving behavior are handled without changing the clip or its playback speed.
-
-The missing S4NDBOX static assets were restored from commit
-`0ac8073ef92ce5f84828f8a9f4a4c3e398f55793`, before the Overleaf sync deletion
-in `5e0e4d52cd34e42c34f745380df937d45fb047af`. Existing static files were
-verified unchanged; no paper prose, experiments or research data were rewritten.
-`test-sandbox-media.py` validates every manifest frame and exercises all six
-interactive cases, both point-cloud streams, timeline navigation, source RGB
-insets, and the inline video's decode/playback. It runs as part of personal-site
-validation so a surviving HTML shell alone can no longer pass the media check.
+Checks cover the exact six navigation labels, same-document clicks with preserved
+JS state, browser Back/Forward, manual-scroll active state, keyboard navigation,
+visible anchor headings, no-JavaScript behavior, old routes, all internal links,
+three chronological milestones, CV02 paper metadata and education preservation,
+320/390/600/768/1024/1440 px layouts, portrait and figure decoding, original robot
+video playback, and all six interactive 4D cases. Screenshots and reports are
+saved in the `single-page-website-review` Actions artifact. The final workflow
+step checks the public HTML, not only the repository version.

@@ -1,55 +1,52 @@
-/* Progressive enhancement: the complete research record is native homepage HTML. */
+/* Native same-document links; JS only enhances active-section indication. */
 (() => {
   'use strict';
   const page = document.body.dataset.page;
-  const resumeAnchors = new Set(['resume','background','education','experience','skills','awards']);
-  function normalizedHash(hash, fallback) {
-    if (!hash) return fallback;
-    if (hash === '#resume-publications') return '#publications';
-    return hash;
-  }
-  if (['research', 'publications', 'resume'].includes(page)) {
-    const hash = normalizedHash(location.hash, page === 'resume' ? '#resume' : '#research');
-    location.replace('index.html' + location.search + hash);
+  const legacy = {research: '#research', publications: '#research', resume: '#experience', about: '#about'};
+  if (legacy[page]) {
+    const hash = location.hash === '#resume-publications' ? '#publications' : location.hash;
+    location.replace('index.html' + location.search + (hash || legacy[page]));
     return;
   }
-  function routeLegacyHash() {
-    if (page !== 'index') return false;
-    if (location.hash === '#inspiration') {
-      location.replace('about.html' + location.search + location.hash);
-      return true;
-    }
-    if (location.hash === '#resume-publications') {
-      location.replace('index.html' + location.search + '#publications');
-      return true;
-    }
-    // Resume, education and awards anchors now stay on this document.
-    return false;
+  if (location.hash === '#resume-publications') {
+    location.replace('index.html' + location.search + '#publications');
+    return;
   }
-  if (routeLegacyHash()) return;
+  // #inspiration is now native homepage content, not a redirect to About.
+  const header = document.querySelector('.site-topbar');
+  const sections = [['welcome','top'], ['news','news'], ['research','research'],
+    ['experience','experience'], ['awards','awards'], ['about','about']]
+    .map(([id, anchor]) => ({node: document.getElementById(id), anchor})).filter(s => s.node);
+  const navLinks = [...document.querySelectorAll('.site-nav a, .site-footer nav a')];
+  let pending = false;
   function updateNavigation() {
-    let id;
-    try { id = decodeURIComponent(location.hash.slice(1)); } catch (_) { id = ''; }
-    const resumeSelected = resumeAnchors.has(id);
-    const targetNode = document.getElementById(id);
-    const researchSelected = !!targetNode?.closest('#research, #publications');
-    document.querySelectorAll('.site-nav a, .site-footer nav a').forEach(a => {
-      if (page !== 'index') return;
-      a.removeAttribute('aria-current');
-      const target = a.getAttribute('href');
-      if (target === '#resume' && resumeSelected) a.setAttribute('aria-current', 'location');
-      if (target === '#research' && researchSelected) a.setAttribute('aria-current', 'location');
-      if (target === '#top' && !resumeSelected && !researchSelected) a.setAttribute('aria-current', 'location');
+    pending = false;
+    if (page !== 'index') return;
+    const threshold = (header?.getBoundingClientRect().height || 0) + 45;
+    let active = 'top';
+    for (const section of sections) {
+      if (section.node.getBoundingClientRect().top <= threshold) active = section.anchor;
+    }
+    if (window.scrollY > 0 && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) active = 'about';
+    navLinks.forEach(a => {
+      if (a.getAttribute('href') === '#' + active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
     });
   }
-  function measureHeader() {
-    const height = document.querySelector('.site-topbar')?.getBoundingClientRect().height;
-    if (height) document.documentElement.style.setProperty('--navigation-height', height + 'px');
+  function scheduleNavigation() {
+    if (!pending) { pending = true; requestAnimationFrame(updateNavigation); }
   }
+  function measureHeader() {
+    if (header) document.documentElement.style.setProperty('--navigation-height', header.getBoundingClientRect().height + 'px');
+    scheduleNavigation();
+  }
+  if ('ResizeObserver' in window && header) new ResizeObserver(measureHeader).observe(header);
   measureHeader();
+  document.fonts?.ready.then(measureHeader);
   window.addEventListener('resize', measureHeader);
-  updateNavigation();
-  window.addEventListener('hashchange', () => { if (!routeLegacyHash()) updateNavigation(); });
+  window.addEventListener('scroll', scheduleNavigation, {passive: true});
+  window.addEventListener('hashchange', scheduleNavigation);
+  window.addEventListener('pageshow', measureHeader);
   // Play the original muted demo only while visible. Reduced-motion and
   // data-saving users keep native click-to-play controls. A manual pause is
   // respected until the user chooses to play again.

@@ -4,7 +4,11 @@ on:
     branches: [master]
     paths:
       - scripts/build-personal-site.py
+      - scripts/personal_site_core.py
       - scripts/test-personal-site.py
+      - scripts/fetch-institution-icons.py
+      - assets/css/single-page.css
+      - assets/js/site-pages.js
       - _site_content/**
       - .github/workflows/build-personal-site.yml
   workflow_dispatch:
@@ -22,7 +26,7 @@ jobs:
   build:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,16 +37,20 @@ jobs:
           python-version: '3.12'
       - name: Install browser-test dependencies
         run: |
-          python -m pip install beautifulsoup4 playwright
+          python -m pip install beautifulsoup4 playwright Pillow
           python -m playwright install --with-deps chromium
-      - name: Build Home, About, Resume and Research
+      - name: Cache institution website icons
+        run: python scripts/fetch-institution-icons.py
+      - name: Build single-page homepage and legacy fallbacks
         run: |
           sha256sum Xiaoshan_Wu_CV.pdf cv.tex > /tmp/original-cv.sha256
-          python -m py_compile scripts/build-personal-site.py scripts/test-personal-site.py
+          python -m py_compile scripts/build-personal-site.py scripts/personal_site_core.py scripts/test-personal-site.py
           python scripts/build-personal-site.py
           sha256sum --check /tmp/original-cv.sha256
-      - name: Check navigation, layout, project links and compatibility
+      - name: Check native navigation, chronology, research and responsive layout
         run: python scripts/test-personal-site.py
+      - name: Preserve original video and all interactive 4D cases
+        run: python scripts/test-sandbox-media.py
       - name: Check that regeneration is repeatable
         run: |
           sha256sum index.html about.html resume.html research.html publications.html > /tmp/site-first-build.sha256
@@ -51,27 +59,29 @@ jobs:
       - name: Save generated pages and visual checks
         if: always()
         run: |
-          mkdir -p personal-site-review/site/assets/css personal-site-review/site/assets/js personal-site-review/source
+          mkdir -p personal-site-review/site/assets personal-site-review/source/scripts
           for file in index.html about.html resume.html research.html publications.html; do
             if [ -f "$file" ]; then cp "$file" personal-site-review/site/; fi
           done
-          if [ -f assets/css/site-pages.css ]; then cp assets/css/site-pages.css personal-site-review/site/assets/css/; fi
-          if [ -f assets/js/site-pages.js ]; then cp assets/js/site-pages.js personal-site-review/site/assets/js/; fi
+          for folder in css js institutions; do
+            if [ -d assets/$folder ]; then cp -R assets/$folder personal-site-review/site/assets/; fi
+          done
           if [ -d _site_content ]; then cp -R _site_content personal-site-review/source/; fi
+          cp scripts/build-personal-site.py scripts/personal_site_core.py scripts/test-personal-site.py personal-site-review/source/scripts/
           if [ -d personal-site-qa ]; then cp -R personal-site-qa personal-site-review/; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: four-page-website-review
+          name: single-page-website-review
           path: personal-site-review/
           retention-days: 7
-      - name: Commit validated pages
+      - name: Commit validated homepage and compatibility pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html about.html resume.html research.html publications.html assets/css/site-pages.css assets/js/site-pages.js _site_content projects/index.html projects/sandbox/index.html projects/eag3r/index.html projects/game/index.html projects/videossm/index.html projects/lifr-seg/index.html projects/lifr-v2/index.html projects/evsplat/index.html
+          git add index.html about.html resume.html research.html publications.html _site_content assets/institutions
           if ! git diff --cached --quiet; then
-            git commit -m "Publish Home, About, Resume and Research with preserved project URLs"
+            git commit -m "Publish single-page homepage with chronological education and research timeline"
             git pull --rebase origin master
             git push origin HEAD:master
           fi
@@ -83,30 +93,34 @@ jobs:
             --header "Accept: application/vnd.github+json" \
             --header "Authorization: Bearer $GH_TOKEN" \
             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pages/builds"
-      - name: Verify the public personal website and compatibility pages
+      - name: Verify the public single-page homepage and compatibility pages
         run: |
           python - <<'PY'
           from urllib.request import Request,urlopen
           from bs4 import BeautifulSoup
-          import time,json
           from pathlib import Path
+          import time,json
           config=json.loads(Path('_site_content/site-presentation.json').read_text())
           expected_nav=[item['label'] for item in config['navigation']]
-          expected_design=config['design']
           base='https://candy-crusher.github.io/xiaoshanwu.github.io/'
-          reports=[]
           for attempt in range(42):
               reports=[]
-              for name in ['index.html','about.html','resume.html','research.html']:
+              for name in ['index.html','about.html','resume.html','research.html','publications.html']:
                   try:
                       url=base+name+'?layout-check='+str(int(time.time()))
                       with urlopen(Request(url,headers={'User-Agent':'PersonalSiteValidation/1.0'}),timeout=12) as response:
-                          text=response.read().decode();status=response.status
-                      doc=BeautifulSoup(text,'html.parser')
-                      nav=[a.get_text(strip=True) for a in doc.select('nav[aria-label="Main navigation"] a')]
-                      reports.append({'page':name,'status':status,'navigation':nav,'updated':doc.body.get('data-design')==expected_design})
+                          doc=BeautifulSoup(response.read().decode(),'html.parser');status=response.status
+                      nav=doc.select('.site-nav a')
+                      labels=[a.get_text(strip=True) for a in nav]
+                      prefix='' if name=='index.html' else 'index.html'
+                      expected_links=[prefix+'#'+s for s in ['top','news','research','experience','awards','about']]
+                      ok=doc.body.get('data-single-page')==config['layout'] and labels==expected_nav and [a['href'] for a in nav]==expected_links
+                      ok=ok and doc.select_one('.wordmark').get_text()=="Xiaoshan's Homepage"
+                      if name=='index.html':
+                          ok=ok and len(doc.select('.timeline-entry'))==3 and len(doc.select('.publication-list>li'))==15 and doc.select_one('#about') is not None
+                      reports.append({'page':name,'status':status,'navigation':labels,'updated':bool(ok)})
                   except Exception as exc:reports.append({'page':name,'error':str(exc)})
-              if all(r.get('updated') and r.get('navigation')==expected_nav for r in reports):
+              if all(r.get('updated') for r in reports):
                   print(json.dumps({'live_pages':reports,'status':'PASS'},indent=2));break
               time.sleep(5)
           else:raise SystemExit(json.dumps({'live_verification':'Updated pages not yet observed','last_checks':reports},indent=2))
