@@ -12,13 +12,14 @@ import os
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+from publication_style import load_details, authors_markup, venue_markup
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT/'personal-site-qa'
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
-LAYOUT = 'teaser-covers-20261015-v1'
+LAYOUT = 'recent-projects-20261015-v1'
 
 
 def text(node):
@@ -92,10 +93,10 @@ def static_checks():
         assert len(items) == 16 and len(doc.select('.lead-papers > li')) == 8 and len(doc.select('.collaborative-papers > li')) == 8
         for item, paper in zip(items, cv['papers']):
             assert text(item.select_one('.pub-title')) == paper['title']
-            assert norm(text(item.select_one('.pub-authors'))) == norm(builder.plain(paper['authors']))
-            assert norm(text(item.select_one('.research-meta > span'))) == norm(builder.plain(paper['venue']))
+            assert norm(text(item.select_one('.pub-authors'))) == norm(builder.plain(authors_markup(load_details()['papers'][item['id']], load_details()['profiles'])))
+            assert norm(text(item.select_one('.research-meta > span'))) == norm(builder.plain(venue_markup(load_details()['papers'][item['id']])))
             if paper['role']:
-                assert text(item.select_one('.research-role')) == paper['role']
+                assert item.get('data-author-role') == paper['role']
         assert text(doc.select_one('.research-question')) == cfg['research']['question']
         assert len(doc.select('.research-direction')) == 3
         for item, topic in zip(doc.select('.research-direction'), cfg['research']['directions']):
@@ -119,9 +120,9 @@ def static_checks():
     for name in ['index.html', 'research.html', 'publications.html']:
         ugg = docs[name].select_one('.collaborative-papers > li#pub-ugg')
         assert ugg and docs[name].select('.collaborative-papers > li')[0] == ugg
-        assert norm(text(ugg.select_one('.pub-authors'))) == norm('A. Kiruga, Z. Li, R. Cai, H. Lillemark, X. Wu, A. Tewari, and Y. Du.')
-        assert text(ugg.select_one('.research-meta')) == 'NeurIPS 2026'
-        assert not ugg.select('.research-role, .pub-authors sup')
+        assert norm(text(ugg.select_one('.pub-authors'))) == norm(builder.plain(authors_markup(load_details()['papers']['pub-ugg'], load_details()['profiles'])))
+        assert norm(text(ugg.select_one('.research-meta'))) == norm('NeurIPS, 2026.')
+        assert not ugg.select('.research-role, .pub-author-self sup')
         assert ugg.select_one('a[href="https://sky-lzy.github.io/UGG-website/"]')
         assert ugg.select_one('a[href="assets/bibtex/kiruga2026ugg.bib"]')
     bibtex = (ROOT/'assets/bibtex/kiruga2026ugg.bib').read_text()

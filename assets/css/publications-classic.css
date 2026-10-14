@@ -1,0 +1,40 @@
+/* Publications reference: jienengchen.com, Recent Projects.
+   Lato is loaded from Google Fonts; every rule is scoped to Publications. */
+.publications-record{font-family:'Lato',Verdana,Helvetica,sans-serif;color:#1c1c1c;font-size:15px;line-height:1.6}
+.publications-record h2,.publications-record h3,.publications-record h4,.publications-record p,.publications-record a,.publications-record strong{font-family:inherit}
+.publications-record strong{font-weight:700}
+.publications-record a{color:#002d72;text-decoration:none}
+.publications-record a:hover{color:#f09228;text-decoration:none}
+.publications-record>.section-links{font-size:13px;margin-top:10px;margin-bottom:24px}
+.publications-record .section-note{font-size:12px;line-height:1.6;margin:8px 0 4px;color:#777}
+.publications-record .publication-entry{padding:20px 0;border:0;background:transparent;outline:none}
+.publications-record .publication-entry:target{background:transparent;outline:none}
+.publications-record .publication-group+.publication-group{border-top:1px solid var(--line);padding-top:24px;margin-top:24px}
+.publications-record .publication-group-title{font-size:19px;font-weight:700;letter-spacing:0;line-height:1.5}
+.publications-record .publication-layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:26px;align-items:start}
+.publications-record .text-only .publication-layout{display:block}
+.publications-record .research-copy{min-width:0}
+.publications-record .research-media{width:200px;padding-top:3px}
+.publications-record .research-media .media-frame{border-radius:4px}
+.publications-record .research-media img{width:100%;height:auto;object-fit:contain}
+.publications-record .research-media figcaption{display:none}
+.publications-record .pub-title{font-size:15px;font-weight:700;line-height:1.5;letter-spacing:0;margin:0 0 4px;color:#111}
+.publications-record .pub-title a{font-size:inherit;font-weight:inherit;color:inherit}
+.publications-record .pub-title a:hover{color:#f09228}
+.publications-record .pub-authors{font-size:13px;color:#555;line-height:1.6;margin:0 0 4px}
+.publications-record .pub-authors a{font-size:inherit;color:#002d72}
+.publications-record .pub-authors a:hover{color:#f09228}
+.publications-record .pub-author-self a,.publications-record .pub-author-self strong{color:#1c1c1c}
+.publications-record .pub-author-self a:hover,.publications-record .pub-author-self a:hover strong{color:#f09228}
+.publications-record .pub-author{white-space:normal}
+.publications-record .pub-authors sup{font-size:.72em;vertical-align:super;line-height:0;margin-left:1px}
+.publications-record .research-meta{display:block;font-size:15px;line-height:1.5;color:#1c1c1c;margin:4px 0}
+.publications-record .pub-distinction{color:inherit}
+.publications-record .pub-tldr{font-size:14px;line-height:1.5;color:#555;margin:4px 0;font-weight:400}
+.publications-record .tldr-label{font-weight:700}
+.publications-record .research-links{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 0;font-size:14px;line-height:1.5;margin:6px 0 0}
+.publications-record .research-links a{font-size:inherit;padding:0;text-decoration:none;white-space:nowrap}
+.publications-record .research-links a+a::before{content:' / ';display:inline-block;white-space:pre;margin:0 7px;color:#aaa;font-weight:400}
+@media(max-width:800px){.publications-record .publication-layout{grid-template-columns:178px minmax(0,1fr);gap:24px}.publications-record .research-media{width:178px}}
+@media(max-width:600px){.publications-record .publication-entry{padding:19px 0}.publications-record .publication-layout{display:block}.publications-record .research-media{width:min(100%,315px);padding-top:0;margin-bottom:13px}.publications-record .pub-title{font-size:15px}.publications-record .pub-authors{font-size:13px}.publications-record .research-meta{font-size:14px}.publications-record .pub-tldr,.publications-record .research-links{font-size:14px}}
+@media print{.publications-record .publication-entry{break-inside:avoid}.publications-record .research-links a{color:inherit}}

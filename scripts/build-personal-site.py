@@ -11,9 +11,11 @@ import json
 import re
 from bs4 import BeautifulSoup
 import personal_site_core as core
+from publication_style import apply_publication_style
+from site_favicon import apply_favicon
 
 ROOT = Path(__file__).resolve().parents[1]
-LAYOUT = 'teaser-covers-20261015-v1'
+LAYOUT = 'recent-projects-20261015-v1'
 NAV = [('Home', 'top'), ('News', 'news'), ('Research', 'research'),
        ('Experience', 'experience'), ('Award', 'awards'), ('About', 'about')]
 PAGES = ['index.html', 'about.html', 'resume.html', 'research.html', 'publications.html']
@@ -184,7 +186,8 @@ def document(name, body, cfg, cv):
     doc.head.append(doc.new_tag('link', rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Allura&display=swap'))
     if name != 'index.html':
         doc.select_one('link[rel="canonical"]')['href'] = core.BASE + 'index.html'
-    return str(doc) + '\n'
+    doc = apply_publication_style(doc, cfg)
+    return apply_favicon(str(doc) + '\n', name)
 
 
 def main():
