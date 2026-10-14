@@ -122,6 +122,15 @@
       "group": 0
     },
     {
+      "title": "UGG: Unified Generative Geometry Model",
+      "authors": "A. Kiruga, Z. Li, R. Cai, H. Lillemark, <strong>X. Wu</strong>, A. Tewari, and Y. Du.",
+      "venue": "<strong>NeurIPS 2026</strong>.",
+      "role": "",
+      "summary": "",
+      "project_url": "https://sky-lzy.github.io/UGG-website/",
+      "group": 1
+    },
+    {
       "title": "Efficient and Accurate Neural-Field Reconstruction Using Resistive Memory",
       "authors": "Y. Yu, X. Zhang, S. Wang, …, <strong>X. Wu</strong>, et al.",
       "venue": "<strong>Nature</strong>, 654:642–651, 2026.",
@@ -194,6 +203,7 @@
     "pub-evsplat",
     "pub-lifr-v2",
     "pub-spiking-depth",
+    "pub-ugg",
     "pub-neural-field-memory",
     "pub-optigeo",
     "pub-foundationgeo",

@@ -345,8 +345,25 @@
     "pub-floating-gate-memory": {
       "resources": [],
       "source_title": "Charge-Selective 2D Heterointerface-Driven Multifunctional Floating Gate Memory for In Situ Sensing-Memory-Computing"
+    },
+    "pub-ugg": {
+      "source_title": "UGG: Unified Generative Geometry Model",
+      "resources": [
+        {
+          "label": "Project",
+          "url": "https://sky-lzy.github.io/UGG-website/",
+          "home": true,
+          "figure": false
+        },
+        {
+          "label": "BibTeX",
+          "url": "assets/bibtex/kiruga2026ugg.bib",
+          "home": true,
+          "figure": false
+        }
+      ]
     }
   },
   "source_policy": "Tex02 is authoritative for factual CV information, authors, statuses, roles, awards, publication ordering and the downloadable PDF. This configuration controls web-specific paraphrases, research framing, existing-media crops and links. Future co-evolution is not presented as completed work. No TeX, model-scale claim, paper status or experimental result is changed.",
-  "layout": "monthly-news-review-20261015-v1"
+  "layout": "ugg-neurips-2026-v1"
 }
