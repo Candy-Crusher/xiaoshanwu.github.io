@@ -108,4 +108,29 @@ if(FULL && FULL.frame_count===375 && Array.isArray(FULL.frames)){
  if(fullLink)fullLink.href=URL.createObjectURL(new Blob([JSON.stringify(FULL,null,2)],{type:'application/json'}));
 }
 
+
+const MF=window.SE3_MUSTARD_FULL_DATA;
+if(MF && MF.frame_count===689 && Array.isArray(MF.frames)){
+ const vals=MF.frames.filter(x=>x.f>0);
+ function plotMustard(id,key,max,threshold,color){
+   const svg=$(id);if(!svg)return;
+   const W=620,H=230,L=42,R=14,T=14,B=32;
+   const x=n=>L+(n-1)/(MF.frame_count-2)*(W-L-R);
+   const y=v=>T+(1-v/max)*(H-T-B);
+   for(let i=0;i<=4;i++){
+     const yy=T+i*(H-T-B)/4;
+     svg.append(el('line',{x1:L,x2:W-R,y1:yy,y2:yy,stroke:'#e3eaea','stroke-width':1}));
+     svg.append(el('text',{x:L-8,y:yy+4,'text-anchor':'end',fill:'#7a8d96','font-size':12},String(Math.round(max*(1-i/4)))));
+   }
+   [1,172,344,516,688].forEach(n=>svg.append(el('text',{x:x(n),y:H-11,'text-anchor':'middle',fill:'#7a8d96','font-size':12},String(n))));
+   svg.append(el('line',{x1:L,x2:W-R,y1:y(threshold),y2:y(threshold),stroke:'#c66c59','stroke-width':1.5,'stroke-dasharray':'5 5'}));
+   const d=vals.map((v,i)=>(i?'L':'M')+x(v.f).toFixed(1)+','+y(Math.min(max,v[key])).toFixed(1)).join(' ');
+   svg.append(el('path',{d,stroke:color,'stroke-width':2.1,fill:'none','stroke-linejoin':'round'}));
+ }
+ plotMustard('mustard-full-trans-plot','t',35,20,'#17b8a1');
+ plotMustard('mustard-full-rot-plot','r',25,10,'#9672d3');
+ const dl=$('mustard-json');
+ if(dl)dl.href=URL.createObjectURL(new Blob([JSON.stringify(MF,null,2)],{type:'application/json'}));
+}
+
 })();
