@@ -78,4 +78,29 @@ updateFrame(20);
 const dataBlob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
 const dl=$('download-metrics');
 if(dl)dl.href=URL.createObjectURL(dataBlob);
+
+const FULL=window.SE3_FULL_DATA;
+if(FULL && FULL.frame_count===375 && Array.isArray(FULL.frames)){
+ const vals=FULL.frames.filter(x=>x.f>0);
+ function plotLong(id,key,max,color,threshold) {
+   const svg=$(id);if(!svg)return;
+   const W=620,H=230,L=40,R=14,T=13,B=31;
+   const x=n=>L+(n-1)/373*(W-L-R);
+   const y=v=>T+(1-v/max)*(H-T-B);
+   for(let j=0;j<=4;j++){
+      const yy=T+j*(H-T-B)/4;
+      svg.append(el('line',{x1:L,x2:W-R,y1:yy,y2:yy,stroke:'#e0e8e8','stroke-width':1}));
+      svg.append(el('text',{x:L-7,y:yy+4,fill:'#70868d','text-anchor':'end','font-size':12},String(Math.round(max*(1-j/4)))));
+   }
+   [1,100,200,300,374].forEach(n=>svg.append(el('text',{x:x(n),y:H-11,fill:'#78939a','text-anchor':'middle','font-size':12},n)));
+   svg.append(el('line',{x1:L,x2:W-R,y1:y(threshold),y2:y(threshold),stroke:'#bc8574','stroke-width':1.3,'stroke-dasharray':'5 5'}));
+   const path=vals.map((v,i)=>(i?'L':'M')+x(v.f).toFixed(2)+','+y(Math.min(max,v[key])).toFixed(2)).join(' ');
+   svg.append(el('path',{d:path,stroke:color,'stroke-width':2.15,'stroke-linejoin':'round',fill:'none'}));
+ }
+ plotLong('full-trans-plot','t',20,'#13a38d',20);
+ plotLong('full-rot-plot','r',10,'#9274d3',10);
+ const fullLink=$('download-full');
+ if(fullLink)fullLink.href=URL.createObjectURL(new Blob([JSON.stringify(FULL,null,2)],{type:'application/json'}));
+}
+
 })();
