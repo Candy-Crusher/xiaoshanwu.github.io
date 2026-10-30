@@ -59,6 +59,18 @@
 <tr><td>Worst translation</td><td>11.90 mm</td><td>41.48 mm</td><td>48.16 mm</td></tr>
 <tr><td>Joint success @ 20mm, 10°</td><td><strong>39/39</strong></td><td>37/39</td><td>36/39</td></tr>
 </tbody></table></div>
+<div class="result-table"><div class="result-caption"><strong>FULL 375-FRAME CRACKER BOX · TRUE GT</strong><span>All 374 future frames; no cherry-picked window</span></div>
+<table><thead><tr><th>Measure / inference input</th><th>Lightweight</th><th>ECCV modules · GT masks</th><th>ECCV modules · SAM2</th></tr></thead>
+<tbody>
+<tr><td>Median translation</td><td>2.81 mm</td><td>2.84 mm</td><td>4.09 mm</td></tr>
+<tr><td>Median rotation</td><td>3.49°</td><td>3.52°</td><td>4.27°</td></tr>
+<tr><td>P90 translation</td><td>7.32 mm</td><td>6.07 mm</td><td>9.04 mm</td></tr>
+<tr><td>P90 rotation</td><td>4.55°</td><td>4.44°</td><td>5.91°</td></tr>
+<tr><td>Worst translation</td><td>16.25 mm</td><td>52.68 mm</td><td>43.77 mm</td></tr>
+<tr><td>Tracker coverage</td><td>374/374</td><td>374/374</td><td>373/374</td></tr>
+<tr class="highlight-row"><td>Joint pass @ 20mm,10°</td><td>374/374 (100%)</td><td>365/374 (97.6%)</td><td>365/374 (97.6%)</td></tr>
+</tbody></table></div>
+<p class="full-caution"><strong>Paired finding:</strong> The ECCV GT-mask configuration lowers translation error on 241/374 individual frames, yet introduces 9 unflagged errors above 20 mm, mostly clustered around frames 184–243. Better local fits do not guarantee more trustworthy training labels.</p>
 <div class="validation-note"><span>⚑</span><p><strong>Interpretation:</strong> More modules did not improve this short real-GT clip. This is NOT a reproduction of the official paper's ADD/ADD-S AUC: the authors' benchmark uses GT masks on every frame, our SDF ran on CPU, and the annotation variant uses SAM2-small rather than the configured large checkpoint. The relevant decision is whether automatic confidence gating improves correctness across long, unseen sequences.</p></div>
 </div></section>
 <section id="protocol" class="section section-alt"><div class="wrap"><div class="section-line"><div><div class="kicker">02 / EVALUATION PROTOCOL</div><h2>What the tracker sees.<br><i>What it never sees.</i></h2></div><p>We keep the source of supervision separate from the source of predictions. The benchmark tests relative object motion, not zero-shot canonical absolute pose.</p></div>
