@@ -1,52 +1,63 @@
 # Rigid SE(3) Evidence Atlas
 
-Public companion website: [SE(3) Evidence Atlas](https://candy-crusher.github.io/xiaoshanwu.github.io/se3-evidence/).
+Public shareable research page: **https://candy-crusher.github.io/xiaoshanwu.github.io/se3-evidence/**
 
-This independent folder contains an exploratory **evidence-based feasibility study** of RGB-D rigid-body pseudo-labeling, starting from an actual YCBInEOAT / cracker_box_reorient 40-frame evaluation.
+This is a candid real-GT evaluation of whether Point2Pose-style rigid-object tracking is accurate enough for SE(3) pseudo-labels on real interaction videos. The site deliberately includes both accurate trajectories and long-horizon failures.
 
-## Reproducibility and scope
+## Protocol
 
-- **Predictor:** Point2Pose ModularPipeline with an adapted RealSense configuration, SAM2-small, TAPIR, UniformFPS and robust SVD registration. This is **not** the official paper's ECCV-final benchmark configuration.
-- **Inference observations:** RGB, metric depth, camera intrinsics, initial object mask only. No ground-truth pose or future masks.
-- **Scoring:** Canonical object frame aligned using the initial GT pose **after** inference; the remaining 39 frames measured against independently annotated YCBInEOAT object poses.
-- **Translation:** Euclidean distance between predicted and true camera-frame object origins in millimeters.
-- **Rotation:** geodesic SO(3) angle in degrees.
-- **Threshold success:** jointly below 20 mm and 10 degrees (reported on all eligible frames).
-- **Limitations:** only one 40-frame excerpt; no generalization claim, confidence calibration, automatic discovery or unseen-object validity guarantee.
+- **Method**: Point2Pose ModularPipeline, adapted configuration (SAM2 small, TAPIR, UniformFPS, SVD residual registration). **Not** the official ECCV YCBInEOAT final benchmark configuration.
+- **Observation during inference**: RGB, metric Depth, camera intrinsics, **first-frame object mask only**. No future object mask, pose GT, or PointWorld tracks.
+- **Evaluation only**: Align arbitrary initial predicted object coordinate gauge using the frame-zero object GT pose; evaluate all future RGB-D frames against annotated 4×4 object pose GT.
+- **Translation Error**: camera-frame object-origin Euclidean error in mm, after first-pose gauge alignment.
+- **Rotation Error**: SO(3) geodesic in degrees.
+- **Coverage**: fraction of future frames without tracker-reported loss; not equivalent to an accuracy-calibrated confidence score.
+- **Joint pass rate**: fraction of **all** future frames both under 20 mm and 10°; lost frames count as failures.
+- **Source**: YCBInEOAT, `cracker_box_reorient`, `mustard_easy_00_02`, `sugar_box1` real sequences.
 
-### Pilot results (verified on Harvard Slurm job 56438635)
+## Verified real-GT results
 
-| Metric | Translation | Rotation |
-| --- | ---: | ---: |
-| Mean | 4.217 mm | 2.389° |
-| Median | 3.949 mm | 2.079° |
-| P90 | 6.468 mm | 3.710° |
-| Max | 11.896 mm | 5.547° |
-| Coverage | 39/39 | 39/39 |
+| Sequence | Frames total / future | Median Translation | Median Rotation | Tracker Coverage | Joint Pass @ 20 mm, 10° |
+|---|---:|---:|---:|---:|---:|
+| Cracker Box centered excerpt | 40 / 39 | 3.95 mm | 2.08° | 100% | 100% |
+| Cracker Box full sequence | 375 / 374 | **2.81 mm** | **3.49°** | 100% | 100% |
+| Mustard Bottle centered excerpt | 40 / 39 | 1.57 mm | 1.69° | 100% | 100% |
+| Mustard Bottle full sequence | 689 / 688 | **5.20 mm** | **14.52°** | 100% | **19.2%** |
+| Sugar Box centered excerpt | 40 / 39 | 1.75 mm | 1.24° | 100% | 100% |
+| Sugar Box full sequence | 907 / 906 | **9.29 mm** | **6.47°** | **96.5%** | **92.1%** |
 
-Real source arrays and experiment logs:
-- `/n/netscratch/kempner_rcai_lab/Lab/xswu/action_conditioned_wm/outputs/ycbineoat_gt_eval_20261031_v1/metrics.json`
-- `.../outputs/ycbineoat_point2pose_vis_20261031_v1/`
-- `.../scripts/se3_ycb_gt_eval_v1_20261031.py`
+**Important counterexample:** Sugar Box 40-frame centered excerpt barely moves. A static-pose baseline has just 0.24 mm mean translation error whereas Point2Pose has 1.76 mm. Low error on this clip is NOT evidence of successful motion tracking.
 
-Data: [YCBInEOAT](https://github.com/wenbowen123/iros20-6d-pose-tracking). Method: [Point2Pose](https://github.com/tzuyuan/point-to-pose).
+**Mustard full sequence**: Q1 median rotation 3.25°, Q2 18.70°, Q3 14.88°, Q4 12.57°. The tracker reports all frames valid while the true joint pass rate collapses to 19.2%. This is evidence of **silent pose drift**. Late translation also deteriorates (Q4 median 18.44 mm). Do not equate valid 4×4 matrices or tracker loss flag with reliable pseudo-labels.
 
-## Site implementation
+**Sugar full sequence**: 874/906 tracked, median translation 9.29 mm and rotation 6.47° on accepted frames; 92.05% all-frame joint success. The end of the sequence has lost frames and extreme rotation errors (max accepted error ~80.68°).
 
-Static HTML/CSS/JavaScript, zero frontend build dependencies. `assets/data.js` contains measured per-frame numbers; `assets/media-*.js` contain base64-embedded material generated directly from measured GT/predictions. Website runs on GitHub Pages, including when opened locally from `index.html`.
+## Implementation
 
-To add new sequences:
-1. Validate matching RGB/depth/mask/pose timestamps and coordinate system.
-2. Run an existing **frozen configuration** on each sequence and report every attempted future frame.
-3. Use only initial GT pose for post-hoc gauge alignment, never model initialization unless separately disclosed.
-4. Add per-sequence metrics and failure examples to `assets/data.js` and website scoreboard **only after** the actual scorer has completed.
-5. Always distinguish tracker loss flags from calibrated confidence/reject thresholds.
+Static HTML, CSS, JavaScript; no bundler. `assets/data.js` stores measured 40-frame results; `data-full.js`, `data-mustard-full.js`, and `data-sugar-full.js` store actual full-sequence errors. The `media-*.js` modules embed original GT-versus-prediction visual comparison videos for 40-frame excerpts. Charts use real measurements, not synthetic values.
 
-## GT benchmark work in progress
+Harvard source directory:
+`/n/netscratch/kempner_rcai_lab/Lab/xswu/action_conditioned_wm/`
 
-- YCBInEOAT mustard_easy_00_02 (Slurm 56441821, download/run)
-- YCBInEOAT sugar_box1 (Slurm 56441849, download/run)
-- DexYCB (not yet downloaded; source archives are large and subject to Google Drive access limits)
-- RBO articulated per-link pose benchmark is a separate task, **not** evidence that an entire articulated object has a single SE(3).
+Relevant source outputs:
+- `outputs/ycbineoat_gt_eval_20261031_v1/metrics.json`
+- `outputs/ycbineoat_gt_eval_full_v2/metrics.json`
+- `outputs/ycbineoat_gt_eval_mustard_easy_00_02_v3/metrics.json`
+- `outputs/ycbineoat_gt_eval_mustard_easy_00_02_full_v4/metrics.json`
+- `outputs/ycbineoat_gt_eval_sugar_box1_v3/metrics.json`
+- `outputs/ycbineoat_gt_eval_sugar_box1_full_v4/metrics.json`
+- `scripts/se3_ycb_indexed_v3_launcher.py` and `scripts/se3_ycb_indexed_full_v4_launcher.py`
+- `outputs/ycbineoat_point2pose_vis_20261031_v1/` and other per-sequence visualization directories.
 
-This project reports negative results and failed coverage as first-class evidence and will not impute unmeasured scores.
+Source data naming:
+- Cracker Box poses have matching RGB/depth filename timestamps.
+- Mustard and Sugar have GT files numbered `0000000.txt` … with RGB frames named as timestamps. These are aligned **by validated sorted frame indices** following the official Point2Pose YcbineoatReader convention; the index mapping and exact sequence lengths are logged. No fallback to arbitrary nearest-neighbor timestamp matching.
+
+## Research takeaways
+
+This **supports** rigid-object pseudo-labeling for selected real RGB-D sequences with a first-frame object mask and post-hoc gauge alignment. It **does not establish** that labels are reliable in arbitrary long interactions, that automatic object discovery works, or that tracking confidence is calibrated. The next crucial experiment is **accuracy-aware validity/rejection based on model-available observables** (tracking uncertainty, geometry, independent RGB-D reprojection), validated against pose GT but not using GT at inference.
+
+DexYCB (https://dex-ycb.github.io/) is an external human-hand / occlusion test candidate. Its official per-subject data archives are about 12 GB with Google Drive delivery, and it has **not** yet been downloaded or evaluated here. RBO articulated data is separate per-link evaluation, not whole-object SE(3) evidence. No paid coding-agent optimization has been run; the prior API budget guard remains disabled.
+
+Official method: https://github.com/tzuyuan/point-to-pose
+Official dataset: https://github.com/wenbowen123/iros20-6d-pose-tracking
