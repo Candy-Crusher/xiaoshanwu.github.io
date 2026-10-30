@@ -8,6 +8,11 @@ window.attachSE3Media=function(){
   if(media.video && $('comparison-video') && !$('comparison-video').src) {
     $('comparison-video').src=media.video; $('comparison-video').load();
   }
+  
+  for(const [key,target] of [['mustard','mustard-video'],['sugar','sugar-video']]){
+    const video=$(target);
+    if(video && media[key] && !video.src){video.src=media[key];video.load();}
+  }
   if(media.gif && $('comparison-gif'))$('comparison-gif').src=media.gif;
   if(media.contact && $('comparison-sheet')) {
     $('comparison-sheet').src=media.contact;
