@@ -133,4 +133,29 @@ if(MF && MF.frame_count===689 && Array.isArray(MF.frames)){
  if(dl)dl.href=URL.createObjectURL(new Blob([JSON.stringify(MF,null,2)],{type:'application/json'}));
 }
 
+
+const SF=window.SE3_SUGAR_FULL_DATA;
+if(SF && SF.frame_count===907 && Array.isArray(SF.frames)){
+ const pts=SF.frames.filter(x=>x.f>0);
+ function plotSugar(id,key,max,threshold,color){
+   const svg=$(id);if(!svg)return;
+   const W=620,H=230,L=45,R=14,T=14,B=33;
+   const x=n=>L+(n-1)/(SF.frame_count-2)*(W-L-R);
+   const y=v=>T+(1-v/max)*(H-T-B);
+   for(let i=0;i<=4;i++){
+     const yy=T+i*(H-T-B)/4;
+     svg.append(el('line',{x1:L,x2:W-R,y1:yy,y2:yy,stroke:'#e3eaea'}));
+     svg.append(el('text',{x:L-8,y:yy+4,fill:'#6c838d','text-anchor':'end','font-size':12},String(Math.round(max*(1-i/4)))));
+   }
+   [1,226,453,679,906].forEach(n=>svg.append(el('text',{x:x(n),y:H-11,fill:'#6c838d','text-anchor':'middle','font-size':12},String(n))));
+   svg.append(el('line',{x1:L,x2:W-R,y1:y(threshold),y2:y(threshold),stroke:'#cb8062','stroke-dasharray':'5 5','stroke-width':1.5}));
+   const d=pts.map((v,i)=>(i?'L':'M')+x(v.f).toFixed(1)+','+y(Math.min(max,v[key])).toFixed(1)).join(' ');
+   svg.append(el('path',{d,stroke:color,'stroke-width':2,fill:'none','stroke-linejoin':'round'}));
+ }
+ plotSugar('sugar-full-trans-plot','t',70,20,'#16a58f');
+ plotSugar('sugar-full-rot-plot','r',90,10,'#9273d3');
+ const dl=$('download-sugar');
+ if(dl)dl.href=URL.createObjectURL(new Blob([JSON.stringify(SF,null,2)],{type:'application/json'}));
+}
+
 })();
