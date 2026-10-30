@@ -37,3 +37,18 @@
 .cross-card>p{font-size:12px;color:#adc0c9;line-height:1.8;margin:0;padding:18px 20px 25px}
 .cross-card>p strong{color:#f0c5a9}
 @media(max-width:780px){.cross-grid{grid-template-columns:1fr}.cross-head{flex-wrap:wrap;height:auto}.cross-card-stats b{font-size:21px}}
+
+
+.failure-section{background:linear-gradient(120deg,#231c24,#161c27);border-block:1px solid #614a51}
+.failure-section .section-line h2 i{color:#f6aa9e}
+.failure-hero{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+.failure-hero>div{border:1px solid #694d57;border-radius:10px;background:#2d202b;padding:26px}
+.failure-hero span{color:#ffc0b1;letter-spacing:1.6px;font-size:10px;font-weight:700}
+.failure-hero strong{display:block;margin:11px 0;font:600 40px 'Space Grotesk';color:#ffe6e0}
+.failure-hero strong small{font-size:15px;color:#cfafb0;letter-spacing:0}
+.failure-hero p{font-size:12px;color:#ddc6c6;line-height:1.8}
+.failure-charts{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.failure-charts .chart{background:#fff}
+.failure-footnote{color:#bdb1b7;font-size:12px;line-height:1.8;margin:16px 0 0}
+.failure-footnote a{color:#ffbcab;margin-left:12px}
+@media(max-width:780px){.failure-hero,.failure-charts{grid-template-columns:1fr}.failure-hero strong{font-size:30px}}
